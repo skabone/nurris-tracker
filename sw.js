@@ -2,7 +2,7 @@
 // worker and a new cache. Cache-first shell; the shell is fetched with cache:"no-cache" so a new worker
 // never caches a stale page from the CDN. The worker waits after install: the page applies it on the next
 // load, or when the user taps "Update ready" (see registerSW in tracker.html).
-const BUILD='2026-10-12-V1';
+const BUILD='2026-10-13-V1.1';
 const CACHE='nurris-tracker-'+BUILD;
 const SHELL=['./','manifest.webmanifest','icon-180.png','icon-192.png','icon-512.png','icon-maskable-512.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL.map(u=>new Request(u,{cache:'no-cache'})))));});
