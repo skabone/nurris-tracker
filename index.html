@@ -1,0 +1,1200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="app-build-id" content="2026-10-12-V1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Nurri's Tracker</title>
+<meta name="description" content="Log your hours in 24-hour time, see your pay the way your stubs work it out, and check every paycheck.">
+<meta name="theme-color" content="#EDF0F2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0D1318" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Nurri's">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600&family=Barlow+Semi+Condensed:wght@400;500;600&display=swap">
+<style>
+/* One phone-width column. Home overview, Clock, Hours (range + list/timeline), Paychecks, More. Green = regular, amber = overtime. */
+:root{
+  --bg:#EDF0F2; --card:#FFFFFF; --ink:#131C24; --ink2:#56646F; --line:#D5DBE0;
+  --go:#0E7C5F; --go-bg:#DAEFE6; --on-go:#FFFFFF;
+  --ot:#A84B08; --ot-bg:#FBE6D1; --ot-bar:#D9792B;
+  --stop:#1B2733; --on-stop:#FFFFFF; --bad:#B3261E; --field:#F6F8F9;
+  --fd:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --fb:"Barlow Semi Condensed",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1318; --card:#151D24; --ink:#E8EEF2; --ink2:#93A2AE; --line:#26323B;
+    --go:#3CC59A; --go-bg:#133A2E; --on-go:#06231A;
+    --ot:#F0A35C; --ot-bg:#3E2913; --ot-bar:#E08A3C;
+    --stop:#E8EEF2; --on-stop:#10171D; --bad:#FF8F85; --field:#1B252D; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1318; --card:#151D24; --ink:#E8EEF2; --ink2:#93A2AE; --line:#26323B;
+  --go:#3CC59A; --go-bg:#133A2E; --on-go:#06231A;
+  --ot:#F0A35C; --ot-bg:#3E2913; --ot-bar:#E08A3C;
+  --stop:#E8EEF2; --on-stop:#10171D; --bad:#FF8F85; --field:#1B252D; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{min-height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.35 var(--fb);-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.app{max-width:440px;margin:0 auto;padding:calc(18px + env(safe-area-inset-top,0px)) calc(16px + env(safe-area-inset-right,0px)) calc(110px + env(safe-area-inset-bottom,0px)) calc(16px + env(safe-area-inset-left,0px))}
+h1{font:600 36px/1 var(--fd);margin:2px 0 0;letter-spacing:.2px}
+h2{font:600 13px/1 var(--fb);margin:0 0 10px;color:var(--ink2);letter-spacing:.6px;text-transform:uppercase}
+.sub{color:var(--ink2);font-size:14px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
+.pill{display:inline-block;font-size:13px;font-weight:500;padding:4px 11px;border-radius:99px;background:var(--line);color:var(--ink2);white-space:nowrap}
+.pill.go{background:var(--go-bg);color:var(--go)}
+.pill.ot{background:var(--ot-bg);color:var(--ot)}
+button.pill{border:0;min-height:44px;padding:0 14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:14px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:8px 12px;font-size:15px;font-weight:500;min-height:44px}
+.chip small{color:var(--ink2);font-weight:400;margin-left:4px}
+.chip.on{border-color:var(--go);background:var(--go-bg);color:var(--go)}
+.chip:disabled{cursor:default}
+.clock{text-align:center;margin:22px 0 18px}
+.tm{font:600 84px/1 var(--fd);font-variant-numeric:tabular-nums;letter-spacing:1px}
+.tm span{font-size:36px;color:var(--ink2)}
+.big{width:100%;height:76px;border:0;border-radius:20px;font:600 28px/1 var(--fd);letter-spacing:.4px}
+.big.in{background:var(--go);color:var(--on-go)}
+.big.out{background:var(--stop);color:var(--on-stop)}
+.btn{width:100%;min-height:48px;border:1px solid var(--line);background:var(--card);border-radius:12px;font-weight:500;margin-top:10px}
+.btn.dim{color:var(--ink2)}
+.btn.warn{color:var(--bad);border-color:var(--bad)}
+.btn.solid{background:var(--go);color:var(--on-go);border-color:var(--go)}
+.btn.bk{width:auto;padding:0 14px;min-height:44px;margin:0 0 10px}
+.seg{display:flex;background:var(--field);border:1px solid var(--line);border-radius:10px;padding:2px;gap:2px}
+.seg button{flex:1;border:0;background:transparent;border-radius:8px;padding:7px 8px;font-size:14px;font-weight:500;color:var(--ink2);min-height:44px}
+.seg button.on{background:var(--card);color:var(--ink);box-shadow:0 0 0 1px var(--line)}
+.fig{font:600 52px/1 var(--fd);font-variant-numeric:tabular-nums}
+.fig small{font-size:22px;color:var(--ink2);margin-left:4px}
+.meter{display:flex;height:8px;border-radius:4px;overflow:hidden;background:var(--line);margin:12px 0 8px}
+.meter i{display:block;height:100%}
+.meter .r{background:var(--go)}.meter .o{background:var(--ot-bar)}
+.hd{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.row{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);cursor:pointer;min-height:44px}
+.row:last-child{border-bottom:0}
+.day{width:44px;flex:none}
+.day b{display:block;font:600 22px/1 var(--fd)}
+.day span{font-size:13px;color:var(--ink2)}
+.mid{flex:1;min-width:0;font-size:15px}
+.mid .sub{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rt{text-align:right;flex:none}
+.rt b{font:600 24px/1 var(--fd);font-variant-numeric:tabular-nums}
+.rt .pill{margin-top:4px;font-size:12px;padding:2px 8px}
+.empty{color:var(--ink2);font-size:15px;padding:18px 0;text-align:center}
+.dl{display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:15px;font-variant-numeric:tabular-nums}
+.dl.t{border-top:1px solid var(--line);margin-top:6px;padding-top:10px;font-weight:600;font-size:17px}
+.dl span:first-child{color:var(--ink2)}
+.dl.t span:first-child{color:var(--ink)}
+label.f{display:block;font-size:13px;color:var(--ink2);margin:14px 0 5px}
+input,select,textarea{width:100%;height:46px;border:1px solid var(--line);background:var(--field);border-radius:10px;padding:0 12px;font-size:16px}
+textarea{height:70px;padding:10px 12px;resize:none}
+input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:2px solid var(--go);outline-offset:1px}
+.two{display:flex;gap:10px}.two>div{flex:1;min-width:0}
+.err{color:var(--bad);font-size:14px;margin-top:10px;min-height:18px}
+.pv{background:var(--field);border:1px dashed var(--line);border-radius:12px;padding:12px;margin-top:14px;font-size:15px;font-variant-numeric:tabular-nums}
+.rr{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.rr input:first-child{flex:1}.rr .rate{width:96px;flex:none}
+.rr button{flex:none;width:46px;height:46px;border:1px solid var(--line);background:var(--card);border-radius:10px;color:var(--ink2);font-size:18px}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0 4px}
+.nav button{width:44px;height:44px;border:1px solid var(--line);background:var(--card);border-radius:12px;font-size:22px;flex:none}
+.nav .mid2{flex:1;text-align:center;font:600 22px/1.1 var(--fd)}
+.nav .mid2 small{display:block;font:400 13px var(--fb);color:var(--ink2);margin-top:2px}
+.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(440px,100%);display:flex;background:var(--card);border-top:1px solid var(--line);padding:6px calc(4px + env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) calc(4px + env(safe-area-inset-left,0px))}
+.tabs button{flex:1;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:500;color:var(--ink2);padding:6px 0;min-height:44px}
+.tabs button.on{color:var(--go)}
+.tabs svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(92px + env(safe-area-inset-bottom,0px));background:var(--stop);color:var(--on-stop);padding:10px 16px;border-radius:12px;font-size:15px;max-width:90%;z-index:6}
+.upd{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--go);color:var(--on-go);border:0;border-radius:99px;padding:0 20px;min-height:44px;font-weight:600;z-index:5;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.foot{text-align:center;color:var(--ink2);font-size:12px;margin-top:22px}
+.note{font-size:13px;color:var(--ink2);margin-top:6px}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;min-width:0}
+.kpi .l{font-size:13px;color:var(--ink2)}
+.kpi .v{font:600 34px/1.05 var(--fd);font-variant-numeric:tabular-nums;margin-top:2px}
+.kpi .v small{font-size:16px;color:var(--ink2);margin-left:3px}
+.kpi .d{font-size:12px;color:var(--ink2);margin-top:3px}
+.kpi.ot .v{color:var(--ot)}
+.bars{display:flex;gap:3px;align-items:flex-end;height:140px;margin-top:6px}
+.bc{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;border:0;background:transparent;padding:0}
+.bc em{font:500 11px var(--fb);color:var(--ink2);font-style:normal;height:14px;line-height:14px}
+.bc .b{width:100%;display:flex;flex-direction:column;border-radius:4px 4px 0 0;overflow:hidden}
+.bc .b i{display:block}
+.bc .b .r{background:var(--go)}.bc .b .o{background:var(--ot-bar)}
+.bl{display:flex;gap:3px;margin-top:4px}
+.bl span{flex:1;text-align:center;font-size:11px;color:var(--ink2)}
+.bl span.td{color:var(--ink);font-weight:600}
+.lg{display:flex;gap:14px;font-size:12px;color:var(--ink2);margin-top:10px;flex-wrap:wrap}
+.lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.pg{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:10px}
+.pg .wd{font-size:11px;color:var(--ink2);text-align:center}
+.pc{height:44px;border-radius:8px;border:1px solid var(--line);background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0;line-height:1.1}
+.pc small{font-size:11px;color:var(--ink2)}
+.pc b{font:600 15px var(--fd)}
+.pc.r{background:var(--go-bg);border-color:transparent;color:var(--go)}
+.pc.r small{color:var(--go)}
+.pc.o{background:var(--ot-bg);border-color:transparent;color:var(--ot)}
+.pc.o small{color:var(--ot)}
+.pc.f{border-style:dashed}
+.pc.x{visibility:hidden}
+.pc.td{outline:2px solid var(--ink);outline-offset:1px}
+.pc.od{opacity:.6}
+.pc.bt{min-height:62px;height:auto;padding:3px 0}.pc i{font:400 11px var(--fb);font-style:normal}
+.pbar{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:12px}
+.pbar i{display:block;height:100%;background:var(--go)}
+.rng{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-top:2px}
+.rng button{flex:none;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:7px 14px;font-size:14px;font-weight:500;color:var(--ink2);min-height:44px}
+.rng button.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.wh{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--ink2);padding:12px 0 6px;border-bottom:1px solid var(--line)}
+.wh b{color:var(--ink);font-weight:600}
+.tl{display:flex;align-items:center;gap:8px;padding:5px 0;cursor:pointer;min-height:44px}
+.tl.mt{cursor:default}
+.tl .dn{width:42px;flex:none;font-size:13px;color:var(--ink2);line-height:1.1}
+.tl .dn b{color:var(--ink);font:600 15px var(--fd);display:block}
+.tl .tr{flex:1;min-width:0;height:26px;border-radius:6px;position:relative;background:linear-gradient(to right,transparent 24.8%,var(--line) 25%,transparent 25.2%,transparent 49.8%,var(--line) 50%,transparent 50.2%,transparent 74.8%,var(--line) 75%,transparent 75.2%),var(--field)}
+.tl .sh{position:absolute;top:3px;bottom:3px;border-radius:5px;overflow:hidden;display:flex}
+.tl .sh i{display:block;height:100%}
+.tl .sh .r{background:var(--go)}.tl .sh .o{background:var(--ot-bar)}
+.tl .hr{flex:none;text-align:right;font:600 16px var(--fd);font-variant-numeric:tabular-nums}
+.tl .hr.z{color:var(--ink2);font-weight:400}
+.ax{display:flex;gap:8px;margin-top:10px;font-size:11px;color:var(--ink2)}
+.ax .sp{width:42px;flex:none}.ax .sc{flex:1;position:relative;height:14px}.ax .sc span{position:absolute;transform:translateX(-50%)}.ax .sc span:first-child{transform:none}.ax .hr{flex:none}
+.tl .hr,.ax .hr{width:54px}
+.hr em{font:400 12px var(--fb);font-style:normal;color:var(--ink2)}
+.live{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--go-bg);color:var(--go);border-radius:14px;padding:12px 14px;margin-bottom:4px;font-weight:500;cursor:pointer;min-height:44px}
+.seg.t3{flex:none}.seg.t3 button{flex:none;padding:6px 11px}
+.alert{display:block;background:var(--ot-bg);color:var(--ot);border-radius:14px;padding:12px 14px;margin-bottom:12px;cursor:pointer}
+.alert b{display:block;font-weight:600}.alert span{font-size:14px}
+.okbox{background:var(--go-bg);color:var(--go);border-radius:14px;padding:12px 14px;margin-top:14px}
+.warnc{border-color:var(--ot)}
+.why{font-size:15px;padding:8px 0;border-bottom:1px solid var(--line)}.why:last-child{border-bottom:0}
+.esc{margin-top:14px;font-size:14px;color:var(--ink2)}.esc ol{margin:6px 0 0 18px;padding:0}.esc b{color:var(--ink)}
+.lnk{display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--ink)}
+.lines{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.job{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px}
+.kind{margin:-2px 0 12px}
+.kind select{margin-top:6px}
+.bl.b2{margin-top:2px}
+.bl.bd{margin-top:0}
+.chk{display:flex;align-items:center;gap:10px;min-height:44px;margin-top:6px;font-size:15px;cursor:pointer}
+.chk input{width:22px;height:22px;flex:none}
+.sg{display:grid;grid-template-columns:48px 1fr 1fr 58px 44px;gap:6px;align-items:center;margin-bottom:6px}
+.sg input{height:44px;padding:0 6px;font-size:15px;min-width:0}
+.sg .ck{display:flex;align-items:center;justify-content:center;min-height:44px;cursor:pointer}
+.sg .ck input{width:22px;height:22px}
+.sg.hdr span{font-size:12px;color:var(--ink2)}
+.sd{font-size:13px;color:var(--ink2);line-height:1.1}.sd b{display:block;color:var(--ink);font:600 16px var(--fd)}
+.dchips{display:flex;gap:6px}
+.dchips button{flex:1;min-width:0;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px 0;font-size:14px;font-weight:500;color:var(--ink2);min-height:44px}
+.dchips button.on{background:var(--ot-bg);border-color:transparent;color:var(--ot)}
+.file{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+</style>
+</head>
+<body>
+<div class="app"><main id="main"><div class="empty">Loading your records…</div></main></div>
+<button class="upd" id="upd" hidden onclick="applyUpd()">Update ready · tap to restart</button>
+<nav class="tabs" id="tabs" aria-label="Sections">
+  <button id="tb-home" onclick="go('home')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>Home</button>
+  <button id="tb-clock" onclick="go('clock')"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Clock</button>
+  <button id="tb-hours" onclick="go('hours')"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>Hours</button>
+  <button id="tb-pay" onclick="go('pay')"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v.01M18 15v.01"/></svg>Paychecks</button>
+  <button id="tb-more" onclick="go('more')"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>More</button>
+</nav>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<script id="model">
+/* Pay model: pure functions over the state object A. No DOM here; test.js runs this block in Node. */
+const BUILD='2026-10-12-V1';
+var APP_V=(/-(V\d+(?:\.\d+)*)$/.exec(BUILD)||[0,'V1'])[1];
+var DN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],DL=['S','M','T','W','T','F','S'],MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var A=null,U={job:'all'},NOW=null,REV=0,MC={k:null,v:null},FLSA=40,HOL_H=8;
+function now(){return NOW?pd(NOW):new Date();}
+function pad(n){return (n<10?'0':'')+n;}
+function ymd(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function pd(s){var p=s.split('-');return new Date(+p[0],+p[1]-1,+p[2]);}
+function addD(d,n){return new Date(d.getFullYear(),d.getMonth(),d.getDate()+n);}
+function dd(a,b){return Math.round((Date.UTC(b.getFullYear(),b.getMonth(),b.getDate())-Date.UTC(a.getFullYear(),a.getMonth(),a.getDate()))/864e5);}
+function eom(d){return new Date(d.getFullYear(),d.getMonth()+1,0);}
+function fmtD(d){return MN[d.getMonth()]+' '+d.getDate();}
+function fmtDY(d){return MN[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear();}
+function tmin(s){var p=s.split(':');return +p[0]*60+ +p[1];}
+function hhmm(d){return pad(d.getHours())+':'+pad(d.getMinutes());}
+function nm(h){return String(Math.round(h*100)/100);}
+function n1(h){return String(Math.round(h*10)/10);}
+function usd(n){return n.toLocaleString('en-US',{style:'currency',currency:'USD'});}
+function usd0(n){return n.toLocaleString('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0});}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function t24(s){var m=tmin(s);return pad(Math.floor(m/60)%24)+':'+pad(m%60);}
+function tvalid(v){return /^([01]\d|2[0-3]):[0-5]\d$/.test(v||'');}
+/* Typed time to HH:MM: 7 -> 07:00, 730 -> 07:30, 1400 -> 14:00. Out-of-range input stays as typed so tvalid rejects it. */
+function tfix(v){var d=String(v||'').replace(/[^0-9]/g,'').slice(0,4);if(!d)return '';if(d.length<=2)d=('0'+d).slice(-2)+'00';else if(d.length===3)d='0'+d;var h=+d.slice(0,2),m=+d.slice(2,4);if(h>23||m>59)return d.slice(0,2)+':'+d.slice(2);return pad(h)+':'+pad(m);}
+function num(v){var x=parseFloat(v);return isNaN(x)?null:x;}
+function pct(x){return (Math.round(x*10000)/100)+'%';}
+function wkStart(d,jid){var ws=jid?jr(jid).ws:A.set.ws;return addD(d,-((d.getDay()-ws+7)%7));}
+function jobOf(id){for(var i=0;i<A.jobs.length;i++)if(A.jobs[i].id===id)return A.jobs[i];return null;}
+function jr(jid){return (jobOf(jid)||A.jobs[0]).rules;}
+function curJob(){return U.job==='all'?A.jobs[0]:(jobOf(U.job)||A.jobs[0]);}
+function role(id){for(var i=0;i<A.roles.length;i++)if(A.roles[i].id===id)return A.roles[i];return null;}
+function roleJob(rid){var r=role(rid);return r?r.job:A.jobs[0].id;}
+function firstWork(jid){var r=A.roles.filter(function(x){return x.kind==='work'&&(!jid||x.job===jid);})[0];return r?r.id:A.roles[0].id;}
+function newRules(pp){var t=ymd(now());return {mode:'auto',thr:40,mult:1.5,ws:1,dOn:false,dHrs:8,wOn:true,offOT:true,off:{sched:[{from:'2000-01-01',days:[]}],next:''},hol:{on:true,list:[]},guar:0,bank:{on:false,cap:80,bal:80,date:t},pp:pp||{type:'biweekly',anchor:t,lag:7},third:false};}
+function bindSet(){['mode','thr','mult','ws','dOn','dHrs','wOn','guar','bank','pp'].forEach(function(k){Object.defineProperty(A.set,k,{get:function(){return curJob().rules[k];},set:function(v){curJob().rules[k]=v;},enumerable:false,configurable:true});});}
+function useState(s){A=s;REV++;MC.k=null;bindSet();}
+
+/* Fill in anything a stored, imported or brand-new state is missing. Generic defaults only. */
+function norm(s){
+  s=s||{};var t=ymd(now()),set=Object.assign({view:'both',brk:0,round:0,created:Date.now(),lastExport:0},s.set||{});
+  set.rem=Object.assign({inOn:false,inT:'06:30',outOn:false,outH:10},set.rem||{});
+  if(['hours','dollars','both'].indexOf(set.view)<0)set.view='both';
+  var jobs=(Array.isArray(s.jobs)&&s.jobs.length?s.jobs:[{id:'j1',name:'My job'}]).map(function(j){
+    var r=Object.assign(newRules(),j.rules||{});
+    r.off=Object.assign({sched:[],next:''},r.off||{});if(!Array.isArray(r.off.sched)||!r.off.sched.length)r.off.sched=[{from:'2000-01-01',days:[]}];
+    r.hol=Object.assign({on:true,list:[]},r.hol||{});if(!Array.isArray(r.hol.list))r.hol.list=[];
+    r.bank=Object.assign({on:false,cap:80,bal:80,date:t},r.bank||{});
+    r.pp=Object.assign({type:'biweekly',anchor:t,lag:7},r.pp||{});
+    return {id:String(j.id||'j1'),name:String(j.name==null?'My job':j.name),rules:r};
+  });
+  var roles=(Array.isArray(s.roles)?s.roles:[]).filter(function(r){return r&&r.id&&jobs.some(function(j){return j.id===r.job;});}).map(function(r){
+    var o=Object.assign({},r);o.rate=+o.rate||0;o.kind=o.kind==='leave'?'leave':'work';o.ot=o.kind==='work';o.name=String(o.name==null?'':o.name);return o;});
+  if(!roles.some(function(r){return r.kind==='work';}))roles.unshift({id:'r1',job:jobs[0].id,name:'Regular work',rate:0,kind:'work',ot:true});
+  var ents=(Array.isArray(s.entries)?s.entries:[]).filter(function(e){return e&&e.id&&/^\d{4}-\d\d-\d\d$/.test(e.date||'')&&tvalid(e.s)&&tvalid(e.e);});
+  return {set:set,jobs:jobs,roles:roles,entries:ents,sess:s.sess||null,w2:Object.assign({box1:'',tt:''},s.w2||{}),
+    contacts:Object.assign({me:'',payName:'',payEmail:'',unionName:'',unionEmail:''},s.contacts||{}),stubs:Array.isArray(s.stubs)?s.stubs.filter(function(b){return b&&b.ps;}):[]};
+}
+function fresh(){return norm({jobs:[{id:'j1',name:'My job'}],roles:[{id:'r1',job:'j1',name:'Regular work',rate:0,kind:'work',ot:true}]});}
+
+function wmin(e){var d=tmin(e.e)-tmin(e.s)-(+e.b||0);if(tmin(e.e)<=tmin(e.s))d+=1440;return Math.max(0,d);}
+function wh(e){return e.liveH!=null?e.liveH:wmin(e)/60;}
+function sessMs(){var s=A.sess;if(!s)return 0;var t=Date.now(),brk=s.brkMs+(s.brkStart?t-s.brkStart:0),logged=s.brkMs>0||s.brkStart,auto=logged?0:A.set.brk*60000;return Math.max(0,t-s.start-brk-auto);}
+function liveItem(){var s=A.sess;if(!s)return null;var d=new Date(s.start);return {id:'live',date:ymd(d),s:hhmm(d),e:hhmm(new Date()),role:s.role,ot:null,adj:0,note:'',liveH:sessMs()/3600000};}
+function entryErr(E){if(!E.date||!E.s||!E.e)return 'Enter a date, start time, and end time.';if(!tvalid(E.s)||!tvalid(E.e))return 'Use 24-hour time, like 14:00.';if(wmin(E)<=0)return 'Those times leave no paid time. Check the break.';if(E.ot!=null&&E.ot>wmin(E)/60)return 'Overtime can\'t be more than the hours worked.';return '';}
+
+function calc(list){
+  var cr={},cd={},G={},rows=[];
+  list.forEach(function(e){
+    var r=role(e.role),job=r?r.job:A.jobs[0].id,R=jr(job),counts=r?r.ot!==false:true,wk=ymd(wkStart(pd(e.date),job))+'|'+job,dk=e.date+'|'+job;
+    var w=wh(e),ot=0,dayOff=counts&&R.offOT!==false&&isOff(job,e.date);
+    if(counts){
+      var c1=cr[wk]||0,d0=cd[dk]||0;
+      if(e.ot!=null)ot=Math.min(w,Math.max(0,+e.ot||0));
+      else if(dayOff)ot=w;
+      else if(R.mode==='auto'){
+        var dOT=R.dOn?Math.max(0,Math.min(w,d0+w-R.dHrs)):0,reg=w-dOT,wOT=R.wOn!==false?Math.max(0,Math.min(reg,c1+reg-R.thr)):0;
+        ot=dOT+wOT;
+      }
+      cr[wk]=c1+(w-ot);cd[dk]=d0+w;
+    }else if(e.hol&&!(r&&r.extra)){cd[dk]=(cd[dk]||0)+w;}
+    var rate=r?r.rate:0,ph=(w-ot)+ot*R.mult,row={e:e,w:w,ot:ot,fed:0,ph:ph,otPh:ot*R.mult,usd:ph*rate+(+e.adj||0),otUsd:ot*R.mult*rate,rate:rate,job:job,mult:R.mult,leaveUsd:(counts||(r&&r.extra))?0:ph*rate,compUsed:(r&&r.bank)?w:0,xtra:(r&&r.extra)?w:0,workReg:counts?w-ot:0,hol:!!e.hol,dayOff:dayOff};
+    rows.push(row);
+    if(counts){var g=G[wk]||(G[wk]={w:0,ot:0,rows:[]});g.w+=w;g.ot+=ot;g.rows.push(row);}
+  });
+  for(var k in G){var g=G[k],fed=Math.min(g.ot,Math.max(0,g.w-FLSA));if(g.ot>0)g.rows.forEach(function(r){r.fed=fed*r.ot/g.ot;});}
+  return rows;
+}
+function tot(rows){var T={worked:0,ot:0,otPh:0,reg:0,ph:0,adj:0,usd:0,fed:0,prem:0,regUsd:0,otUsd:0,leaveUsd:0,compUsed:0,xtra:0,xtraUsd:0,workReg:0},dy={};rows.forEach(function(r){T.worked+=r.hol?0:r.w;T.workReg+=r.workReg;T.ot+=r.ot;T.otPh+=r.otPh;T.reg+=r.w-r.ot-r.xtra;T.xtra+=r.xtra;T.xtraUsd+=r.xtra*r.rate;T.ph+=r.ph;T.adj+=(+r.e.adj||0);T.usd+=r.usd;T.regUsd+=(r.w-r.ot-r.xtra)*r.rate;T.otUsd+=r.otUsd;T.leaveUsd+=r.leaveUsd;T.compUsed+=r.compUsed;T.fed+=r.fed;T.prem+=r.fed*r.rate*0.5;if(r.w>0&&!r.hol)dy[r.e.date]=1;});T.nd=Object.keys(dy).length;return T;}
+/* Rows for days s..e. Six days before s are included in the calculation so a week's running overtime count is right. repl swaps a job's entries in lo..hi for a draft list (the timesheet). */
+function rowsFor(s,e,skip,extra,jid,repl){
+  var jf=jid===undefined?(U.job==='all'?null:U.job):(jid==='all'?null:jid);
+  var a=ymd(addD(s,-6)),z=ymd(e),inJ=function(rid){return !jf||roleJob(rid)===jf;};
+  var L=A.entries.filter(function(x){return x.date>=a&&x.date<=z&&x.id!==skip&&inJ(x.role);});
+  if(repl){L=L.filter(function(x){return !(x.date>=repl.lo&&x.date<=repl.hi&&roleJob(x.role)===repl.job);});L=L.concat(repl.list);}
+  L=L.concat(holidayRows(a,z,jf));
+  var lv=liveItem();if(lv&&lv.date>=a&&lv.date<=z&&inJ(lv.role))L.push(lv);
+  if(extra)L.push(extra);
+  L.sort(function(x,y){return x.date<y.date?-1:x.date>y.date?1:(x.s<y.s?-1:x.s>y.s?1:0);});
+  var lo=ymd(s);return calc(L).filter(function(r){return r.e.date>=lo&&r.e.date<=z;});
+}
+function periodOf(d,jid){
+  var P=jid?jr(jid).pp:A.set.pp,len={weekly:7,biweekly:14,fourweek:28}[P.type],s,e;
+  if(len){var a=pd(P.anchor),n=Math.floor(dd(a,d)/len);s=addD(a,n*len);e=addD(s,len-1);}
+  else if(P.type==='semi'){if(d.getDate()<=15){s=new Date(d.getFullYear(),d.getMonth(),1);e=new Date(d.getFullYear(),d.getMonth(),15);}else{s=new Date(d.getFullYear(),d.getMonth(),16);e=eom(d);}}
+  else{s=new Date(d.getFullYear(),d.getMonth(),1);e=eom(d);}
+  return {s:s,e:e,pay:addD(e,+P.lag||0)};
+}
+function periodShift(p,n,jid){var q=p;while(n>0){q=periodOf(addD(q.e,1),jid);n--;}while(n<0){q=periodOf(addD(q.s,-1),jid);n++;}return q;}
+
+function holIdx(jid,date){var H=jr(jid).hol;if(!H||!H.list)return -1;for(var i=0;i<H.list.length;i++)if(H.list[i].d===date)return i;return -1;}
+function syncHol(jid,date,on,name){
+  var R=jr(jid),H=R.hol||(R.hol={on:true,list:[]}),i=holIdx(jid,date);
+  if(on){if(i<0)H.list.push({d:date,n:name||'Holiday'});else if(name)H.list[i].n=name;H.on=true;}
+  else if(i>=0)H.list.splice(i,1);
+}
+/* Run fn with draft holiday ticks applied, then put the saved list back. */
+function holWith(jid,items,fn){
+  var R=jr(jid),bak=JSON.stringify(R.hol||{on:true,list:[]}),r;
+  try{items.forEach(function(x){syncHol(jid,x.d,x.hol,x.n);});r=fn();}finally{R.hol=JSON.parse(bak);}
+  return r;
+}
+function offDays(jid,date){var O=jr(jid).off,d=[];if(!O||!O.sched)return d;O.sched.slice().sort(function(a,b){return a.from<b.from?-1:a.from>b.from?1:0;}).forEach(function(x){if(x.from<=date)d=x.days;});return d;}
+function isOff(jid,date){return offDays(jid,date).indexOf(pd(date).getDay())>=0;}
+function holPick(jid,dayOff){
+  var rs=A.roles.filter(function(x){return x.job===jid&&x.kind==='leave';});
+  if(dayOff)return rs.filter(function(x){return x.extra;})[0]||null;
+  return rs.filter(function(x){return !x.extra&&!x.bank&&/holiday/i.test(x.name);})[0]||rs.filter(function(x){return !x.extra&&!x.bank;})[0]||null;
+}
+function holidayRows(a,z,jf){
+  var out=[];
+  A.jobs.forEach(function(j){
+    if(jf&&j.id!==jf)return;var H=j.rules.hol;if(!H||H.on===false)return;
+    H.list.forEach(function(x){
+      if(x.d<a||x.d>z)return;var off=isOff(j.id,x.d),r=holPick(j.id,off);if(!r)return;
+      out.push({id:'hol-'+x.d+'-'+j.id,date:x.d,s:'00:00',e:pad(HOL_H)+':00',b:0,role:r.id,ot:null,adj:0,note:x.n+(off?' fell on a day off: '+HOL_H+' h straight comp credit':': '+HOL_H+' h holiday credit'),hol:true});
+    });
+  });
+  return out;
+}
+function baseRate(jid){var r=A.roles.filter(function(x){return x.job===jid&&x.kind==='work';})[0];return r?r.rate:0;}
+function isThird(d,jid){var P=jr(jid||curJob().id).pp;return P.type==='biweekly'&&d.getDate()>=29;}
+/* A third payday only changes the take-home estimate when the job says some deductions skip it. */
+function thirdSkip(d,jid){jid=jid||curJob().id;return !!jr(jid).third&&isThird(d,jid);}
+function bankBefore(p,jid){
+  var R=jr(jid),B=R.bank;if(!B||!B.on)return null;
+  var q=periodOf(pd(B.date),jid),bal=+B.bal||0;
+  while(q.s<p.s){var T=tot(rowsFor(q.s,q.e,null,null,jid)),earned=T.workReg+T.xtra+T.ot*R.mult;bal=Math.max(0,bal-T.compUsed);bal+=Math.min(Math.max(0,B.cap-bal),earned);q=periodOf(addD(q.e,1),jid);}
+  return bal;
+}
+function periodAdj(T,p,jid){
+  var R=jr(jid),rate=baseRate(jid),over=ymd(now())>ymd(p.e);
+  T.gTop=0;T.refill=0;T.bankUsd=0;T.otCash=T.ot;T.xtraCash=T.xtra;T.regDiv=0;
+  if(R.guar>0&&over){var tu=Math.max(0,R.guar-T.reg);if(tu>0){T.gTop=tu;T.reg+=tu;T.regUsd+=tu*rate;T.ph+=tu;T.usd+=tu*rate;}}
+  var b0=bankBefore(p,jid);
+  if(b0!=null){var B=R.bank,eOT=T.ot*R.mult,earned=T.workReg+T.xtra+eOT,bal=Math.max(0,b0-T.compUsed),refill=Math.min(Math.max(0,B.cap-bal),earned),r1=Math.min(refill,T.workReg),r2=Math.min(refill-r1,T.xtra),r3=refill-r1-r2;T.refill=refill;T.bankUsd=refill*rate;T.usd-=T.bankUsd;T.regDiv=r1;T.xtraCash=T.xtra-r2;T.otCash=T.ot-r3/R.mult;T.bal0=b0;T.bal1=bal+refill;}
+  return T;
+}
+function stubBases(s){var L=s.lines||{},G=s.gross,ben=+L.ben||0,life=+L.life||0;return {fica:G-ben+life,fed:G-ben-(+L.dc||0)-(+L.pers||0)+life};}
+/* Take-home model fitted to the given stubs: percent lines as average ratios, fixed lines as averages, federal by least squares. */
+function fitModel(S,jid){
+  S=S.filter(function(s){return s.gross>0&&s.net>0;});if(!S.length)return null;
+  var sk=function(s){var j=s.job||jid;return thirdSkip(periodOf(pd(s.ps),j).pay,j);};
+  var F=S.filter(function(s){return !sk(s);});if(!F.length)F=S;
+  function avg(L,f){var t=0;L.forEach(function(s){t+=f(s);});return L.length?t/L.length:0;}
+  function ln(s,k){return +(s.lines||{})[k]||0;}
+  var rdc=avg(F,function(s){return ln(s,'dc')/s.gross;}),rpe=avg(S,function(s){return ln(s,'pers')/s.gross;}),rli=avg(S,function(s){return ln(s,'li')/Math.max(1,s.gross-(s.leaveUsd||0));});
+  var rf={};['ss','med','fli','mli','ltc'].forEach(function(k){rf[k]=avg(S,function(s){return ln(s,k)/stubBases(s).fica;});});
+  var fx={};['ben','atu','dues','assess','other','life'].forEach(function(k){fx[k]=avg(F,function(s){return ln(s,k);});});
+  var xs=S.map(function(s){return stubBases(s).fed;}),ys=S.map(function(s){return ln(s,'fed');}),sx=0,sy=0,sxx=0,sxy=0,fb,fa;
+  xs.forEach(function(x,i){sx+=x;sy+=ys[i];});var mx=sx/S.length,my=sy/S.length;
+  xs.forEach(function(x,i){sxx+=(x-mx)*(x-mx);sxy+=(x-mx)*(ys[i]-my);});
+  if(S.length>=2&&sxx>1e4){fb=sxy/sxx;fa=my-fb*mx;}else{fb=mx?my/mx:0;fa=0;}
+  function est(G,third,leave){
+    var ben=third?0:fx.ben,dc=third?0:G*rdc,atu=third?0:fx.atu,pe=G*rpe,li=rli*Math.max(0,G-(leave||0)),fica=G-ben+fx.life,fedb=G-ben-dc-pe+fx.life;
+    var fed=Math.max(0,fa+fb*fedb),tax=fed+(rf.ss+rf.med+rf.fli+rf.mli+rf.ltc)*fica,ded=ben+dc+pe+atu+li+fx.dues+fx.assess+fx.other;
+    return Math.max(0,G-ded-tax);
+  }
+  var me=0;S.forEach(function(s){me=Math.max(me,Math.abs(est(s.gross,sk(s),s.leaveUsd||0)-s.net));});
+  var pd_=Math.max(5,2*me);
+  return {n:S.length,est:est,rng:function(g,third,leave){var e=est(g,third,leave),p=pd_+(third?fx.atu:0);return [Math.max(0,e-p),e+p];},maxErr:me,conf:(S.length>=3&&me<=6)?'high':S.length>=2?'fair':'rough',fedB:fb,fedT:fb?-fa/fb:0,rdc:rdc,rpe:rpe,rli:rli,rf:rf,fx:fx};
+}
+/* Cached for one revision of the state; save() bumps REV. */
+function model(){var cj=curJob().id,k=REV+'|'+cj;if(MC.k===k)return MC.v;MC.k=k;MC.v=fitModel(A.stubs.filter(function(s){return (s.job||'j1')===cj;}),cj);return MC.v;}
+function netOf(T,pay){var M=model();if(!M)return 0;return M.est(T.usd,pay?thirdSkip(pay):false,T.leaveUsd||0);}
+function stubFor(ps,jid){var cj=jid||curJob().id;for(var i=0;i<A.stubs.length;i++)if(A.stubs[i].ps===ps&&(A.stubs[i].job||'j1')===cj)return A.stubs[i];return null;}
+function checkOf(p){
+  var jid=curJob().id,rows=rowsFor(p.s,p.e,null,null,jid),T=periodAdj(tot(rows),p,jid),st=stubFor(ymd(p.s));
+  if(!st)return {st:'none',T:T,rows:rows};
+  if(T.worked===0)return {st:'nolog',T:T,rows:rows,stub:st};
+  var diff=st.gross-T.usd,c=[],hr=num(st.hrs),ot=num(st.othrs),cs=num(st.cs);
+  if(Math.abs(diff)>1){
+    var orate=T.ot>0?T.otUsd/T.ot:(T.reg>0?T.regUsd/T.reg:0),rrate=T.reg>0?T.regUsd/T.reg:0;
+    var rexp=T.reg-(T.regDiv||0);
+    if(hr!=null&&Math.abs(hr-rexp)>=0.05)c.push('Regular hours on the stub are '+nm(hr)+' h (including leave), and the app expects '+nm(rexp)+' h ('+(hr<rexp?'':'+')+nm(hr-rexp)+' h, about '+usd(Math.abs(hr-rexp)*rrate)+').');
+    if(ot!=null&&Math.abs(ot-T.otCash)>=0.05)c.push('Overtime hours on the stub are '+nm(ot)+' h, and the app expects '+nm(T.otCash)+' h paid in cash ('+(ot<T.otCash?'':'+')+nm(ot-T.otCash)+' h, about '+usd(Math.abs(ot-T.otCash)*orate)+').');
+    if(hr!=null&&ot!=null&&Math.abs(hr-rexp)<0.05&&Math.abs(ot-T.otCash)<0.05)c.push('Hours match, so the rate, a premium, or an adjustment may differ.');
+    if((cs!=null||T.xtra>0)&&Math.abs((cs||0)-(T.xtraCash||0))>=0.05)c.push('Straight comp hours on the stub are '+nm(cs||0)+' h, and the app expects '+nm(T.xtraCash||0)+' h.');
+    if(hr==null&&ot==null)c.push('Add the regular and overtime hours from the stub to see where the gap comes from.');
+    if(T.gTop>0)c.push('The app added '+nm(T.gTop)+' guaranteed regular hours to reach '+jr(jid).guar+'.');
+    if(T.refill>0)c.push(nm(T.refill)+' hours went into the comp bank first ('+nm(T.bal0)+' h to '+nm(T.bal1)+' h), so they were not paid in cash.');
+    if(T.adj)c.push('You logged '+usd(T.adj)+' in adjustments. Those may be paid on a different check.');
+    c.push('Check that the period dates on the stub match yours (Pay rules, pay period).');
+  }
+  return {st:Math.abs(diff)<=1?'ok':(diff<0?'short':'over'),T:T,rows:rows,stub:st,diff:diff,causes:c};
+}
+/* What the app would have predicted for a period before it learned that period's stub (the prediction test). */
+function predictFor(ps,jid){
+  var p=periodOf(pd(ps),jid),T=periodAdj(tot(rowsFor(p.s,p.e,null,null,jid)),p,jid);if(!(T.worked>0))return null;
+  var M=fitModel(A.stubs.filter(function(b){return (b.job||'j1')===jid&&b.ps!==ps;}),jid);if(!M)return null;
+  return {gross:T.usd,net:M.est(T.usd,thirdSkip(p.pay,jid),T.leaveUsd||0),reg:T.reg,ot:T.otCash,at:Date.now()};
+}
+function lastClosed(){return periodShift(periodOf(now()),-1);}
+</script>
+<script id="ui">
+var LINES=[['fed','Federal income tax'],['ss','Social Security'],['med','Medicare'],['fli','State family leave'],['mli','State medical leave'],['ltc','State long-term care'],['ben','Benefit fee (pre-tax)'],['dc','Deferred compensation (pre-tax)'],['pers','Retirement (pre-tax)'],['atu','Insurance (after tax)'],['li','Industrial insurance'],['dues','Union dues'],['assess','Union assessment'],['other','Other deductions']];
+var E=null,DB=null,SEQ=0,SNAP={core:'',ent:{}},PEND=Promise.resolve(),MT=0,PERSIST=null,WAITING=null,WANT=false,P='nurris-tracker:';
+Object.assign(U,{tab:'home',sub:'menu',cust:{},sh:null,rng:'week',off:0,hv:'list',cs:'',ce:'',role:'',confirm:'',ex:{src:'range',fmt:'text',pp:0},who:'pay',chk:null,st:null,imp:null,from:''});
+
+/* Storage: IndexedDB (database nurris-tracker) holds the state, one record per day entry, so an ordinary tap writes only what changed.
+   A localStorage mirror (keys nurris-tracker:*) is written shortly after and used when IndexedDB is missing or behind. */
+function openDB(){return new Promise(function(res){try{var r=indexedDB.open('nurris-tracker',1);r.onupgradeneeded=function(){var d=r.result;if(!d.objectStoreNames.contains('kv'))d.createObjectStore('kv');if(!d.objectStoreNames.contains('entries'))d.createObjectStore('entries',{keyPath:'id'});};r.onsuccess=function(){res(r.result);};r.onerror=function(){res(null);};r.onblocked=function(){res(null);};}catch(e){res(null);}});}
+function readDB(){if(!DB)return Promise.resolve(null);return new Promise(function(res){try{var tx=DB.transaction(['kv','entries'],'readonly'),out={},kv=tx.objectStore('kv');kv.get('core').onsuccess=function(e){out.core=e.target.result;};kv.get('seq').onsuccess=function(e){out.seq=+e.target.result||0;};tx.objectStore('entries').getAll().onsuccess=function(e){out.entries=e.target.result||[];};tx.oncomplete=function(){res(out.core?out:null);};tx.onerror=function(){res(null);};}catch(e){res(null);}});}
+function readMirror(){try{var c=localStorage.getItem(P+'core');if(!c)return null;return {core:c,entries:JSON.parse(localStorage.getItem(P+'entries')||'[]'),seq:+localStorage.getItem(P+'seq')||0};}catch(e){return null;}}
+function coreOf(){var o={};for(var k in A)if(k!=='entries')o[k]=A[k];return o;}
+function snapAll(){SNAP={core:JSON.stringify(coreOf()),ent:{}};A.entries.forEach(function(e){SNAP.ent[e.id]=JSON.stringify(e);});}
+function save(){
+  REV++;SEQ++;var core=JSON.stringify(coreOf()),put=[],del=[],seen={},q=SEQ;
+  A.entries.forEach(function(e){var s=JSON.stringify(e);seen[e.id]=1;if(SNAP.ent[e.id]!==s){SNAP.ent[e.id]=s;put.push(s);}});
+  Object.keys(SNAP.ent).forEach(function(id){if(!seen[id]){delete SNAP.ent[id];del.push(id);}});
+  var cc=core!==SNAP.core;SNAP.core=core;
+  if(DB){var db=DB;PEND=PEND.then(function(){return new Promise(function(res){try{var tx=db.transaction(['kv','entries'],'readwrite'),kv=tx.objectStore('kv'),es=tx.objectStore('entries');if(cc)kv.put(core,'core');kv.put(q,'seq');put.forEach(function(s){es.put(JSON.parse(s));});del.forEach(function(id){es.delete(id);});tx.oncomplete=function(){res();};tx.onerror=tx.onabort=function(){DB=null;mirrorNow();res();};}catch(e){DB=null;mirrorNow();res();}});});}
+  clearTimeout(MT);if(DB)MT=setTimeout(mirrorNow,600);else mirrorNow();
+}
+function mirrorNow(){try{localStorage.setItem(P+'core',SNAP.core);localStorage.setItem(P+'entries','['+Object.keys(SNAP.ent).map(function(k){return SNAP.ent[k];}).join(',')+']');localStorage.setItem(P+'seq',String(SEQ));}catch(e){}}
+function boot(){
+  openDB().then(function(db){DB=db;return readDB();}).then(function(got){
+    var mir=readMirror(),st=null,fromDB=false;
+    if(got&&(!mir||got.seq>=mir.seq)){st=got;fromDB=true;}else if(mir)st=mir;
+    var obj=null;if(st){try{obj=JSON.parse(st.core);obj.entries=st.entries;SEQ=st.seq||0;}catch(e){obj=null;}}
+    useState(obj?norm(obj):fresh());
+    if(obj&&fromDB)snapAll();
+    if(!obj||!fromDB)save();
+    if(navigator.storage&&navigator.storage.persist&&navigator.storage.persisted){navigator.storage.persisted().then(function(p){return p||navigator.storage.persist();}).then(function(p){PERSIST=!!p;}).catch(function(){});}
+    U.role=firstWork();U.ce=ymd(now());U.cs=ymd(addD(now(),-13));
+    render();registerSW();
+  });
+}
+
+/* Service worker: a worker already waiting when the page loads takes over on this load; one that arrives mid-session waits behind "Update ready". */
+function registerSW(){
+  if(!('serviceWorker' in navigator)||!/^(https:|http:\/\/(localhost|127\.0\.0\.1)[:/])/.test(location.href))return;
+  navigator.serviceWorker.addEventListener('controllerchange',function(){if(WANT){WANT=false;location.reload();}});
+  navigator.serviceWorker.register('sw.js').then(function(reg){
+    if(reg.waiting&&navigator.serviceWorker.controller){WANT=true;reg.waiting.postMessage('skipWaiting');return;}
+    reg.addEventListener('updatefound',function(){var w=reg.installing;if(!w)return;w.addEventListener('statechange',function(){if(w.state==='installed'&&navigator.serviceWorker.controller){WAITING=w;document.getElementById('upd').hidden=false;}});});
+    document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')reg.update().catch(function(){});});
+  }).catch(function(){});
+}
+function applyUpd(){var w=WAITING;if(!w)return;PEND.then(function(){WANT=true;w.postMessage('skipWaiting');});}
+
+function tmask(el){var d=el.value.replace(/[^0-9]/g,'').slice(0,4);el.value=d.length>=3?d.slice(0,2)+':'+d.slice(2):d;}
+function tnorm(el){el.value=tfix(el.value);}
+function tin(id,val,fn,aria){return '<input id="'+id+'" type="text" inputmode="numeric" maxlength="5" autocomplete="off" placeholder="14:00" value="'+esc(val)+'" oninput="tmask(this);'+fn+'" onblur="tnorm(this);'+fn+'" aria-label="'+aria+'">';}
+function rb(fn){return ' role="button" tabindex="0" onclick="'+fn+'"';}
+function range(){
+  var t=now(),r=U.rng,o=U.off,s,e;
+  if(r==='week'){s=addD(wkStart(t),o*7);e=addD(s,6);}
+  else if(r==='2w'){s=addD(wkStart(t),-7+o*14);e=addD(s,13);}
+  else if(r==='3w'){s=addD(wkStart(t),-14+o*21);e=addD(s,20);}
+  else if(r==='month'){s=new Date(t.getFullYear(),t.getMonth()+o,1);e=eom(s);}
+  else if(r==='pp'){var p=periodShift(periodOf(t),o);s=p.s;e=p.e;}
+  else{s=pd(U.cs);e=pd(U.ce);if(e<s){var x=s;s=e;e=x;}}
+  return {s:s,e:e,n:dd(s,e)+1};
+}
+function rLabel(R){
+  if(U.rng==='month')return ['January','February','March','April','May','June','July','August','September','October','November','December'][R.s.getMonth()]+' '+R.s.getFullYear();
+  return fmtD(R.s)+' to '+fmtD(R.e);
+}
+function rSub(R){
+  var t=now(),cur=dd(R.s,t)>=0&&dd(t,R.e)>=0,nm_={week:'Week','2w':'Two weeks','3w':'Three weeks',month:'Month',pp:'Pay period',custom:'Custom range'}[U.rng];
+  if(U.rng==='pp'){var p=periodOf(R.s);return 'Pay period · paid '+fmtD(p.pay);}
+  return nm_+' · '+R.n+' days'+(cur?' · includes today':'');
+}
+
+function seg(items,cur,fn){return '<div class="seg">'+items.map(function(i){return '<button class="'+(String(i[0])===String(cur)?'on':'')+'" aria-pressed="'+(String(i[0])===String(cur))+'" onclick="'+fn+'(\''+i[0]+'\')">'+i[1]+'</button>';}).join('')+'</div>';}
+function tab3(){return '<div class="seg t3" role="group" aria-label="Show as">'+[['hours','Hours'],['dollars','Dollars'],['both','Both']].map(function(i){return '<button class="'+(A.set.view===i[0]?'on':'')+'" aria-pressed="'+(A.set.view===i[0])+'" onclick="setView(\''+i[0]+'\')">'+i[1]+'</button>';}).join('')+'</div>';}
+function jobBar(noAll){
+  if(A.jobs.length<2)return '';
+  var items=(noAll?[]:[['all','All jobs']]).concat(A.jobs.map(function(j){return [j.id,esc(j.name)];}));
+  return '<div class="rng" style="margin:0 0 10px">'+items.map(function(i){return '<button class="'+(U.job===i[0]?'on':'')+'" onclick="pickJob(\''+i[0]+'\')">'+i[1]+'</button>';}).join('')+'</div>';
+}
+function pickJob(id){U.job=id;if(id!=='all')U.role=firstWork(id);render();}
+function toast(m){var t=document.getElementById('toast');t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){t.hidden=true;},2400);}
+function go(t){U.tab=t;U.sub='menu';U.confirm='';U.imp=null;render();window.scrollTo(0,0);}
+function sub(s){U.sub=s;U.confirm='';U.imp=null;render();window.scrollTo(0,0);}
+function foot(){return '<div class="foot">Nurri\'s Tracker '+APP_V+' · '+esc(BUILD)+'<br>Estimates only. Not a payroll record or tax advice; confirm with payroll or a preparer.</div>';}
+function dlt(a,b,f,u){var d=a-b;if(Math.abs(d)<0.005)return 'Same as the 2 weeks before';return (d>0?'+':'')+f(d)+u+' vs the 2 weeks before';}
+function setView(v){A.set.view=v;save();render();}
+function vv(h,d,cls){var m=A.set.view;if(m==='hours')return n1(h);if(m==='dollars')return usd0(d);return n1(h)+(cls==='tl'?'<br>':' ')+'<em>'+usd0(d)+'</em>';}
+function netTxt(T,pay){var M=model();if(!M)return '';var th=pay?thirdSkip(pay):false,l=T.leaveUsd||0,e=M.est(T.usd,th,l),r=M.rng(T.usd,th,l);return '≈ '+usd0(e)+' take-home <span class="sub">('+usd0(r[0])+' to '+usd0(r[1])+')</span>'+(th?' <span class="sub">third payday</span>':'');}
+function nextThird(){var p=periodOf(now());for(var i=0;i<40;i++){if(isThird(p.pay))return p;p=periodShift(p,1);}return null;}
+function chipFor(r){if(r.st==='none')return '<span class="pill">Not checked</span>';if(r.st==='nolog')return '<span class="pill">No hours logged</span>';if(r.st==='ok')return '<span class="pill go">Matches</span>';return '<span class="pill ot">'+(r.st==='short'?'Short ':'Over ')+usd0(Math.abs(r.diff))+'</span>';}
+function backupDue(){if(!A.entries.length&&!A.stubs.length)return 0;var since=A.set.lastExport||A.set.created||Date.now(),d=Math.floor((Date.now()-since)/864e5);return d>=14?d:0;}
+
+function vHome(){
+  var t=now(),T0=new Date(t.getFullYear(),t.getMonth(),t.getDate()),s14=addD(T0,-13),p14=addD(T0,-27),pe=addD(T0,-14),m=A.set.view;
+  var R=rowsFor(s14,T0),C=tot(R),Rp=tot(rowsFor(p14,pe));
+  var h='<header class="top"><div><div class="sub">'+DN[t.getDay()]+', '+fmtD(t)+'</div><h1>Nurri\'s Tracker '+APP_V+'</h1></div>'+(A.sess?'<span class="pill go">Working</span>':'')+'</header>';
+  h+=jobBar();
+  if(!A.entries.length&&!A.stubs.length)h+='<section class="card" style="margin:0 0 14px"><h2>Welcome</h2><div>Start by setting up your job: hourly rate, pay period, overtime rules and days off.</div><div class="note">Have a setup file? Import it in More, Export and backup. Everything you enter stays on this phone.</div><button class="btn solid" onclick="U.tab=\'more\';sub(\'rules\')">Open Pay rules</button><button class="btn" onclick="U.tab=\'more\';sub(\'export\')">Import a setup file</button></section>';
+  var bd=backupDue();if(bd)h+='<div class="alert"'+rb('U.tab=\'more\';sub(\'export\')')+'><b>'+(A.set.lastExport?'Your last backup was '+bd+' days ago.':'You have not saved a backup yet.')+'</b><span>Save a backup file to Files, Mail or iCloud &#8250;</span></div>';
+  var oc=jr(curJob().id).off;if(oc&&oc.next){var dn=dd(t,pd(oc.next));if(dn>=0&&dn<=45)h+='<div class="alert" style="cursor:default"><b>Your days off change on '+fmtDY(pd(oc.next))+'.</b><span>Update the new days in More, Pay rules, Days off.</span></div>';}
+  var hj=jr(curJob().id).hol;if(hj&&hj.on!==false){var tdk=ymd(t);hj.list.forEach(function(x){if(x.d===tdk)h+='<div class="okbox" style="margin:0 0 10px"><b>Today is '+esc(x.n)+'.</b> '+(isOff(curJob().id,tdk)?'It is a day off, so you get '+HOL_H+' hours of straight comp credit.':'It is a work day, so you get '+HOL_H+' hours of credit and anything you work is overtime.')+'</div>';});}
+  if(A.sess)h+='<div class="live"'+rb('go(\'clock\')')+'><span>Clocked in since '+hhmm(new Date(A.sess.start))+'</span><span>Open clock &#8250;</span></div>';
+  var lc=checkOf(lastClosed());
+  if(lc.st==='short'||lc.st==='over')h+='<div class="alert"'+rb('openCheck(\''+ymd(lastClosed().s)+'\')')+'><b>Your last paycheck looks '+usd(Math.abs(lc.diff))+' '+(lc.st==='short'?'short':'over')+'.</b><span>Review it and draft an email &#8250;</span></div>';
+  h+='<section class="card" style="margin-top:0"><div class="hd"><h2 style="margin:0">Last 2 weeks</h2>'+tab3()+'</div><div class="sub">'+fmtD(s14)+' to '+fmtD(T0)+'</div>';
+  var by={};R.forEach(function(r){var x=by[r.e.date]||(by[r.e.date]={w:0,o:0,d:0,od:0});x.w+=r.w;x.o+=r.ot;x.d+=r.usd;x.od+=r.otUsd;});
+  var mx=m==='dollars'?100:4;Object.keys(by).forEach(function(k){mx=Math.max(mx,m==='dollars'?by[k].d:by[k].w);});
+  if(m!=='dollars')mx=Math.max(mx,10);
+  var bars='',lab='',labD='',lab2='',H=120;
+  for(var i=0;i<14;i++){
+    var d=addD(s14,i),k=ymd(d),x=by[k],isT=k===ymd(T0),tv=x?(m==='dollars'?x.d:x.w):0,ov=x?(m==='dollars'?x.od:x.o):0;
+    bars+='<button class="bc" onclick="dayTap(\''+k+'\')" aria-label="'+DN[d.getDay()]+' '+fmtD(d)+(x?', '+n1(x.w)+' hours':'')+'">'+(x?'<em>'+(m==='dollars'?Math.round(x.d):n1(x.w))+'</em><div class="b" style="height:'+(Math.max(0,tv)/mx*H)+'px"><i class="o" style="height:'+(Math.max(0,ov)/mx*H)+'px"></i><i class="r" style="height:'+(Math.max(0,tv-ov)/mx*H)+'px"></i></div>':'<em></em><div class="b" style="height:2px;background:var(--line)"></div>')+'</button>';
+    lab+='<span'+(isT?' class="td"':'')+'>'+DL[d.getDay()]+'</span>';
+    labD+='<span'+(isT?' class="td"':'')+'>'+d.getDate()+'</span>';
+    lab2+='<span>'+(x?Math.round(x.d):'')+'</span>';
+  }
+  h+='<div class="bars" id="bars">'+bars+'</div><div class="bl">'+lab+'</div><div class="bl bd">'+labD+'</div>'+(m==='both'?'<div class="bl b2">'+lab2+'</div>':'')+'<div class="lg"><span><i style="background:var(--go)"></i>Regular</span><span><i style="background:var(--ot-bar)"></i>Overtime</span><span>'+(m==='dollars'?'Bars show dollars':m==='both'?'Bars hours, dollars below':'Bars show hours')+'</span></div></section>';
+  h+='<div class="kpis">';
+  h+='<div class="kpi"><div class="l">Gross pay</div><div class="v">'+usd0(C.usd)+'</div><div class="d">'+dlt(C.usd,Rp.usd,usd0,'')+'</div></div>';
+  h+='<div class="kpi"><div class="l">Hours worked</div><div class="v">'+n1(C.worked)+'<small>h</small></div><div class="d">'+dlt(C.worked,Rp.worked,n1,' h')+'</div></div>';
+  h+='<div class="kpi ot"><div class="l">Overtime</div><div class="v">'+n1(C.ot)+'<small>h</small></div><div class="d">Counts as '+n1(C.otPh)+' paid h'+(C.worked>0?' · '+Math.round(C.ot/C.worked*100)+'% of hours':'')+'</div></div>';
+  h+='<div class="kpi"><div class="l">Days worked</div><div class="v">'+C.nd+'<small>of 14</small></div><div class="d">'+(C.nd?'Average shift '+n1(C.worked/C.nd)+' h':'No shifts yet')+'</div></div>';
+  h+='</div>';
+  h+=ppCard();
+  h+=foot();
+  return h;
+}
+function ppCard(){
+  var t=now(),T0=new Date(t.getFullYear(),t.getMonth(),t.getDate()),p=periodOf(T0),len=dd(p.s,p.e)+1,el=dd(p.s,T0)+1,m=A.set.view;
+  var rows=rowsFor(p.s,p.e,null,null,curJob().id),Tt=tot(rows),by={};periodAdj(Tt,p,curJob().id);
+  rows.forEach(function(r){var x=by[r.e.date]||(by[r.e.date]={w:0,o:0,d:0});x.w+=r.w;x.o+=r.ot;x.d+=r.usd;});
+  var h='<section class="card"><div class="hd"><h2 style="margin:0">Current pay period'+(A.jobs.length>1?' · '+esc(curJob().name):'')+'</h2><button class="pill" onclick="openPP()">See hours &#8250;</button></div>';
+  h+='<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:10px"><div><div class="fig">'+usd0(Tt.usd)+'</div><div class="sub">earned so far · '+n1(Tt.worked)+' h worked, '+n1(Tt.ot)+' h overtime</div>'+(model()?'<div class="sub" style="color:var(--ink);margin-top:2px">'+netTxt(Tt,p.pay)+'</div>':'<div class="sub" style="margin-top:2px">Add a paystub to see take-home.</div>')+'</div><div style="text-align:right"><div class="sub">Day '+el+' of '+len+'</div><div style="font:600 18px var(--fd)">Paid '+DN[p.pay.getDay()]+' '+fmtD(p.pay)+'</div><div class="sub">in '+dd(T0,p.pay)+' days</div></div></div>';
+  h+='<div class="pbar"><i style="width:'+Math.min(100,el/len*100)+'%"></i></div>';
+  h+='<div class="hd" style="margin-top:12px;margin-bottom:0"><span class="sub">Day by day</span>'+tab3()+'</div><div class="pg">';
+  for(var i=0;i<7;i++)h+='<div class="wd">'+DL[(A.set.ws+i)%7]+'</div>';
+  var a=wkStart(p.s),z=addD(wkStart(p.e),6);
+  for(var d=a;ymd(d)<=ymd(z);d=addD(d,1)){
+    var k=ymd(d),inP=k>=ymd(p.s)&&k<=ymd(p.e),x=by[k],fut=k>ymd(T0),cl='pc'+(m==='both'?' bt':'');
+    if(!inP)cl+=' x';else if(x&&x.o>0)cl+=' o';else if(x&&x.w>0)cl+=' r';else if(fut)cl+=' f';
+    if(k===ymd(T0))cl+=' td';
+    if(isOff(curJob().id,k))cl+=' od';
+    var body=!x?'':(m==='hours'?'<b>'+n1(x.w)+'</b>':m==='dollars'?'<b>'+usd0(x.d)+'</b>':'<b>'+n1(x.w)+'</b><i>'+usd0(x.d)+'</i>');
+    h+='<button class="'+cl+'" onclick="dayTap(\''+k+'\')" aria-label="'+fmtD(d)+'"'+(inP?'':' tabindex="-1" aria-hidden="true"')+'><small>'+d.getDate()+'</small>'+body+'</button>';
+  }
+  h+='</div><div class="lg"><span><i style="background:var(--go-bg)"></i>Worked</span><span><i style="background:var(--ot-bg)"></i>Overtime day</span><span>Outlined = today</span></div></section>';
+  return h;
+}
+function openPP(){U.rng='pp';U.off=0;U.hv='timeline';go('hours');}
+function dayTap(k){var f=A.entries.filter(function(e){return e.date===k;});if(f.length)openEdit(f[0].id);else openEdit(null,k);}
+
+function wkCard(){
+  var t=now(),ws=wkStart(t),T=tot(rowsFor(ws,addD(ws,6),null,null,curJob().id)),S=A.set,left=S.thr-T.worked,m=S.view;
+  var cap=Math.max(S.thr,T.worked,1),h='<div class="hd"><h2 style="margin:0">This week'+(A.jobs.length>1?' · '+esc(curJob().name):'')+'</h2>'+tab3()+'</div>';
+  if(m==='both')h+='<div class="two"><div><div class="fig" style="font-size:44px">'+nm(T.ph)+'<small>paid h</small></div></div><div><div class="fig" style="font-size:44px">'+usd0(T.usd)+'</div></div></div>';
+  else h+='<div class="fig">'+(m==='hours'?nm(T.ph)+'<small>paid hours</small>':usd(T.usd))+'</div>';
+  h+='<div class="meter"><i class="r" style="width:'+((Math.max(0,T.reg)/cap)*100)+'%"></i><i class="o" style="width:'+((T.ot/cap)*100)+'%"></i></div>';
+  h+='<div class="sub">'+nm(T.worked)+' h worked'+(T.ot>0?' · '+nm(T.ot)+' h overtime counts as '+nm(T.otPh)+' h':'')+'</div>';
+  if(S.mode==='auto'){var tx=[];if(S.dOn)tx.push('after '+S.dHrs+' h in a day');if(S.wOn!==false)tx.push(left>0?'after '+S.thr+' h in a week ('+nm(left)+' h to go)':'past '+S.thr+' h this week');h+='<div class="note">Overtime pays '+S.mult+'x '+(tx.join(' and ')||'only when you set it')+'.</div>';}
+  else h+='<div class="note">You choose the overtime hours on each day.</div>';
+  return h;
+}
+function tmHtml(){var ms=sessMs(),s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60);return h+':'+pad(m)+'<span>:'+pad(s%60)+'</span>';}
+function vClock(){
+  var t=now(),s=A.sess,cur=s?s.role:U.role,multi=A.jobs.length>1;
+  var h='<header class="top"><div><div class="sub">'+DN[t.getDay()]+', '+fmtD(t)+'</div><h1>Clock</h1></div>'+(s?(s.brkStart?'<span class="pill ot">On break</span>':'<span class="pill go">Working</span>'):'<span class="pill">Off the clock</span>')+'</header>';
+  A.jobs.forEach(function(j){
+    var rs=A.roles.filter(function(r){return r.job===j.id&&r.kind==='work';});if(!rs.length)return;
+    if(multi)h+='<div class="sub" style="margin:8px 0 4px">'+esc(j.name)+'</div>';
+    h+='<div class="chips" role="group" aria-label="Work type">'+rs.map(function(r){return '<button class="chip'+(cur===r.id?' on':'')+'" aria-pressed="'+(cur===r.id)+'"'+(s?' disabled':'')+' onclick="pickRole(\''+r.id+'\')">'+esc(r.name)+'<small>'+usd(r.rate)+'/h</small></button>';}).join('')+'</div>';
+  });
+  h+='<div class="clock"><div class="tm" id="tm" role="timer" aria-label="Paid time">'+tmHtml()+'</div><div class="sub" id="tms">'+(s?'Started '+hhmm(new Date(s.start))+(s.brkMs>0||s.brkStart?'':' · '+A.set.brk+' min break comes off until you log one'):'Paid time today')+'</div></div>';
+  h+='<button class="big '+(s?'out':'in')+'" onclick="clk()">'+(s?'Clock out':'Clock in')+'</button>';
+  if(s)h+='<button class="btn" onclick="brk()">'+(s.brkStart?'End break':'Start break')+'</button>';
+  h+='<section class="card" id="wk">'+wkCard()+'</section>';
+  h+=foot();
+  return h;
+}
+function rnd(d){var r=A.set.round;if(!r)return d;return new Date(Math.round(d.getTime()/(r*60000))*r*60000);}
+function clk(){
+  var s=A.sess;
+  if(!s){A.sess={start:rnd(new Date()).getTime(),role:U.role,brkMs:0,brkStart:null};save();render();return;}
+  var end=rnd(new Date()),brk=s.brkMs+(s.brkStart?Date.now()-s.brkStart:0),b=(s.brkMs>0||s.brkStart)?Math.round(brk/60000):A.set.brk,st=new Date(s.start);
+  A.entries.push({id:'e'+Date.now(),date:ymd(st),s:hhmm(st),e:hhmm(end),b:b,role:s.role,ot:null,adj:0,note:''});
+  A.sess=null;save();render();toast('Saved to your hours');
+}
+function brk(){var s=A.sess;if(!s)return;if(s.brkStart){s.brkMs+=Date.now()-s.brkStart;s.brkStart=null;}else s.brkStart=Date.now();save();render();}
+function pickRole(id){U.role=id;render();}
+
+function setRng(r){U.rng=r;U.off=0;render();}
+function shift(n){U.off+=n;render();}
+function setCustom(){var a=document.getElementById('c-s').value,b=document.getElementById('c-e').value;if(a)U.cs=a;if(b)U.ce=b;render();}
+function setHv(v){U.hv=v;render();}
+function grp(rows){var out=[],cur=null;rows.forEach(function(r){var k=ymd(wkStart(pd(r.e.date)));if(!cur||cur.k!==k){cur={k:k,rows:[]};out.push(cur);}cur.rows.push(r);});return out;}
+function vHours(){
+  var R=range(),rows=rowsFor(R.s,R.e),T=tot(rows),S=A.set;
+  if(U.rng==='pp'&&(U.job!=='all'||A.jobs.length===1))periodAdj(T,periodOf(R.s,curJob().id),curJob().id);
+  var h='<header class="top"><div><div class="sub">'+rSub(R)+'</div><h1>Hours</h1></div></header>';
+  h+=jobBar();
+  h+='<div class="rng" role="group" aria-label="Range">'+[['week','Week'],['2w','2 weeks'],['3w','3 weeks'],['month','Month'],['pp','Pay period'],['custom','Custom']].map(function(i){return '<button class="'+(U.rng===i[0]?'on':'')+'" aria-pressed="'+(U.rng===i[0])+'" onclick="setRng(\''+i[0]+'\')">'+i[1]+'</button>';}).join('')+'</div>';
+  if(U.rng==='custom')h+='<div class="two" style="margin-top:10px"><div><label class="f" for="c-s" style="margin-top:0">From</label><input id="c-s" type="date" value="'+U.cs+'" onchange="setCustom()"></div><div><label class="f" for="c-e" style="margin-top:0">To</label><input id="c-e" type="date" value="'+U.ce+'" onchange="setCustom()"></div></div><div class="nav"><span class="mid2">'+rLabel(R)+'<small>'+R.n+' days</small></span></div>';
+  else h+='<div class="nav"><button onclick="shift(-1)" aria-label="Earlier">&#8249;</button><div class="mid2">'+rLabel(R)+'<small>'+(U.off===0?'Current':'Past or future')+'</small></div><button onclick="shift(1)" aria-label="Later">&#8250;</button></div>';
+  h+='<div class="kpis" style="grid-template-columns:repeat(3,1fr);margin:10px 0 0"><div class="kpi"><div class="l">Worked</div><div class="v" style="font-size:28px">'+n1(T.worked)+'<small>h</small></div></div><div class="kpi ot"><div class="l">Overtime</div><div class="v" style="font-size:28px">'+n1(T.ot)+'<small>h</small></div></div><div class="kpi"><div class="l">Gross</div><div class="v" style="font-size:28px">'+usd0(T.usd)+'</div></div></div>';
+  h+='<div class="two" style="margin-top:14px;align-items:center"><div>'+seg([['list','List'],['timeline','Timeline']],U.hv,'setHv')+'</div><div>'+tab3()+'</div></div>';
+  h+='<section class="card" style="margin-top:12px;padding-top:6px">';
+  h+=U.hv==='timeline'?tlHtml(R,rows):listHtml(rows);
+  h+='</section>';
+  if(rows.length){
+    var m=S.view;
+    h+='<section class="card"><div class="hd"><h2 style="margin:0">Totals</h2>'+tab3()+'</div>';
+    h+='<div class="dl"><span>Days worked</span><span>'+T.nd+'</span></div><div class="dl"><span>Worked</span><span>'+nm(T.worked)+' h</span></div><div class="dl"><span>Regular</span><span>'+nm(T.reg)+' h</span></div>';
+    h+='<div class="dl"><span>Overtime</span><span>'+nm(T.ot)+' h → '+nm(T.otPh)+' paid h</span></div>';
+    if(T.gTop>0)h+='<div class="dl"><span>Guarantee top-up</span><span>'+nm(T.gTop)+' h</span></div>';
+    if(T.refill>0)h+='<div class="dl"><span>Kept in the comp bank (AC)</span><span>'+nm(T.refill)+' h</span></div>';
+    if(m!=='dollars')h+='<div class="dl t"><span>Paid hours</span><span>'+nm(T.ph)+' h</span></div>';
+    if(m!=='hours'){h+='<div class="dl"><span>Adjustments</span><span>'+usd(T.adj)+'</span></div><div class="dl t"><span>Gross pay</span><span>'+usd(T.usd)+'</span></div>';}
+    else if(T.adj)h+='<div class="note">Plus '+usd(T.adj)+' in adjustments.</div>';
+    if(model()&&m!=='hours')h+='<div class="dl"><span>Estimated take-home</span><span>'+usd0(netOf(T))+'</span></div>';
+    h+='</section>';
+  }
+  h+='<button class="btn solid" onclick="openEdit(null)">Add a day</button><button class="btn" onclick="sheetThis()">Edit as timesheet</button><button class="btn" onclick="exportThis()">Export this range</button>';
+  h+=foot();
+  return h;
+}
+function exportThis(){U.ex.src='range';U.tab='more';U.sub='export';render();window.scrollTo(0,0);}
+function wkHead(k,rows){var T=tot(rows);return '<div class="wh"><span>Week of <b>'+fmtD(pd(k))+'</b></span><span><b>'+n1(T.worked)+' h</b>'+(T.ot>0?' · '+n1(T.ot)+' OT':'')+'</span></div>';}
+function listHtml(rows){
+  if(!rows.length)return '<div class="empty">No hours in this range. Clock in on the Clock tab, or add a day below.</div>';
+  var G=grp(rows),h='',m=A.set.view;
+  G.forEach(function(g){
+    if(G.length>1)h+=wkHead(g.k,g.rows);
+    g.rows.forEach(function(r){
+      var e=r.e,d=pd(e.date),ro=role(e.role),live=e.id==='live';
+      var big=m==='dollars'?usd0(r.usd):nm(r.w),small=m==='both'?'<div class="sub" style="font-size:13px">'+usd0(r.usd)+'</div>':'';
+      h+='<div class="row"'+(live||e.hol?'':rb('openEdit(\''+e.id+'\')'))+'><div class="day"><b>'+DN[d.getDay()]+'</b><span>'+fmtD(d)+'</span></div><div class="mid">'+(e.hol?'Holiday credit, automatic':live?'In progress, since '+t24(e.s):t24(e.s)+' to '+t24(e.e))+'<span class="sub">'+esc(ro?ro.name:'No type')+(e.note?' · '+esc(e.note):'')+(e.adj?' · '+(e.adj>0?'+':'')+usd(+e.adj):'')+'</span></div><div class="rt"><b>'+big+'</b>'+small+(r.ot>0?'<span class="pill ot">'+(r.dayOff?'Day off · ':'')+nm(r.ot)+' OT</span>':'')+'</div></div>';
+    });
+  });
+  return h;
+}
+function tlHtml(R,rows){
+  var h='<div class="ax"><span class="sp"></span><div class="sc"><span style="left:0">00:00</span><span style="left:25%">06:00</span><span style="left:50%">12:00</span><span style="left:75%">18:00</span></div><span class="hr"></span></div>';
+  var by={};rows.forEach(function(r){(by[r.e.date]=by[r.e.date]||[]).push(r);});
+  var T0=ymd(now()),lastK='';
+  for(var i=0;i<R.n;i++){
+    var d=addD(R.s,i),k=ymd(d),wk=ymd(wkStart(d));
+    if(R.n>7&&wk!==lastK){lastK=wk;h+=wkHead(wk,rows.filter(function(r){return ymd(wkStart(pd(r.e.date)))===wk;}));}
+    var L=by[k]||[],hrs=0,dol=0,bars='';
+    L.forEach(function(r){
+      var e=r.e;if(e.hol){hrs+=r.w;dol+=r.usd;return;}var s=tmin(e.s),span=(tmin(e.e)-s+1440)%1440||0;if(e.id==='live')span=Math.max(span,10);
+      var left=s/1440*100,wd=Math.min(span/1440*100,100-left),f=r.w>0?r.ot/r.w:0;hrs+=r.w;dol+=r.usd;
+      bars+='<div class="sh" style="left:'+left+'%;width:'+wd+'%"><i class="r" style="width:'+((1-f)*100)+'%"></i><i class="o" style="width:'+(f*100)+'%"></i></div>';
+    });
+    var FL=L.filter(function(x){return !x.e.hol&&x.e.id!=='live';}),oc=FL.length?rb('openEdit(\''+FL[0].e.id+'\')'):(L.some(function(x){return x.e.id==='live';})?'':rb('openEdit(null,\''+k+'\')'));
+    h+='<div class="tl"'+oc+' aria-label="'+DN[d.getDay()]+' '+fmtD(d)+'"><div class="dn"><b>'+DN[d.getDay()]+'</b>'+fmtD(d)+(k===T0?' · today':'')+(isOff(curJob().id,k)?' · off':'')+'</div><div class="tr">'+bars+'</div><div class="hr'+(hrs?'':' z')+'">'+(hrs?vv(hrs,dol,'tl'):'–')+'</div></div>';
+  }
+  h+='<div class="lg"><span><i style="background:var(--go)"></i>Regular</span><span><i style="background:var(--ot-bar)"></i>Overtime</span><span>Tap a row to edit or add</span></div>';
+  return h;
+}
+function summaryText(s,e){
+  var rows=rowsFor(s,e),T=tot(rows),L=['Hours '+fmtD(s)+' to '+fmtD(e)+', '+e.getFullYear()];
+  rows.forEach(function(r){var d=pd(r.e.date),ro=role(r.e.role);L.push(DN[d.getDay()]+' '+fmtD(d)+'  '+t24(r.e.s)+' to '+t24(r.e.e)+'  '+(ro?ro.name:'')+'  '+nm(r.w)+' h'+(r.ot>0?' ('+nm(r.ot)+' OT)':'')+(r.e.note?'  - '+r.e.note:''));});
+  L.push('Worked '+nm(T.worked)+' h, overtime '+nm(T.ot)+' h counts as '+nm(T.otPh)+' paid h');
+  L.push('Paid hours '+nm(T.ph)+' h, adjustments '+usd(T.adj)+', gross '+usd(T.usd));
+  L.push('Estimates from Nurri\'s Tracker. Not a payroll record.');
+  return L.join('\n');
+}
+function csvFor(s,e){
+  var q=function(x){return '"'+String(x).replace(/"/g,'""')+'"';},L=['date,day,start,end,break_min,work_type,job,worked_h,overtime_h,paid_h,rate,gross_usd,adjustment_usd,note'];
+  rowsFor(s,e).forEach(function(r){var ro=role(r.e.role),jb=ro?jobOf(ro.job):null,d=pd(r.e.date);L.push([r.e.date,DN[d.getDay()],r.e.s,r.e.e,r.e.b,q(ro?ro.name:''),q(jb?jb.name:''),nm(r.w),nm(r.ot),nm(r.ph),r.rate,r.usd.toFixed(2),(+r.e.adj||0),q(r.e.note)].join(','));});
+  return L.join('\n');
+}
+function copyTxt(txt,id,msg){
+  try{navigator.clipboard.writeText(txt).then(function(){toast(msg);},fb);}catch(e){fb();}
+  function fb(){var x=document.getElementById(id);if(x){x.focus();x.select();toast('Selected. Use Copy from the menu.');}}
+}
+/* Share sheet with a file where the phone supports it, a download otherwise. */
+function shareFile(name,type,text,done){
+  var f=null;try{f=new File([text],name,{type:type});}catch(e){}
+  function dl(){var u=URL.createObjectURL(new Blob([text],{type:type})),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(u);a.remove();},1500);if(done)done();}
+  if(f&&navigator.canShare&&navigator.share){var ok=false;try{ok=navigator.canShare({files:[f]});}catch(e){}if(ok){navigator.share({files:[f],title:name}).then(function(){if(done)done();},function(err){if(err&&err.name==='AbortError')return;dl();});return;}}
+  dl();
+}
+
+function openEdit(id,date){
+  if(id){var o=A.entries.filter(function(e){return e.id===id;})[0];if(!o)return;E=JSON.parse(JSON.stringify(o));}
+  else{var R=range(),t=now(),d=date?pd(date):(dd(R.s,t)>=0&&dd(t,R.e)>=0?t:R.s);E={id:null,date:ymd(d),s:'07:00',e:'15:30',b:A.set.brk,role:U.role,ot:jr(roleJob(U.role)).mode==='manual'?0:null,adj:0,note:''};}
+  var hi=holIdx(roleJob(E.role),E.date);E.hol=hi>=0;E.holN=hi>=0?jr(roleJob(E.role)).hol.list[hi].n:'Holiday';
+  U.from=U.tab;U.tab='edit';U.confirm='';render();window.scrollTo(0,0);
+}
+function readEd(){
+  var g=function(i){var x=document.getElementById(i);return x?x.value:null;};
+  if(g('ed-date')!=null)E.date=g('ed-date');if(g('ed-s')!=null)E.s=tfix(g('ed-s'));if(g('ed-e')!=null)E.e=tfix(g('ed-e'));
+  if(g('ed-b')!=null)E.b=parseFloat(g('ed-b'))||0;if(g('ed-role')!=null)E.role=g('ed-role');
+  var hc=document.getElementById('ed-hol');if(hc)E.hol=hc.checked;var hn=document.getElementById('ed-holn');if(hn)E.holN=hn.value;
+  if(g('ed-ot')!=null)E.ot=parseFloat(g('ed-ot'))||0;if(g('ed-adj')!=null)E.adj=parseFloat(g('ed-adj'))||0;if(g('ed-note')!=null)E.note=g('ed-note');
+}
+function otm(m){readEd();E.ot=m==='auto'?null:(E.ot!=null?E.ot:0);render();}
+function edPrev(){
+  readEd();var p=document.getElementById('edp'),er=document.getElementById('edr'),m=entryErr(E);if(!p)return;
+  er.textContent=m;
+  if(m){p.innerHTML='';return;}
+  var tmp=JSON.parse(JSON.stringify(E));tmp.id='tmp';var ws=wkStart(pd(E.date));
+  var r=holWith(roleJob(E.role),[{d:E.date,hol:!!E.hol,n:E.holN}],function(){return rowsFor(ws,addD(ws,6),E.id,tmp).filter(function(x){return x.e.id==='tmp';})[0];});
+  p.innerHTML=nm(r.w)+' h worked'+(r.ot>0?', '+nm(r.ot)+' h overtime'+(E.ot==null?' (auto)':''):'')+'<br>'+nm(r.ph)+' paid hours · '+usd(r.usd);
+}
+function back(){U.tab=U.from&&U.from!=='edit'&&U.from!=='check'?U.from:'hours';U.confirm='';render();}
+function vEdit(){
+  var h='<button class="btn dim bk" onclick="back()">&#8249; Back</button>';
+  h+='<header class="top"><div><div class="sub">'+(E.id?'Edit day':'Add a day')+'</div><h1>'+DN[pd(E.date).getDay()]+', '+fmtD(pd(E.date))+'</h1></div></header>';
+  h+='<section class="card" style="margin-top:0">';
+  h+='<label class="f" for="ed-date" style="margin-top:0">Date</label><input id="ed-date" type="date" value="'+E.date+'" oninput="edPrev()">';
+  h+='<div class="two"><div><label class="f" for="ed-s">Started (24-hour)</label>'+tin('ed-s',E.s,'edPrev()','Start time, 24 hour')+'</div><div><label class="f" for="ed-e">Ended (24-hour)</label>'+tin('ed-e',E.e,'edPrev()','End time, 24 hour')+'</div></div>';
+  h+='<div class="two"><div><label class="f" for="ed-b">Unpaid break (min)</label><input id="ed-b" type="number" inputmode="numeric" min="0" value="'+E.b+'" oninput="edPrev()"></div><div><label class="f" for="ed-role">Work type</label><select id="ed-role" onchange="edPrev()">'+A.roles.map(function(r){var jb=A.jobs.length>1?(jobOf(r.job)||{name:''}).name+': ':'';return '<option value="'+r.id+'"'+(r.id===E.role?' selected':'')+'>'+esc(jb+r.name)+'</option>';}).join('')+'</select></div></div>';
+  h+='<div class="note">Need a different type of work? Add it in More, Pay rules.</div>';
+  h+='<label class="f">Overtime hours</label>';
+  if(jr(roleJob(E.role)).mode==='auto')h+=seg([['auto','Automatic'],['manual','I choose']],E.ot==null?'auto':'manual','otm');
+  if(E.ot!=null)h+='<input id="ed-ot" type="number" inputmode="decimal" min="0" step="0.25" value="'+E.ot+'" oninput="edPrev()" style="margin-top:8px" aria-label="Overtime hours">';
+  h+='<label class="f" for="ed-adj">Adjustment in dollars (minus to deduct)</label><input id="ed-adj" type="number" inputmode="decimal" step="1" value="'+E.adj+'" oninput="edPrev()">';
+  h+='<label class="f" for="ed-note">Note</label><textarea id="ed-note" placeholder="Left early for dentist">'+esc(E.note)+'</textarea>';
+  h+='<label class="chk" style="margin-top:14px"><input type="checkbox" id="ed-hol"'+(E.hol?' checked':'')+' onchange="holChg()"> This day is a holiday</label>';
+  if(E.hol)h+='<label class="f" for="ed-holn">Holiday name</label><input id="ed-holn" value="'+esc(E.holN||'Holiday')+'" placeholder="Holiday name" oninput="edPrev()"><div class="note">'+(isOff(roleJob(E.role),E.date)?'It is a day off, so you get '+HOL_H+' hours of straight comp credit. Hours worked are all overtime.':'It is a work day, so the '+HOL_H+' hour credit fills the day. Any hours worked are all overtime.')+'</div><button class="btn" onclick="saveHolOnly()">Save the holiday only, no hours</button>';
+  h+='<div class="pv" id="edp" aria-live="polite"></div><div class="err" id="edr" role="alert"></div>';
+  h+='</section><button class="btn solid" onclick="saveEd()">Save day</button>';
+  if(E.id)h+='<button class="btn warn" onclick="delEd()">'+(U.confirm==='del'?'Tap again to delete this day':'Delete day')+'</button>';
+  return h;
+}
+function holChg(){readEd();render();}
+function saveHolOnly(){readEd();if(!E.date){document.getElementById('edr').textContent='Enter a date.';return;}syncHol(roleJob(E.role),E.date,true,E.holN);save();back();toast('Holiday saved');}
+function saveEd(){
+  readEd();var m=entryErr(E);if(m){document.getElementById('edr').textContent=m;return;}
+  syncHol(roleJob(E.role),E.date,!!E.hol,E.holN);
+  var o={id:E.id,date:E.date,s:E.s,e:E.e,b:E.b,role:E.role,ot:E.ot,adj:E.adj,note:E.note};
+  if(o.id){for(var i=0;i<A.entries.length;i++)if(A.entries[i].id===o.id)A.entries[i]=o;}
+  else{o.id='e'+Date.now();A.entries.push(o);}
+  save();back();toast('Day saved');
+}
+function delEd(){if(U.confirm!=='del'){readEd();U.confirm='del';render();return;}A.entries=A.entries.filter(function(e){return e.id!==E.id;});save();back();toast('Day deleted');}
+
+/* Paychecks */
+function assumptions(){
+  var j=curJob(),R=j.rules,M=model(),L=[],ot=[],od=offDays(j.id,ymd(now()));
+  L.push(M?['Learned from '+M.n+' paystub'+(M.n>1?'s':''),'Each deduction is an average of what your stubs show, and federal withholding is a straight line fitted to them. More stubs make it tighter.']:['No paystubs yet','Add a paystub and the app learns what comes out of each check.']);
+  if(R.mode==='auto'){if(R.dOn)ot.push('after '+R.dHrs+' h in a day');if(R.wOn!==false)ot.push('after '+R.thr+' h in a work week');}
+  L.push(['Overtime',R.mode==='auto'?(ot.length?'Pays '+R.mult+'x '+ot.join(' and ')+'. Paid leave never counts toward it.':'No automatic rule is on.'):'You choose the overtime hours on each day.']);
+  if(od.length&&R.offOT!==false)L.push(['Days off','Work on '+od.map(function(d){return DN[d];}).join(' and ')+' is all overtime at '+R.mult+'x, even a short shift.']);
+  if(R.guar>0)L.push(['Guarantee',R.guar+' regular hours each pay period, paid leave included. A finished period below that is topped up at the straight rate.']);
+  if(R.bank&&R.bank.on)L.push(['Comp bank (AC)','Holds at most '+R.bank.cap+' hours. After you use bank hours, the first hours you work refill it (regular first) and are not paid in cash.']);
+  if(R.hol&&R.hol.on!==false)L.push(['Holidays','Each holiday gives an '+HOL_H+' hour credit: straight comp on a day off, or the day\'s regular hours on a work day, after which anything you work is overtime.']);
+  if(R.third)L.push(['Third paydays (assumed)','A pay date on the 29th or later skips the benefit fee, deferred compensation and insurance, so take-home runs higher. The range is wider until a stub confirms it.']);
+  L.push(['Not covered','Premiums and other extras are manual adjustments on the day. The app estimates; it is not tax or payroll advice.']);
+  return L;
+}
+function vPaychecks(){
+  if(A.jobs.length>1&&U.job==='all')U.job=A.jobs[0].id;
+  var M=model(),t=now(),h='<header class="top"><div><div class="sub">Check what you were paid</div><h1>Paychecks</h1></div></header>'+jobBar(true);
+  h+='<section class="card" style="margin-top:0"><h2>Take-home estimate</h2>';
+  if(!M)h+='<div class="sub">Add a paystub and the app learns what comes out of each check.</div>';
+  else{
+    h+='<div class="fig">'+usd0(M.est(6000))+'<small>take-home on a $6,000 check</small></div>';
+    h+='<div class="sub" style="margin-top:6px">Learned from '+M.n+' paystub'+(M.n>1?'s':'')+'. It predicts those stubs within <b style="color:var(--ink)">'+usd(M.maxErr)+'</b>. Confidence: <b style="color:var(--ink)">'+M.conf+'</b>.</div>';
+    h+='<div class="why">Federal withholding: about '+Math.round(M.fedB*1000)/10+'% of taxable pay above '+usd0(M.fedT)+' a check</div><div class="why">Pre-tax: deferred compensation '+pct(M.rdc)+', retirement '+pct(M.rpe)+', benefit fee '+usd(M.fx.ben)+'</div><div class="why">Payroll taxes: Social Security '+pct(M.rf.ss)+', Medicare '+pct(M.rf.med)+', state leave and care '+pct(M.rf.fli+M.rf.mli+M.rf.ltc)+'</div><div class="why">Fixed after tax: '+usd(M.fx.atu+M.fx.dues+M.fx.assess+M.fx.other)+' a check (insurance, union dues)</div>';
+  }
+  var pt=A.stubs.filter(function(b){return b.pred&&(b.job||'j1')===curJob().id;}),pe=0;pt.forEach(function(b){pe+=Math.abs(b.net-b.pred.net);});
+  h+='<div class="note" style="margin-top:10px">'+(pt.length?'Prediction tests so far: '+pt.length+' stub'+(pt.length>1?'s':'')+', average take-home error '+usd(pe/pt.length)+'.':'No prediction tests yet. Log real days, then add that period\'s stub and the app scores its own prediction.')+'</div>';
+  h+='<button class="btn" onclick="openCheck(null)">Add a paystub</button></section>';
+  h+='<section class="card"><h2>What the app is assuming</h2>'+assumptions().map(function(x){return '<div class="why"><b>'+esc(x[0])+'</b><br><span class="sub">'+esc(x[1])+'</span></div>';}).join('')+'</section>';
+  h+='<section class="card"><h2>Pay periods</h2>';
+  var p=periodOf(t),list=[p];for(var i=1;i<=4;i++)list.push(periodShift(p,-i));
+  list.forEach(function(q,i){
+    var c=checkOf(q),T=c.T,cur=i===0;
+    h+='<div class="row"'+rb('openCheck(\''+ymd(q.s)+'\')')+'><div class="mid"><b style="font:600 20px var(--fd)">'+fmtD(q.s)+' to '+fmtD(q.e)+'</b><span class="sub">'+(cur?'Current · ':'')+'Paid '+DN[q.pay.getDay()]+' '+fmtD(q.pay)+'</span><span class="sub" style="color:var(--ink)">Expected '+usd0(T.usd)+(M?' · '+netTxt(T,q.pay).replace(/<span.*<\/span>/,''):'')+'</span></div><div class="rt">'+(cur?'<span class="pill">In progress</span>':chipFor(c))+'</div></div>';
+  });
+  var nt=curJob().rules.third?nextThird():null;
+  h+='</section><div class="note" style="margin:10px 4px">Pay dates follow the pay period you set in Pay rules.'+(nt?' The next third payday is '+fmtDY(nt.pay)+' (period ending '+fmtD(nt.e)+'), when some deductions are skipped.':'')+'</div>';
+  h+=foot();
+  return h;
+}
+function openCheck(ps){
+  if(!ps){var q=lastClosed();for(var i=0;i<8;i++){if(!stubFor(ymd(q.s)))break;q=periodShift(q,-1);}ps=ymd(q.s);}
+  var ex=stubFor(ps);
+  var bl={life:''};LINES.forEach(function(l){bl[l[0]]='';});
+  U.chk=ps;U.st=ex?JSON.parse(JSON.stringify(ex)):{id:null,ps:ps,gross:'',net:'',hrs:'',cs:'',othrs:'',leaveUsd:'',ytd:{gross:'',ot:''},lines:bl};
+  if(!U.st.ytd)U.st.ytd={gross:'',ot:''};if(!U.st.lines)U.st.lines=bl;
+  U.who='pay';U.tab='check';U.confirm='';render();window.scrollTo(0,0);
+}
+function chkPick(v){readSt();openCheck(v);}
+function readSt(){
+  var g=function(i){var x=document.getElementById(i);return x?x.value:'';},s=U.st;
+  if(!document.getElementById('st-gross'))return;
+  s.gross=g('st-gross');s.net=g('st-net');s.hrs=g('st-hrs');s.cs=g('st-cs');s.othrs=g('st-ot');s.leaveUsd=g('st-leave');s.ytd={gross:g('st-yg'),ot:g('st-yo')};
+  LINES.forEach(function(l){s.lines[l[0]]=g('st-'+l[0]);});s.lines.life=g('st-life');
+}
+function saveSt(){
+  readSt();var s=U.st,gr=num(s.gross),nt=num(s.net),cj=curJob().id;
+  if(!(gr>0)){document.getElementById('st-err').textContent='Enter the gross pay shown on the stub.';return;}
+  if(!(nt>0)){document.getElementById('st-err').textContent='Enter the net pay (the deposit) so the app can learn deductions.';return;}
+  var pr=s.pred||predictFor(s.ps,cj),yg=num(s.ytd&&s.ytd.gross),yo=num(s.ytd&&s.ytd.ot);
+  var o={id:s.id||('b'+Date.now()),job:cj,pred:pr,ps:s.ps,gross:gr,net:nt,hrs:num(s.hrs),cs:num(s.cs),othrs:num(s.othrs),third:isThird(periodOf(pd(s.ps)).pay),leaveUsd:num(s.leaveUsd)||0,ytd:(yg!=null||yo!=null)?{gross:yg||0,ot:yo||0}:null,lines:{}};
+  LINES.forEach(function(l){o.lines[l[0]]=num(s.lines[l[0]])||0;});o.lines.life=num(s.lines.life)||0;
+  var f=false;for(var i=0;i<A.stubs.length;i++)if(A.stubs[i].ps===s.ps&&(A.stubs[i].job||'j1')===o.job){A.stubs[i]=o;f=true;}
+  if(!f)A.stubs.push(o);
+  save();U.st=JSON.parse(JSON.stringify(o));if(!U.st.ytd)U.st.ytd={gross:'',ot:''};render();toast('Paystub saved');
+}
+function delSt(){if(U.confirm!=='dst'){readSt();U.confirm='dst';render();return;}A.stubs=A.stubs.filter(function(s){return !(s.ps===U.chk&&(s.job||'j1')===curJob().id);});save();U.confirm='';U.tab='pay';render();toast('Paystub deleted');}
+function setWho(v){readSt();U.who=v;render();}
+function emailFor(q,c,who){
+  var C=A.contacts,T=c.T,st=c.stub,per=fmtD(q.s)+' to '+fmtD(q.e)+', '+q.e.getFullYear(),to=who==='pay'?C.payEmail:C.unionEmail;
+  var nameTo=who==='pay'?(C.payName||'[payroll representative or timekeeper]'):(C.unionName||'[union steward]');
+  var sb='Pay question for '+per+' (paid '+fmtD(q.pay)+')';
+  var b='Hello '+nameTo+',\n\n';
+  if(who==='pay')b+='I am checking my paycheck for the pay period '+per+' (pay date '+fmtDY(q.pay)+') and found a difference.\n\n';
+  else b+='I found a difference in my paycheck for the pay period '+per+' (pay date '+fmtDY(q.pay)+'). I raised it with payroll and would like your advice on next steps and any deadlines.\n\n';
+  b+='My time records: '+nm(T.reg)+' regular hours (including leave) and '+nm(T.ot)+' overtime hours. Expected gross pay: '+usd(T.usd)+'.\n';
+  b+='My paystub: gross pay '+usd(st.gross)+(num(st.hrs)!=null?', '+nm(st.hrs)+' regular hours':'')+(num(st.othrs)!=null?', '+nm(st.othrs)+' overtime hours':'')+'.\n';
+  b+='Difference: '+usd(Math.abs(c.diff))+(c.diff<0?' more than I was paid':' more than I expected')+'.\n\n';
+  b+='Daily hours:\n'+c.rows.map(function(r){var d=pd(r.e.date);return DN[d.getDay()]+' '+fmtD(d)+': '+t24(r.e.s)+' to '+t24(r.e.e)+', '+nm(r.w)+' h'+(r.ot>0?' ('+nm(r.ot)+' OT)':'');}).join('\n');
+  b+='\n\nCould you review this and tell me what changed? I can send my full time records.\n\nThank you,\n'+(C.me||'[your name]');
+  return {to:to,sub:sb,body:b};
+}
+function stubIn(id,lab,val,first){return '<div><label class="f" for="'+id+'"'+(first?' style="margin-top:0"':'')+'>'+lab+'</label><input id="'+id+'" type="number" inputmode="decimal" step="0.01" value="'+(val===''||val==null?'':esc(val))+'"></div>';}
+function vCheck(){
+  var q=periodOf(pd(U.chk)),c=checkOf(q),T=c.T,s=U.st,h='<button class="btn dim bk" onclick="go(\'pay\')">&#8249; Paychecks</button>';
+  var opts=[],pp=lastClosed();for(var i=0;i<8;i++){opts.push(pp);pp=periodShift(pp,-1);}
+  if(!opts.some(function(o){return ymd(o.s)===U.chk;}))opts.unshift(q);
+  h+='<header class="top"><div><div class="sub">Pay period</div><h1>'+fmtD(q.s)+' to '+fmtD(q.e)+'</h1></div>'+chipFor(c)+'</header>';
+  h+='<label class="f" for="st-pick" style="margin-top:0">Pay period for this stub</label><select id="st-pick" onchange="chkPick(this.value)">'+opts.map(function(o){return '<option value="'+ymd(o.s)+'"'+(ymd(o.s)===U.chk?' selected':'')+'>'+fmtD(o.s)+' to '+fmtD(o.e)+' · paid '+fmtD(o.pay)+'</option>';}).join('')+'</select>';
+  var gl=T.gTop>0?' (includes '+nm(T.gTop)+' h guaranteed)':'',th=thirdSkip(q.pay);
+  h+='<section class="card"><h2>What the app expects</h2><div class="dl"><span>Regular '+nm(T.reg)+' h'+gl+'</span><span>'+usd(T.regUsd)+'</span></div><div class="dl"><span>Overtime '+nm(T.ot)+' h at '+jr(curJob().id).mult+'x</span><span>'+usd(T.otUsd)+'</span></div>'+(T.xtra>0?'<div class="dl"><span>Straight comp '+nm(T.xtra)+' h (holiday on a day off)</span><span>'+usd(T.xtraUsd)+'</span></div>':'')+(T.refill>0?'<div class="dl"><span>Kept in the comp bank (AC) '+nm(T.refill)+' h ('+nm(T.bal0)+' to '+nm(T.bal1)+')</span><span>-'+usd(T.bankUsd)+'</span></div>':'')+'<div class="dl"><span>Premiums and adjustments</span><span>'+usd(T.adj)+'</span></div><div class="dl t"><span>Expected gross</span><span>'+usd(T.usd)+'</span></div>'+(model()?'<div class="dl"><span>Expected take-home'+(th?' (third payday)':'')+'</span><span>'+usd0(netOf(T,q.pay))+'</span></div>':'')+'</section>';
+  h+='<button class="btn" onclick="sheetPeriod()">Edit the hours for this period</button>';
+  if(c.st==='nolog')h+='<div class="note" style="margin:10px 0">No hours are logged for this period, so there is nothing to compare. The stub still helps the take-home estimate.</div>';
+  if(c.st==='ok')h+='<div class="okbox"><b>Your paycheck matches your hours.</b> The gross pay is within $1 of what you logged.</div>';
+  if(c.st==='short'||c.st==='over'){
+    h+='<section class="card warnc"><h2 style="color:var(--ot)">'+(c.st==='short'?'Paid '+usd(-c.diff)+' less than expected':'Paid '+usd(c.diff)+' more than expected')+'</h2>';
+    c.causes.forEach(function(x){h+='<div class="why">'+esc(x)+'</div>';});
+    h+='</section>';
+    var mail=emailFor(q,c,U.who);
+    h+='<section class="card"><h2>Raise it with the right person</h2>'+seg([['pay','Payroll rep or timekeeper'],['union','Union steward']],U.who,'setWho');
+    h+='<div class="note">'+(U.who==='pay'?'Start with your department payroll representative or timekeeper, in writing.':'If payroll does not fix it, ask your union steward about next steps and any filing deadlines.')+'</div>';
+    h+='<label class="f" for="m-to">To</label><input id="m-to" value="'+esc(mail.to)+'" placeholder="Add the address in More, Pay rules, Who to contact" readonly>';
+    h+='<label class="f" for="m-sub">Subject</label><input id="m-sub" value="'+esc(mail.sub)+'" readonly>';
+    h+='<label class="f" for="m-body">Message</label><textarea id="m-body" style="height:230px" readonly>'+esc(mail.body)+'</textarea>';
+    h+='<button class="btn solid" onclick="copyMail()">Copy email text</button>';
+    h+='<a class="btn lnk" href="mailto:'+encodeURIComponent(mail.to)+'?subject='+encodeURIComponent(mail.sub)+'&body='+encodeURIComponent(mail.body)+'">Open in Mail app</a>';
+    h+='<div class="note">The app never sends anything. You review the message and send it yourself.</div>';
+    h+='<div class="esc"><b>If it is not fixed</b><ol><li>Payroll rep or timekeeper, in writing</li><li>Your union steward (ask about deadlines early)</li><li>U.S. Department of Labor Wage and Hour Division, as a last step</li></ol></div></section>';
+  }
+  var sp=stubFor(U.chk),pr0=sp&&sp.pred;
+  if(pr0){var ge=sp.gross-pr0.gross,ne=sp.net-pr0.net,good=Math.abs(ne)<=5;h+='<section class="card" id="ptest"><h2>Prediction test</h2><div class="note" style="margin:-4px 0 8px">What the app predicted from your logged hours before it saw this stub.</div><div class="dl"><span>Gross: predicted / stub</span><span>'+usd(pr0.gross)+' / '+usd(sp.gross)+'</span></div><div class="dl"><span>Take-home: predicted / stub</span><span>'+usd(pr0.net)+' / '+usd(sp.net)+'</span></div><div class="'+(good?'okbox':'alert')+'" style="cursor:default;margin-top:10px"><b>'+(good?'On track. Take-home was off by '+usd(Math.abs(ne))+'.':'Off by '+usd(Math.abs(ne))+' on take-home ('+usd(Math.abs(ge))+' on gross).')+'</b>'+(good?'':'<span>Check the daily hours and the rules, then keep adding stubs so the model learns.</span>')+'</div></section>';}
+  h+='<section class="card"><h2>'+(sp?'Your paystub':'Enter your paystub')+'</h2>';
+  h+='<div class="two">'+stubIn('st-gross','Gross pay',s.gross,1)+stubIn('st-net','Net pay (deposit)',s.net,1)+'</div>';
+  h+='<div class="two">'+stubIn('st-hrs','Regular hours on stub (with leave)',s.hrs)+stubIn('st-ot','Overtime hours (overtime line)',s.othrs)+'</div>';
+  h+='<div class="two">'+stubIn('st-cs','Straight comp hours (1.0 line)',s.cs)+stubIn('st-leave','Paid leave on the stub ($)',s.leaveUsd)+'</div>';
+  h+='<div class="two">'+stubIn('st-yg','Year-to-date gross',s.ytd.gross)+stubIn('st-yo','Year-to-date overtime pay',s.ytd.ot)+'</div>';
+  h+='<label class="f">Deductions on the stub (leave blank if not listed)</label><div class="lines">';
+  LINES.forEach(function(l){var v=s.lines[l[0]];h+='<div><label class="f" for="st-'+l[0]+'" style="margin:0 0 3px">'+l[1]+'</label><input id="st-'+l[0]+'" type="number" inputmode="decimal" step="0.01" value="'+(v===''||v==null?'':(Math.round(v*100)/100))+'"></div>';});
+  var lv=s.lines.life;
+  h+='<div><label class="f" for="st-life" style="margin:0 0 3px">Taxable life insurance value</label><input id="st-life" type="number" inputmode="decimal" step="0.01" value="'+(lv===''||lv==null?'':(Math.round(lv*100)/100))+'"></div></div>';
+  if(curJob().rules.third)h+='<div class="note" style="margin-top:14px">'+(isThird(q.pay)?'This pay date ('+fmtD(q.pay)+') is a third payday of the month, so some deductions are skipped.':'This pay date ('+fmtD(q.pay)+') is not a third payday.')+'</div>';
+  h+='<div class="err" id="st-err" role="alert"></div><button class="btn solid" onclick="saveSt()">Save paystub</button>';
+  if(sp)h+='<button class="btn warn" onclick="delSt()">'+(U.confirm==='dst'?'Tap again to delete this paystub':'Delete paystub')+'</button>';
+  h+='</section>';
+  return h;
+}
+function copyMail(){var b=document.getElementById('m-body');copyTxt('Subject: '+document.getElementById('m-sub').value+'\n\n'+b.value,'m-body','Email text copied');}
+
+/* More */
+function vMore(){
+  var h='<header class="top"><div><div class="sub">Settings and tools</div><h1>More</h1></div></header>';
+  var items=[['rules','Pay rules','Jobs, work types, pay period, overtime, contacts, reminders'],['tax','Tax helper','Year to date, overtime deduction check, W-2 check'],['export','Export and backup','Copy or share hours, save a backup, import a backup or setup file']];
+  h+='<section class="card" style="margin-top:0;padding:4px 16px">'+items.map(function(i){return '<div class="row"'+rb('sub(\''+i[0]+'\')')+'><div class="mid"><b style="font:600 20px var(--fd)">'+i[1]+'</b><span class="sub" style="white-space:normal">'+i[2]+'</span></div><div class="rt sub" style="font-size:22px">&#8250;</div></div>';}).join('')+'</section>';
+  h+='<section class="card"><h2>Your data</h2><div class="dl"><span>Stored in</span><span>'+(DB?'This phone':'This browser only')+'</span></div><div class="dl"><span>Kept when space runs low</span><span>'+(PERSIST?'Yes':'Not promised')+'</span></div><div class="dl"><span>Days logged</span><span>'+A.entries.length+'</span></div><div class="dl"><span>Paystubs</span><span>'+A.stubs.length+'</span></div><div class="dl"><span>Last backup</span><span>'+(A.set.lastExport?fmtDY(new Date(A.set.lastExport)):'Never')+'</span></div>';
+  h+='<div class="note">Nothing leaves this phone unless you share it. Save a backup now and then in Export and backup.</div>';
+  h+='<button class="btn warn" onclick="eraseAll()">'+(U.confirm==='erase'?'Tap again to erase everything on this phone':'Erase all data')+'</button>'+(U.confirm==='erase'?'<div class="note">This removes every day, paystub and rule. It cannot be undone. Save a backup first.</div>':'')+'</section>';
+  return h+foot();
+}
+function eraseAll(){if(U.confirm!=='erase'){U.confirm='erase';render();return;}var c=A.set.created;useState(fresh());A.set.created=c;U.job='all';U.cust={};U.role=firstWork();U.confirm='';save();render();toast('All data erased');}
+function bk(){return '<button class="btn dim bk" onclick="sub(\'menu\')">&#8249; More</button>';}
+function ppDesc(jid){var p=periodOf(now(),jid);return 'Now: '+fmtD(p.s)+' to '+fmtD(p.e)+', paid '+DN[p.pay.getDay()]+' '+fmtD(p.pay)+'.';}
+function cb(id,on,fn,txt){return '<label class="chk"><input type="checkbox"'+(id?' id="'+id+'"':'')+(on?' checked':'')+' onchange="'+fn+'"> '+txt+'</label>';}
+function vRules(){
+  var S=A.set,C=A.contacts,R=S.rem,h=bk()+'<header class="top"><div><div class="sub">Set once</div><h1>Pay rules</h1></div></header>';
+  h+='<section class="card" style="margin-top:0"><h2>Jobs and work types</h2><div class="note" style="margin:-4px 0 10px">A job is who pays you. A work type is a kind of work or paid time under that job, each with its own hourly rate. Paid leave types do not count toward overtime.</div>';
+  A.jobs.forEach(function(j){
+    h+='<div class="job"><div class="rr"><input value="'+esc(j.name)+'" oninput="setJob(\''+j.id+'\',this.value)" aria-label="Job name" style="font-weight:600"><button onclick="'+(A.jobs.length<2?'toast(\'Keep at least one job\')':'delJob(\''+j.id+'\')')+'" aria-label="Remove job">&times;</button></div>';
+    A.roles.filter(function(r){return r.job===j.id;}).forEach(function(r){
+      var used=A.entries.some(function(e){return e.role===r.id;})||(A.sess&&A.sess.role===r.id);
+      h+='<div class="rr"><input value="'+esc(r.name)+'" oninput="setRole(\''+r.id+'\',\'name\',this.value)" aria-label="Work type name"><input class="rate" type="number" inputmode="decimal" step="0.01" min="0" value="'+r.rate+'" oninput="setRole(\''+r.id+'\',\'rate\',this.value)" aria-label="Hourly rate for '+esc(r.name)+'"><button onclick="'+(used?'toast(\'Types with days logged can\\\'t be removed\')':'delRole(\''+r.id+'\')')+'" aria-label="Remove work type">&times;</button></div><div class="kind">'+seg([['work','Work'],['leave','Paid leave']],r.kind,'setKind.bind(null,\''+r.id+'\')');
+      if(r.kind==='leave')h+='<select aria-label="What this leave is" onchange="setLeaveUse(\''+r.id+'\',this.value)"><option value=""'+(!r.bank&&!r.extra?' selected':'')+'>Ordinary paid leave</option><option value="bank"'+(r.bank?' selected':'')+'>Uses comp bank hours</option><option value="extra"'+(r.extra?' selected':'')+'>Holiday credit on a day off (straight comp)</option></select>';
+      h+='</div>';
+    });
+    h+='<div class="two"><button class="btn" onclick="addRole(\''+j.id+'\')">Add a work type</button></div></div>';
+  });
+  h+='<button class="btn solid" onclick="addJob()">Add a job</button><div class="note">Each job keeps its own overtime count, pay period and rules below.</div></section>';
+  h+='<section class="card"><h2>Who to contact about pay</h2><div class="note" style="margin:-4px 0 6px">Used to draft emails when a paycheck looks wrong. The app never sends them.</div>';
+  h+='<label class="f" for="c-me">Your name</label><input id="c-me" value="'+esc(C.me)+'" oninput="setC(\'me\',this.value)" placeholder="Your name" autocomplete="name">';
+  h+='<div class="two"><div><label class="f" for="c-pn">Payroll rep or timekeeper</label><input id="c-pn" value="'+esc(C.payName)+'" oninput="setC(\'payName\',this.value)" placeholder="Name"></div><div><label class="f" for="c-pe">Their email</label><input id="c-pe" type="email" value="'+esc(C.payEmail)+'" oninput="setC(\'payEmail\',this.value)" placeholder="name@example.com"></div></div>';
+  h+='<div class="two"><div><label class="f" for="c-un">Union steward</label><input id="c-un" value="'+esc(C.unionName)+'" oninput="setC(\'unionName\',this.value)" placeholder="Name"></div><div><label class="f" for="c-ue">Their email</label><input id="c-ue" type="email" value="'+esc(C.unionEmail)+'" oninput="setC(\'unionEmail\',this.value)" placeholder="name@example.com"></div></div>';
+  h+='<div class="note">Ask your supervisor or union for these. The app does not guess addresses.</div></section>';
+  A.jobs.forEach(function(j){h+=jobRules(j);});
+  h+='<section class="card"><h2>Show pay as</h2>'+tab3()+'<label class="f" for="p-brk">Automatic unpaid break (minutes)</label><input id="p-brk" type="number" inputmode="numeric" min="0" value="'+S.brk+'" oninput="setN(\'brk\',this.value)"><label class="f">Round clock in and out to</label>'+seg([['0','Exact'],['5','5 min'],['15','15 min']],S.round,'setRound')+'</section>';
+  h+='<section class="card"><h2>Reminders</h2>'+cb('',R.inOn,'setRem(\'inOn\',this.checked)','Remind me to clock in at')+tin('rem-in',R.inT,'setRem(\'inT\',tfix(document.getElementById(\'rem-in\').value))','Clock-in reminder time, 24 hour')+cb('',R.outOn,'setRem(\'outOn\',this.checked)','Remind me to clock out after (hours)')+'<input type="number" inputmode="decimal" value="'+R.outH+'" oninput="setRem(\'outH\',this.value)" style="margin-top:8px" aria-label="Clock-out reminder hours"><div class="note">This saves your choice. This version sends no alerts yet.</div></section>';
+  return h+foot();
+}
+function setJob(id,v){A.jobs.forEach(function(j){if(j.id===id)j.name=v;});save();}
+function addJob(){var id='j'+Date.now(),rid='r'+Date.now();A.jobs.push({id:id,name:'New job',rules:newRules()});A.roles.push({id:rid,job:id,name:'Regular work',rate:0,kind:'work',ot:true});save();render();toast('Job added');}
+function delJob(id){var used=A.roles.some(function(r){return r.job===id&&(A.entries.some(function(e){return e.role===r.id;})||(A.sess&&A.sess.role===r.id));});if(used){toast('This job has days logged and can\'t be removed');return;}A.jobs=A.jobs.filter(function(j){return j.id!==id;});if(U.job===id)U.job='all';A.roles=A.roles.filter(function(r){return r.job!==id;});A.stubs=A.stubs.filter(function(s){return (s.job||'j1')!==id;});U.role=firstWork();save();render();}
+function setRole(id,k,v){var r=role(id);if(k==='rate'){v=parseFloat(v);if(!(v>=0))return;}r[k]=v;save();}
+function setKind(id,k){var r=role(id);if(k==='leave'&&r.kind==='work'&&A.roles.filter(function(x){return x.kind==='work';}).length<2){toast('Keep at least one work type');render();return;}r.kind=k;r.ot=k==='work';if(k==='work'){delete r.bank;delete r.extra;}if(U.role===id&&k!=='work')U.role=firstWork();save();render();}
+function setLeaveUse(id,v){var r=role(id);r.bank=v==='bank';r.extra=v==='extra';if(!r.bank)delete r.bank;if(!r.extra)delete r.extra;save();render();}
+function addRole(job){var last=A.roles.filter(function(r){return r.job===job;}).slice(-1)[0];A.roles.push({id:'r'+Date.now(),job:job,name:'New work type',rate:last?last.rate:0,kind:'work',ot:true});save();render();toast('Work type added');}
+function delRole(id){var n=A.roles.filter(function(r){return r.kind==='work';}).length,r=role(id);if(r.kind==='work'&&n<2){toast('Keep at least one work type');return;}A.roles=A.roles.filter(function(x){return x.id!==id;});if(U.role===id)U.role=firstWork();save();render();}
+function jobRules(j){
+  var R=j.rules,P=R.pp,id=j.id,multi=A.jobs.length>1,t=multi?' · '+esc(j.name):'';
+  function f(n){return n+'.bind(null,\''+id+'\')';}
+  var h='<section class="card"><h2>Pay period'+t+'</h2>'+seg([['weekly','Weekly'],['biweekly','Every 2 wks'],['semi','Twice a month'],['monthly','Monthly']],P.type==='fourweek'?'':P.type,f('setPP'))+'<div style="margin-top:8px">'+seg([['fourweek','Every 4 weeks']],P.type==='fourweek'?'fourweek':'',f('setPP'))+'</div>';
+  if(P.type==='weekly'||P.type==='biweekly'||P.type==='fourweek')h+='<label class="f" for="p-anc-'+id+'">A pay period starts on</label><input id="p-anc-'+id+'" type="date" value="'+P.anchor+'" onchange="setAnchor(\''+id+'\',this.value)">';
+  else h+='<div class="note">'+(P.type==='semi'?'Periods run the 1st to the 15th and the 16th to the end of the month.':'Periods run from the 1st to the end of each month.')+'</div>';
+  h+='<label class="f" for="p-lag-'+id+'">Paid how many days after the period ends</label><input id="p-lag-'+id+'" type="number" inputmode="numeric" min="0" value="'+P.lag+'" oninput="setLag(\''+id+'\',this.value)"><div class="note" id="pp-d-'+id+'">'+ppDesc(id)+'</div><div class="note">Match these to the period dates and pay date on your stub.</div>';
+  if(P.type==='biweekly')h+=cb('',R.third,'setThird(\''+id+'\',this.checked)','A third payday in a month skips the benefit fee, deferred compensation and insurance');
+  h+='</section>';
+  h+='<section class="card"><h2>Overtime'+t+'</h2><label class="f" style="margin-top:0">Who decides the overtime hours</label>'+seg([['auto','Automatic'],['manual','I choose each day']],R.mode,f('setMode'));
+  h+='<label class="f" for="p-ws-'+id+'">Work week starts on</label><select id="p-ws-'+id+'" onchange="setWS(\''+id+'\',this.value)">'+['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'].map(function(n,i){return '<option value="'+i+'"'+(R.ws===i?' selected':'')+'>'+n+'</option>';}).join('')+'</select>';
+  if(R.mode==='auto'){
+    h+=cb('',R.dOn,'setD(\''+id+'\',this.checked)','Overtime after a number of hours in one day');
+    if(R.dOn)h+='<input id="p-dh-'+id+'" type="number" inputmode="decimal" min="0" value="'+R.dHrs+'" oninput="setNJ(\''+id+'\',\'dHrs\',this.value)" style="margin-top:8px" aria-label="Daily overtime starts after hours">';
+    h+=cb('',R.wOn!==false,'setWOn(\''+id+'\',this.checked)','Overtime after a number of hours in a work week');
+    if(R.wOn!==false)h+='<input id="p-thr-'+id+'" type="number" inputmode="decimal" min="0" value="'+R.thr+'" oninput="setNJ(\''+id+'\',\'thr\',this.value)" style="margin-top:8px" aria-label="Weekly overtime starts after hours">';
+  }
+  var cu=U.cust[id];
+  h+='<label class="f">Overtime pays</label>'+seg([['1.5','1.5x'],['2','2x'],['x','Other']],(R.mult===1.5||R.mult===2)&&!cu?R.mult:'x',f('setMult'));
+  if(cu||(R.mult!==1.5&&R.mult!==2))h+='<input id="p-mult-'+id+'" type="number" inputmode="decimal" step="0.05" min="1" value="'+R.mult+'" oninput="setNJ(\''+id+'\',\'mult\',this.value)" style="margin-top:8px" aria-label="Custom multiplier">';
+  h+='<label class="f" for="p-guar-'+id+'">Guaranteed regular hours each pay period (0 for none)</label><input id="p-guar-'+id+'" type="number" inputmode="decimal" min="0" value="'+(R.guar||0)+'" oninput="setGuar(\''+id+'\',this.value)">';
+  var BK=R.bank||{on:false,cap:80,bal:80,date:P.anchor};
+  h+=cb('',BK.on,'setBankOn(\''+id+'\',this.checked)','Hours you work refill a comp-time bank before they are paid');
+  if(BK.on)h+='<div class="two"><div><label class="f" for="p-bc-'+id+'">Bank cap (hours)</label><input id="p-bc-'+id+'" type="number" inputmode="decimal" min="0" value="'+BK.cap+'" oninput="setBank(\''+id+'\',\'cap\',this.value)"></div><div><label class="f" for="p-bb-'+id+'">Balance (hours)</label><input id="p-bb-'+id+'" type="number" inputmode="decimal" min="0" value="'+BK.bal+'" oninput="setBank(\''+id+'\',\'bal\',this.value)"></div></div><label class="f" for="p-bd-'+id+'">Balance is at the start of the pay period beginning</label><input id="p-bd-'+id+'" type="date" value="'+BK.date+'" onchange="setBankDate(\''+id+'\',this.value)"><div class="note">When the bank is under its cap, the first hours you work after using bank hours go into it (regular hours first, then straight comp, then overtime comp), and you are not paid cash for those hours. Use a Paid leave type marked "Uses comp bank hours" for days you take from the bank.</div>';
+  h+='<div class="note">8 overtime hours at 1.5x count as 12 paid hours. Same pay as multiplying the money. Match these settings to your stub and contract.</div></section>';
+  h+=daysOffCard(j);
+  h+=holidaysCard(j);
+  return h;
+}
+function daysOffCard(j){
+  var R=j.rules,O=R.off,id=j.id,multi=A.jobs.length>1;
+  var h='<section class="card"><h2>Days off'+(multi?' · '+esc(j.name):'')+'</h2>';
+  O.sched.forEach(function(x,i){
+    h+='<div class="job" style="margin-bottom:10px">'+(i===0?'<div class="sub" style="margin-bottom:8px">Current schedule</div>':'<label class="f" for="o-f-'+id+'-'+i+'" style="margin-top:0">Changes on</label><input id="o-f-'+id+'-'+i+'" type="date" value="'+x.from+'" onchange="setOffFrom(\''+id+'\','+i+',this.value)" style="margin-bottom:8px">')+'<div class="dchips" role="group" aria-label="Days off">'+DN.map(function(n,d){var on=x.days.indexOf(d)>=0;return '<button class="'+(on?'on':'')+'" aria-pressed="'+on+'" onclick="toggleOff(\''+id+'\','+i+','+d+')">'+n+'</button>';}).join('')+'</div>'+(i>0?'<button class="btn warn" onclick="delOff(\''+id+'\','+i+')">Remove this change</button>':'')+'</div>';
+  });
+  h+='<button class="btn" style="margin-top:0" onclick="addOff(\''+id+'\')">Add a schedule change</button>';
+  h+=cb('',R.offOT!==false,'setOffOT(\''+id+'\',this.checked)','Work on a day off is all overtime, even a short shift');
+  h+='<label class="f" for="o-n-'+id+'">Next schedule change (reminder)</label><input id="o-n-'+id+'" type="date" value="'+(O.next||'')+'" onchange="setOffNext(\''+id+'\',this.value)">';
+  h+='<div class="note">When your days off change, add a change with the new days and the date it starts.</div></section>';
+  return h;
+}
+function holidaysCard(j){
+  var R=j.rules,H=R.hol,id=j.id,multi=A.jobs.length>1;
+  var h='<section class="card"><h2>Holidays'+(multi?' · '+esc(j.name):'')+'</h2>';
+  h+=cb('',H.on!==false,'setHolOn(\''+id+'\',this.checked)','Each holiday pays an '+HOL_H+' hour credit automatically');
+  H.list.slice().sort(function(a,b){return a.d<b.d?-1:1;}).forEach(function(x){
+    var i=H.list.indexOf(x);
+    h+='<div class="rr" style="margin-top:8px"><input value="'+esc(x.n)+'" oninput="setHolName(\''+id+'\','+i+',this.value)" aria-label="Holiday name"><input class="rate" type="date" style="width:150px" value="'+x.d+'" onchange="setHolDate(\''+id+'\','+i+',this.value)" aria-label="Holiday date"><button onclick="delHol(\''+id+'\','+i+')" aria-label="Remove holiday">&times;</button></div>';
+  });
+  if(!H.list.length)h+='<div class="note">No holidays yet. Add your employer\'s holidays here, or mark a day as a holiday where you log it.</div>';
+  h+='<button class="btn" onclick="addHol(\''+id+'\')">Add a holiday</button>';
+  h+='<div class="note">On a day off the credit is '+HOL_H+' hours of straight comp, on top of your regular hours (it needs a Paid leave type marked "Holiday credit on a day off"). On a work day it fills that day\'s regular hours, so any hours you work that day are all overtime.</div></section>';
+  return h;
+}
+function setHolOn(id,v){jr(id).hol.on=v;save();render();}
+function setHolName(id,i,v){jr(id).hol.list[i].n=v;save();}
+function setHolDate(id,i,v){if(v){jr(id).hol.list[i].d=v;save();}}
+function addHol(id){jr(id).hol.list.push({d:ymd(now()),n:'New holiday'});save();render();}
+function delHol(id,i){jr(id).hol.list.splice(i,1);save();render();}
+function toggleOff(id,i,d){var x=jr(id).off.sched[i],k=x.days.indexOf(d);if(k>=0)x.days.splice(k,1);else{x.days.push(d);x.days.sort();}save();render();}
+function addOff(id){var O=jr(id).off,last=O.sched[O.sched.length-1];O.sched.push({from:O.next||ymd(now()),days:last.days.slice()});save();render();}
+function delOff(id,i){jr(id).off.sched.splice(i,1);save();render();}
+function setOffFrom(id,i,v){if(v){jr(id).off.sched[i].from=v;save();}}
+function setOffNext(id,v){jr(id).off.next=v;save();render();}
+function setOffOT(id,v){jr(id).offOT=v;save();render();}
+function setMode(id,v){jr(id).mode=v;save();render();}
+function setNJ(id,k,v){v=parseFloat(v);if(!(v>=0))return;jr(id)[k]=v;save();}
+function setD(id,v){jr(id).dOn=v;save();render();}
+function setWOn(id,v){jr(id).wOn=v;save();render();}
+function setGuar(id,v){v=parseFloat(v);if(!(v>=0))return;jr(id).guar=v;save();}
+function setBankOn(id,v){var R=jr(id);R.bank=R.bank||{on:false,cap:80,bal:80,date:R.pp.anchor};R.bank.on=v;save();render();}
+function setBank(id,k,v){v=parseFloat(v);if(!(v>=0))return;jr(id).bank[k]=v;save();}
+function setBankDate(id,v){if(v){jr(id).bank.date=v;save();}}
+function setWS(id,v){jr(id).ws=parseInt(v,10);save();render();}
+function setMult(id,v){if(v==='x'){U.cust[id]=true;}else{U.cust[id]=false;jr(id).mult=parseFloat(v);}save();render();}
+function setPP(id,v){jr(id).pp.type=v;save();render();}
+function setThird(id,v){jr(id).third=v;save();render();}
+function updPP(id){var d=document.getElementById('pp-d-'+id);if(d)d.textContent=ppDesc(id);}
+function setAnchor(id,v){if(!v)return;jr(id).pp.anchor=v;save();updPP(id);}
+function setLag(id,v){v=parseInt(v,10);if(!(v>=0))return;jr(id).pp.lag=v;save();updPP(id);}
+function setC(k,v){A.contacts[k]=v;save();}
+function setN(k,v){v=parseFloat(v);if(!(v>=0))return;A.set[k]=v;save();}
+function setRound(v){A.set.round=parseInt(v,10);save();render();}
+function setRem(k,v){if(k==='outH'){v=parseFloat(v);if(!(v>=0))return;}A.set.rem[k]=v;save();}
+
+/* Tax helper */
+function vTax(){
+  var t=now(),y=t.getFullYear(),js=new Date(y,0,1),R=rowsFor(js,t,null,null,'all'),T=tot(R),h=bk()+'<header class="top"><div><div class="sub">Tax year '+y+', federal rules</div><h1>Tax helper</h1></div></header>';
+  var LY=null;A.stubs.forEach(function(b){if(b.ytd&&b.ps.slice(0,4)===String(y)&&(!LY||b.ps>LY.ps))LY=b;});
+  if(LY){var end=periodOf(pd(LY.ps),LY.job||'j1').e,otp=+LY.ytd.ot||0,pm=otp/3,cap=Math.min(pm,12500);h+='<section class="card" style="margin-top:0"><h2>From your paystubs, through '+fmtD(end)+'</h2><div class="dl"><span>Gross pay this year</span><span>'+usd0(+LY.ytd.gross||0)+'</span></div><div class="dl"><span>Overtime pay</span><span>'+usd0(otp)+'</span></div><div class="dl"><span>Premium part (one third of overtime pay)</span><span>'+usd0(pm)+'</span></div><div class="dl t"><span>Possible deduction (limit $12,500)</span><span>'+usd0(cap)+'</span></div><div class="note">Only overtime that federal law requires can count, and only what the employer reports in box 12, code TT, on the W-2. Whether your overtime qualifies is a question for payroll or a tax preparer. The one third comes from the extra half of time and a half.</div></section>';}
+  h+='<section class="card"'+(LY?'':' style="margin-top:0"')+'><h2>Logged in the app, year to date</h2><div class="kpis" style="margin:0"><div class="kpi"><div class="l">Gross pay</div><div class="v">'+usd0(T.usd)+'</div></div><div class="kpi"><div class="l">Hours worked</div><div class="v">'+n1(T.worked)+'<small>h</small></div></div><div class="kpi ot"><div class="l">Overtime</div><div class="v">'+n1(T.ot)+'<small>h</small></div></div><div class="kpi"><div class="l">Paychecks saved</div><div class="v">'+A.stubs.length+'</div></div></div>';
+  h+='<div class="note">Some states, such as Washington, have no state income tax on wages. Federal tax, Social Security and Medicare still apply.</div></section>';
+  var W=A.w2,tt=num(W.tt),b1=num(W.box1);
+  h+='<section class="card"><h2>Overtime deduction check</h2><div class="dl"><span>Overtime hours worked</span><span>'+nm(T.ot)+' h</span></div><div class="dl"><span>Hours past '+FLSA+' in a work week</span><span>'+nm(T.fed)+' h</span></div><div class="dl t"><span>Premium that might qualify</span><span>'+usd0(T.prem)+'</span></div>';
+  h+='<div class="note">A federal deduction (up to $12,500) covers only the extra half of overtime that federal law requires. Overtime that comes from a union contract, such as daily overtime, usually does not count. The app estimates the part past '+FLSA+' hours a week. Your real amount is the one your employer reports on the W-2, box 12, code TT.</div>';
+  h+='<label class="f" for="w-tt">Amount on W-2 box 12, code TT</label><input id="w-tt" type="number" inputmode="decimal" value="'+esc(W.tt)+'" onchange="setW(\'tt\',this.value)">';
+  if(tt!=null)h+='<div class="'+(Math.abs(tt-T.prem)<=Math.max(50,T.prem*0.1)?'okbox':'alert')+'" style="margin-top:10px;cursor:default"><b>'+(Math.abs(tt-T.prem)<=Math.max(50,T.prem*0.1)?'Close to the app\'s estimate.':'Different from the app\'s estimate by '+usd0(Math.abs(tt-T.prem))+'.')+'</b><span>'+(tt<T.prem?'Ask payroll whether all required overtime was reported. Corrections go through a W-2c.':'Your employer may count overtime the app treated as contract overtime. Your preparer decides.')+'</span></div>';
+  h+='</section>';
+  h+='<section class="card"><h2>W-2</h2><div class="note" style="margin:-4px 0 8px">Enter box 1 to keep it with your records.</div><label class="f" for="w-b1">W-2 box 1 (wages)</label><input id="w-b1" type="number" inputmode="decimal" value="'+esc(W.box1)+'" onchange="setW(\'box1\',this.value)">';
+  if(b1!=null)h+='<div class="note">Box 1 is normally lower than gross pay, because retirement and some benefits come out before income tax. Compare your final paystub of the year with the W-2. Differences you cannot explain are worth a question to payroll.</div>';
+  h+='</section>';
+  h+='<section class="card"><h2>Good to know</h2><div class="why">Withholding does not drop on its own because of the overtime deduction. To change it, file a new W-4 and use step 4(b).</div><div class="why">Keep every paystub, the final stub of the year, the W-2, and a record of union dues.</div><div class="why">Ask a tax preparer before relying on any number here. Some jobs have special overtime rules.</div></section>';
+  h+='<button class="btn solid" onclick="U.ex.src=\'year\';sub(\'export\')">Export the year for a preparer</button>';
+  return h+foot();
+}
+function setW(k,v){A.w2[k]=v;save();render();}
+
+/* Export, backup and import */
+function exRange(){
+  var t=now(),x=U.ex;
+  if(x.src==='year')return {s:new Date(t.getFullYear(),0,1),e:new Date(t.getFullYear(),11,31),lab:'Tax year '+t.getFullYear()};
+  if(x.src==='pp'){var p=periodShift(periodOf(t),x.pp);return {s:p.s,e:p.e,lab:'Pay period '+fmtD(p.s)+' to '+fmtD(p.e)};}
+  var R=range();return {s:R.s,e:R.e,lab:rLabel(R)};
+}
+function exSet(k,v){U.ex[k]=k==='pp'?parseInt(v,10):v;render();}
+function exText(){var r=exRange();return U.ex.fmt==='csv'?csvFor(r.s,r.e):summaryText(r.s,r.e);}
+function exShare(){var r=exRange(),csv=U.ex.fmt==='csv';shareFile('hours-'+ymd(r.s)+'-to-'+ymd(r.e)+(csv?'.csv':'.txt'),csv?'text/csv':'text/plain',exText());}
+function fileOf(kind){var st=JSON.parse(SNAP.core);st.entries=kind==='setup'?[]:Object.keys(SNAP.ent).map(function(k){return JSON.parse(SNAP.ent[k]);});if(kind==='setup'){st.sess=null;delete st.set.lastExport;}return JSON.stringify({app:'nurris-tracker',kind:kind,version:1,made:ymd(now()),state:st},null,1);}
+function saveBackup(){var txt=fileOf('backup');shareFile('nurris-tracker-backup-'+ymd(now())+'.json','application/json',txt,function(){A.set.lastExport=Date.now();save();render();toast('Backup saved');});}
+function saveSetup(){shareFile('nurris-tracker-setup-'+ymd(now())+'.json','application/json',fileOf('setup'),function(){toast('Setup file saved');});}
+function impRead(input){
+  var f=input.files&&input.files[0];if(!f)return;var r=new FileReader();
+  r.onload=function(){var o=null;try{o=JSON.parse(r.result);}catch(e){}input.value='';
+    if(!o||o.app!=='nurris-tracker'||(o.kind!=='backup'&&o.kind!=='setup')||!o.state||!Array.isArray(o.state.jobs)||!o.state.jobs.length){toast('That is not a Nurri\'s Tracker backup or setup file');return;}
+    if(+o.version>1){toast('This file comes from a newer version of the app');return;}
+    U.imp={kind:o.kind,state:o.state,name:f.name};render();var c=document.getElementById('impc');if(c)c.scrollIntoView({block:'center'});};
+  r.onerror=function(){toast('That file could not be read');};
+  r.readAsText(f);
+}
+function impSummary(s){var hol=0;(s.jobs||[]).forEach(function(j){hol+=j.rules&&j.rules.hol&&Array.isArray(j.rules.hol.list)?j.rules.hol.list.length:0;});return (s.jobs||[]).length+' job'+((s.jobs||[]).length===1?'':'s')+', '+(s.roles||[]).length+' work types, '+hol+' holidays, '+(s.stubs||[]).length+' paystubs, '+(s.entries||[]).length+' logged days';}
+function impApply(){
+  var I=U.imp;if(!I)return;var st=norm(I.state);
+  if(I.kind==='setup'){var wr=st.roles.filter(function(r){return r.kind==='work';})[0];st.entries=A.entries.map(function(e){return st.roles.some(function(r){return r.id===e.role;})?e:Object.assign({},e,{role:wr.id});});st.sess=null;st.set.created=A.set.created;st.set.lastExport=A.set.lastExport;}
+  useState(st);U.job='all';U.cust={};U.role=firstWork();U.imp=null;save();render();toast(I.kind==='setup'?'Setup imported':'Backup restored');
+}
+function impCancel(){U.imp=null;render();}
+function vExport(){
+  var r=exRange(),txt=exText(),p=periodOf(now()),opts='';
+  for(var i=0;i>=-6;i--){var q=periodShift(p,i);opts+='<option value="'+i+'"'+(U.ex.pp===i?' selected':'')+'>'+fmtD(q.s)+' to '+fmtD(q.e)+(i===0?' (current)':'')+'</option>';}
+  var h=bk()+'<header class="top"><div><div class="sub">Share or keep a record</div><h1>Export</h1></div></header>';
+  h+='<section class="card" style="margin-top:0"><label class="f" style="margin-top:0">What to export</label>'+seg([['range','Hours range'],['pp','Pay period'],['year','Whole year']],U.ex.src,'exSrc');
+  if(U.ex.src==='pp')h+='<label class="f" for="x-pp">Pay period</label><select id="x-pp" onchange="exSet(\'pp\',this.value)">'+opts+'</select>';
+  h+='<div class="note">'+esc(r.lab)+'</div><label class="f">Format</label>'+seg([['text','Readable text'],['csv','CSV (spreadsheet)']],U.ex.fmt,'exFmt');
+  h+='<label class="f" for="x-out">Preview</label><textarea id="x-out" style="height:260px;font:13px/1.4 var(--fb);white-space:pre" readonly>'+esc(txt)+'</textarea>';
+  h+='<button class="btn solid" onclick="exShare()">Share or save as a file</button><button class="btn" onclick="copyTxt(document.getElementById(\'x-out\').value,\'x-out\',\'Copied\')">Copy to clipboard</button></section>';
+  h+='<section class="card"><h2>Backup</h2><div class="note" style="margin:-4px 0 8px">One file with everything: days, rules and paystubs. Save it to Files, Mail or iCloud. Last backup: '+(A.set.lastExport?fmtDY(new Date(A.set.lastExport)):'never')+'.</div><button class="btn solid" onclick="saveBackup()">Save a backup file</button><button class="btn" onclick="saveSetup()">Save a setup file (rules and paystubs, no days)</button></section>';
+  h+='<section class="card" id="impc"><h2>Import</h2>';
+  if(U.imp){var I=U.imp;h+='<div class="alert" style="cursor:default"><b>'+(I.kind==='setup'?'Use this setup file?':'Restore this backup?')+'</b><span>'+esc(I.name)+': '+impSummary(I.state)+'.</span></div><div class="note">'+(I.kind==='setup'?'This replaces your jobs, work types, rules, holidays, contacts and paystubs. Your '+A.entries.length+' logged days stay.':'This replaces everything on this phone ('+A.entries.length+' days, '+A.stubs.length+' paystubs) with the backup.')+'</div><button class="btn solid" id="imp-ok" onclick="impApply()">'+(I.kind==='setup'?'Replace my setup':'Replace everything')+'</button><button class="btn" onclick="impCancel()">Cancel</button>';}
+  else h+='<div class="note" style="margin:-4px 0 8px">Open a backup or a setup file someone sent you. The app shows what is in it and asks before replacing anything.</div><label class="btn lnk" for="imp-file" role="button" tabindex="0" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();this.click();}">Choose a file</label><input class="file" id="imp-file" type="file" accept=".json,application/json" onchange="impRead(this)" aria-label="Backup or setup file">';
+  h+='</section>';
+  return h+foot();
+}
+function exSrc(v){U.ex.src=v;render();}
+function exFmt(v){U.ex.fmt=v;render();}
+
+/* Timesheet editor */
+function openSheet(s,e,jid){
+  var n=dd(s,e)+1;if(n>21){toast('Pick a range of 3 weeks or less');return;}
+  jid=jid||curJob().id;
+  var lo=ymd(s),hi=ymd(e),rows=[],keep=[],seen={};
+  var inR=A.entries.filter(function(x){return x.date>=lo&&x.date<=hi&&roleJob(x.role)===jid;}).sort(function(x,y){return x.date<y.date?-1:x.date>y.date?1:(x.s<y.s?-1:1);});
+  inR.forEach(function(x){if(seen[x.date])keep.push(x);else seen[x.date]=x;});
+  for(var i=0;i<n;i++){var k=ymd(addD(s,i)),x=seen[k];rows.push({hol:holIdx(jid,k)>=0,date:k,id:x?x.id:null,s:x?x.s:'',e:x?x.e:'',b:x?x.b:'',role:x?x.role:'',o:x?JSON.parse(JSON.stringify(x)):null,more:keep.filter(function(y){return y.date===k;}).length});}
+  var st=null,p=periodOf(s,jid);
+  if(ymd(p.s)===lo&&ymd(p.e)===hi)st=stubFor(lo,jid);
+  U.sh={s:lo,e:hi,job:jid,rows:rows,keep:keep,role:firstWork(jid),gross:st?String(Math.round(st.gross*100)/100):'',hrs:st&&st.hrs!=null?String(Math.round(st.hrs*100)/100):'',ot:st&&st.othrs!=null?String(Math.round(st.othrs*100)/100):''};
+  U.from=U.tab;U.tab='sheet';render();window.scrollTo(0,0);
+}
+function sheetThis(){var R=range();openSheet(R.s,R.e,curJob().id);}
+function sheetPeriod(){var p=periodOf(pd(U.chk));openSheet(p.s,p.e,curJob().id);}
+function readSh(){
+  var Z=U.sh,g=function(i){var x=document.getElementById(i);return x?x.value:null;};
+  if(!document.getElementById('sh-s-0'))return;
+  Z.rows.forEach(function(r,i){r.s=tfix(g('sh-s-'+i)||'');r.e=tfix(g('sh-e-'+i)||'');r.b=g('sh-b-'+i);if(r.b==null)r.b='';var hc=document.getElementById('sh-h-'+i);if(hc)r.hol=hc.checked;});
+  var a=g('sh-role');if(a)Z.role=a;Z.gross=g('sh-gross')||'';Z.hrs=g('sh-hrs')||'';Z.ot=g('sh-ot')||'';
+}
+function shDraft(){
+  readSh();var Z=U.sh,list=[],err='';
+  Z.rows.forEach(function(r,i){
+    if(!r.s&&!r.e)return;var d=pd(r.date),lab=DN[d.getDay()]+' '+fmtD(d);
+    if(!(r.s&&r.e)){err=err||lab+': enter both a start and an end time.';return;}
+    if(!tvalid(r.s)||!tvalid(r.e)){err=err||lab+': use 24-hour time, like 14:00.';return;}
+    var o=r.o,e={id:r.id||('sh'+i),date:r.date,s:r.s,e:r.e,b:(r.b===''||r.b==null)?A.set.brk:(parseFloat(r.b)||0),role:r.role||Z.role,ot:o?o.ot:null,adj:o?o.adj:0,note:o?o.note:''};
+    if(wmin(e)<=0){err=err||lab+': those times leave no paid time. Check the break.';return;}
+    list.push(e);
+  });
+  return {list:list.concat(Z.keep),err:err};
+}
+function shRows(){var d=shDraft(),Z=U.sh;return {err:d.err,rows:holWith(Z.job,Z.rows.map(function(r){return {d:r.date,hol:!!r.hol,n:'Holiday'};}),function(){return rowsFor(pd(Z.s),pd(Z.e),null,null,Z.job,{lo:Z.s,hi:Z.e,job:Z.job,list:d.list});})};}
+function shTotals(){
+  var el=document.getElementById('shT');if(!el)return;
+  var x=shRows(),T=tot(x.rows),Z=U.sh,h='',pp1=periodOf(pd(Z.s),Z.job);
+  if(ymd(pp1.s)===Z.s&&ymd(pp1.e)===Z.e)periodAdj(T,pp1,Z.job);
+  var otc=T.otCash!=null?T.otCash:T.ot;
+  if(x.err)h+='<div class="err" role="alert">'+esc(x.err)+'</div>';
+  h+='<div class="dl"><span>Hours worked</span><span>'+nm(T.worked)+' h</span></div><div class="dl"><span>Overtime</span><span>'+nm(T.ot)+' h → '+nm(T.otPh)+' paid h</span></div><div class="dl"><span>Paid hours</span><span>'+nm(T.ph)+' h</span></div><div class="dl t"><span>Gross pay (app)</span><span>'+usd(T.usd)+'</span></div>';
+  var M=null;if(Z.job===curJob().id)M=model();
+  if(M)h+='<div class="dl"><span>Take-home (app)</span><span>'+usd0(netOf(T))+'</span></div>';
+  var g=num(Z.gross),hp=num(Z.hrs),op=num(Z.ot);
+  if(g!=null){var df=g-T.usd,ok=Math.abs(df)<=1;h+='<div class="'+(ok?'okbox':'alert')+'" style="cursor:default;margin-top:12px"><b>'+(ok?'The app matches the stub.':'Stub is '+usd(Math.abs(df))+(df<0?' lower':' higher')+' than the app.')+'</b>'+(ok?'':'<span>Compare the hours and the overtime hours below to find where it splits.</span>')+'</div>';}
+  if(hp!=null)h+='<div class="note">Regular hours: stub '+nm(hp)+' h, app '+nm(T.reg)+' h ('+(hp-T.reg>=0?'+':'')+nm(hp-T.reg)+' h).</div>';
+  if(op!=null)h+='<div class="note">Overtime hours: stub '+nm(op)+' h, app '+nm(otc)+' h ('+(op-otc>=0?'+':'')+nm(op-otc)+' h).</div>';
+  h+='<div class="note" style="margin-top:12px"><b style="color:var(--ink)">The math, day by day</b></div>';
+  x.rows.forEach(function(r){
+    var d=pd(r.e.date),line=nm(r.w-r.ot)+' h × '+usd(r.rate);
+    if(r.ot>0)line+=' + '+nm(r.ot)+' h × '+r.mult+' × '+usd(r.rate);
+    if(+r.e.adj)line+=' + '+usd(+r.e.adj);
+    h+='<div class="why"><b>'+DN[d.getDay()]+' '+fmtD(d)+'</b> · '+nm(r.w)+' h'+(r.e.hol?' (holiday credit)':'')+'<br><span class="sub">'+line+' = <b style="color:var(--ink)">'+usd(r.usd)+'</b></span></div>';
+  });
+  el.innerHTML=h;
+}
+function shUp(){shTotals();}
+function shFill(){
+  readSh();var Z=U.sh,t=null;Z.rows.forEach(function(r){if(!t&&r.s&&r.e)t=r;});
+  if(!t){toast('Fill in one day first');return;}
+  var n=0;Z.rows.forEach(function(r){var wd=pd(r.date).getDay();if(!r.s&&!r.e&&wd>=1&&wd<=5){r.s=t.s;r.e=t.e;r.b=t.b;n++;}});
+  render();toast(n?'Filled '+n+' empty weekday'+(n>1?'s':''):'No empty weekdays to fill');
+}
+function shBack(){if(U.from==='check'&&U.chk)openCheck(U.chk);else{U.tab=U.from&&U.from!=='sheet'?U.from:'hours';render();}}
+function shSave(){
+  var d=shDraft();if(d.err){toast(d.err);return;}
+  var Z=U.sh,ids={},keepIds={},stamp=Date.now();Z.rows.forEach(function(r){if(r.id)ids[r.id]=1;});Z.keep.forEach(function(k){keepIds[k.id]=1;});
+  A.entries=A.entries.filter(function(x){return !ids[x.id];});
+  d.list.forEach(function(e,i){if(keepIds[e.id])return;if(/^sh\d/.test(e.id))e.id='e'+stamp+'-'+i;A.entries.push(e);});
+  Z.rows.forEach(function(r){var i=holIdx(Z.job,r.date);if(r.hol&&i<0)syncHol(Z.job,r.date,true,'Holiday');else if(!r.hol&&i>=0)syncHol(Z.job,r.date,false);});
+  save();shBack();toast('Timesheet saved');
+}
+function vSheet(){
+  var Z=U.sh,j=jobOf(Z.job)||A.jobs[0],h='<button class="btn dim bk" onclick="shBack()">&#8249; Back</button>';
+  h+='<header class="top"><div><div class="sub">'+fmtD(pd(Z.s))+' to '+fmtD(pd(Z.e))+(A.jobs.length>1?' · '+esc(j.name):'')+'</div><h1>Timesheet</h1></div></header>';
+  h+='<div class="note" style="margin:-6px 0 10px">Type the real start and end times for each day in 24-hour time. The totals and the math update as you type. Leave a day blank for no work.</div>';
+  h+='<section class="card" style="margin-top:0" id="shT" aria-live="polite"></section>';
+  h+='<section class="card"><h2>Compare with the paystub</h2><div class="two"><div><label class="f" for="sh-gross" style="margin-top:0">Gross pay on stub</label><input id="sh-gross" type="number" inputmode="decimal" step="0.01" value="'+esc(Z.gross)+'" oninput="shUp()"></div><div><label class="f" for="sh-hrs" style="margin-top:0">Regular hours on stub</label><input id="sh-hrs" type="number" inputmode="decimal" step="0.01" value="'+esc(Z.hrs)+'" oninput="shUp()"></div></div><div class="two"><div><label class="f" for="sh-ot">Overtime hours on stub</label><input id="sh-ot" type="number" inputmode="decimal" step="0.01" value="'+esc(Z.ot||'')+'" oninput="shUp()"></div><div></div></div></section>';
+  h+='<section class="card"><h2>Days</h2><label class="f" for="sh-role" style="margin-top:0">Work type for new days</label><select id="sh-role" onchange="shUp()">'+A.roles.filter(function(r){return r.job===Z.job;}).map(function(r){return '<option value="'+r.id+'"'+(r.id===Z.role?' selected':'')+'>'+esc(r.name)+'</option>';}).join('')+'</select>';
+  h+='<div class="sg hdr" style="margin-top:14px"><span></span><span>Start</span><span>End</span><span>Break</span><span>Hol.</span></div>';
+  Z.rows.forEach(function(r,i){
+    var d=pd(r.date),lab=DN[d.getDay()]+' '+fmtD(d);
+    h+='<div class="sg"><div class="sd"><b>'+DN[d.getDay()]+'</b>'+fmtD(d)+'</div>'+tin('sh-s-'+i,r.s,'shUp()','Start time, 24 hour, '+lab)+tin('sh-e-'+i,r.e,'shUp()','End time, 24 hour, '+lab)+'<input id="sh-b-'+i+'" type="number" inputmode="numeric" min="0" placeholder="'+A.set.brk+'" value="'+(r.b===''||r.b==null?'':r.b)+'" oninput="shUp()" aria-label="Break minutes, '+lab+'"><label class="ck"><input id="sh-h-'+i+'" type="checkbox"'+(r.hol?' checked':'')+' onchange="shUp()" aria-label="Holiday, '+lab+'"></label></div>';
+    if(r.more)h+='<div class="note" style="margin:-2px 0 8px">'+r.more+' more shift'+(r.more>1?'s':'')+' this day stay as they are. Edit them from Hours.</div>';
+  });
+  h+='<button class="btn" onclick="shFill()">Fill empty weekdays like the first day</button></section>';
+  h+='<button class="btn solid" onclick="shSave()">Save timesheet</button>';
+  return h;
+}
+function render(){
+  if(!A)return;
+  var m=document.getElementById('main'),t=U.tab,h;
+  if(t==='home')h=vHome();else if(t==='clock')h=vClock();else if(t==='hours')h=vHours();else if(t==='edit')h=vEdit();else if(t==='pay')h=vPaychecks();else if(t==='check')h=vCheck();else if(t==='sheet')h=vSheet();
+  else h=U.sub==='rules'?vRules():U.sub==='tax'?vTax():U.sub==='export'?vExport():vMore();
+  m.innerHTML=h;
+  var act=t==='edit'?(U.from||'hours'):t==='check'?'pay':t==='sheet'?(U.from==='check'?'pay':(U.from||'hours')):t;
+  ['home','clock','hours','pay','more'].forEach(function(k){var b=document.getElementById('tb-'+k);b.className=act===k?'on':'';if(act===k)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
+  if(t==='edit')edPrev();
+  if(t==='sheet')shTotals();
+}
+document.addEventListener('keydown',function(e){var t=e.target;if((e.key==='Enter'||e.key===' ')&&t&&t.getAttribute&&t.getAttribute('role')==='button'&&t.tagName!=='BUTTON'&&t.tagName!=='LABEL'){e.preventDefault();t.click();}});
+setInterval(function(){if(A&&U.tab==='clock'&&A.sess){var a=document.getElementById('tm'),w=document.getElementById('wk');if(a&&w&&!document.activeElement.matches('input,select,textarea')){a.innerHTML=tmHtml();w.innerHTML=wkCard();}}},1000);
+boot();
+</script>
+</body>
+</html>

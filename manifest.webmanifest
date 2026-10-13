@@ -1,0 +1,16 @@
+{
+  "name": "Nurri's Tracker",
+  "short_name": "Nurri's",
+  "description": "Log your hours in 24-hour time, see your pay the way your stubs work it out, and check every paycheck.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#EDF0F2",
+  "background_color": "#EDF0F2",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
