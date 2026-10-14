@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="app-build-id" content="2026-10-13-V1.1">
+<meta name="app-build-id" content="2026-10-13-V1.2">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Nurri's Tracker</title>
 <meta name="description" content="Log your hours in 24-hour time, see your pay the way your stubs work it out, and check every paycheck.">
@@ -242,7 +242,7 @@ input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible,[ro
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 <script id="model">
 /* Pay model: pure functions over the state object A. No DOM here; test.js runs this block in Node. */
-const BUILD='2026-10-13-V1.1';
+const BUILD='2026-10-13-V1.2';
 var APP_V=(/-(V\d+(?:\.\d+)*)$/.exec(BUILD)||[0,'V1'])[1];
 var DN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],DL=['S','M','T','W','T','F','S'],MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var A=null,U={job:'all'},NOW=null,REV=0,MC={k:null,v:null},FLSA=40,HOL_H=8,SCHEMA=2;
@@ -690,6 +690,7 @@ function vHome(){
     lab2+='<span>'+(x?Math.round(x.d):'')+'</span>';
   }
   h+='<div class="bars" id="bars">'+bars+'</div><div class="bl">'+lab+'</div><div class="bl bd">'+labD+'</div>'+(m==='both'?'<div class="bl b2">'+lab2+'</div>':'')+'<div class="lg"><span><i style="background:var(--go)"></i>Regular</span><span><i style="background:var(--ot-bar)"></i>Overtime</span><span><i style="background:var(--hol-fg)"></i>Holiday credit</span><span><i style="background:var(--lv-fg)"></i>Paid leave</span><span><i style="background:var(--off-fg)"></i>Day off</span><span><i style="background:var(--go);border-radius:6px;width:14px"></i>Payday</span><span>'+(m==='dollars'?'Bars show dollars':m==='both'?'Bars hours, dollars below':'Bars show hours')+'</span></div></section>';
+  h+=payCal();
   h+='<div class="kpis">';
   h+='<div class="kpi"><div class="l">Gross pay</div><div class="v">'+usd0(C.usd)+'</div><div class="d">'+dlt(C.usd,Rp.usd,usd0,'')+'</div></div>';
   h+='<div class="kpi"><div class="l">Hours worked</div><div class="v">'+n1(C.worked)+'<small>h</small></div><div class="d">'+dlt(C.worked,Rp.worked,n1,' h')+'</div></div>';
@@ -702,7 +703,7 @@ function vHome(){
   return h;
 }
 function inDays(a,b){var n=dd(a,b);return n===0?'today':n===1?'tomorrow':'in '+n+' days';}
-/* Home: Next payday and Building now, then the pay calendar for the last period and this one. */
+/* Home: Next payday and Building now. */
 function payCards(){
   var jid=curJob().id,S=payState(jid),t=now(),T0=new Date(t.getFullYear(),t.getMonth(),t.getDate()),m=A.set.view,multi=A.jobs.length>1?' · '+esc(curJob().name):'',lag=+jr(jid).pp.lag||0;
   var nx=S.next,bu=S.building,pa=S.paid,cw=checkOf(nx),cb=checkOf(bu),cp=pa?checkOf(pa):null;
@@ -713,6 +714,11 @@ function payCards(){
   h+='<section class="card"><h2>Building now'+multi+'</h2><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:10px"><div><div class="fig">'+usd0(cb.T.usd)+'</div><div class="sub">earned so far, '+fmtD(bu.s)+' to '+fmtD(bu.e)+'</div>'+(model()?'<div class="sub" style="color:var(--ink);margin-top:2px">'+netTxt(cb.T,bu.pay)+'</div>':'<div class="sub" style="margin-top:2px">Add a paystub to see take-home.</div>')+'</div><div style="text-align:right;flex:none"><div class="sub">Day '+S.day+' of '+S.len+'</div><div style="font:600 18px var(--fd)">Pays '+DN[bu.pay.getDay()]+' '+fmtD(bu.pay)+'</div></div></div>';
   h+='<div class="pbar"><i style="width:'+Math.min(100,S.day/S.len*100)+'%"></i></div><div class="note">The period you are working now. It is paid '+lag+' day'+(lag===1?'':'s')+' after it ends, so the money for these days arrives on '+fmtD(bu.pay)+'. The next payday pays for the period before this one.</div>';
   h+='<button class="btn" onclick="openPeriod(0)">See and edit these days</button></section>';
+  return h;
+}
+/* Home: the pay calendar for the last period and this one, shown under Last 2 weeks. */
+function payCal(){
+  var jid=curJob().id,S=payState(jid),m=A.set.view,bu=S.building,h='';
   var prev=periodShift(bu,-1,jid),from=prev.s,to=bu.e,rows=rowsFor(from,to,null,null,jid),a=wkStart(from,jid),z=addD(wkStart(to,jid),6);
   h+='<section class="card"><div class="hd"><h2 style="margin:0">Pay calendar</h2>'+tab3()+'</div><div class="sub">'+fmtD(from)+' to '+fmtD(to)+'. Tap a day to log or edit it.</div><div class="pg" id="pcal">';
   for(var i=0;i<7;i++)h+='<div class="wd">'+DL[(jr(jid).ws+i)%7]+'</div>';
