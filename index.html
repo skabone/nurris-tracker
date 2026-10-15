@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="app-build-id" content="2026-10-14-V1.3.1">
+<meta name="app-build-id" content="2026-10-15-V1.4">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <title>Nurri's Tracker</title>
 <meta name="description" content="Log your hours in 24-hour time, see your pay the way your stubs work it out, and check every paycheck.">
@@ -234,6 +234,15 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .brk{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px}.brk+.brk{margin-top:16px}
 .brk h4{margin:0;font-size:17px;font-weight:600}.brk label.f{margin-top:10px}.brk .lx{color:var(--ink2)}
 .pbr{display:flex;gap:8px;align-items:center;margin-top:8px}.pbr input{flex:1;min-width:0;width:auto;padding:0 8px;text-align:center}.pbr span,.pbr .lx{flex:none}
+/* V1.4: several run cards, the 123 | ABC keyboard switch (24 px drawn, 46 px tap area) and the fixed route prefix on Run in number mode. */
+.busbox .bhr{display:flex;align-items:center;gap:10px;flex:none}.busbox .lx{color:var(--ink2)}
+.kseg{display:inline-flex;flex:none}
+.kseg button{position:relative;border:1px solid var(--line);background:var(--card);color:var(--ink2);height:24px;min-height:0;padding:0 9px;font-size:13px;font-weight:600;line-height:22px}
+.kseg button:first-child{border-radius:8px 0 0 8px;border-right:0}.kseg button:last-child{border-radius:0 8px 8px 0}
+.kseg button.on{background:var(--stop);color:var(--on-stop);border-color:var(--stop)}
+.kseg button::after{content:'';position:absolute;left:0;right:0;top:-11px;bottom:-11px}
+.runp{display:flex;align-items:stretch}.runp .pfx{display:flex;align-items:center;height:46px;padding:0 3px 0 12px;border:1px solid var(--line);border-right:0;border-radius:10px 0 0 10px;background:var(--field);color:var(--ink2);font-size:16px;white-space:nowrap}
+.runp .pfx[hidden]{display:none}.runp .pfx+input{border-radius:0 10px 10px 0;padding-left:3px;min-width:0}.runp .pfx[hidden]+input{border-radius:10px;padding-left:12px}
 .mid .sub.bl{color:var(--ink);font-weight:500;white-space:normal}
 .srch{margin-top:14px}.srch input{width:100%}
 .opn{border-color:var(--go)}.opn.late{border-color:var(--ot)}
@@ -268,7 +277,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 <script id="model">
 /* Pay model: pure functions over the state object A. No DOM here; test.js runs this block in Node. */
-const BUILD='2026-10-14-V1.3.1';
+const BUILD='2026-10-15-V1.4';
 var APP_V=(/-(V\d+(?:\.\d+)*)$/.exec(BUILD)||[0,'V1'])[1];
 var DN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],DL=['S','M','T','W','T','F','S'],MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var A=null,U={job:'all'},NOW=null,REV=0,MC={k:null,v:null},FLSA=40,HOL_H=8,SCHEMA=3;
@@ -332,7 +341,7 @@ function sessShift(ss,o){
 }
 /* Fill in anything a stored, imported or brand-new state is missing. Generic defaults only. */
 function norm(s){
-  s=s||{};var t=ymd(now()),set=Object.assign({view:'both',brk:0,round:0,created:Date.now(),lastExport:0},s.set||{});
+  s=s||{};var t=ymd(now()),set=Object.assign({view:'both',brk:0,round:0,created:Date.now(),lastExport:0,kbd:false},s.set||{});set.kbd=set.kbd===true;
   set.rem=Object.assign({inOn:false,inT:'06:30',outOn:false,outH:10},set.rem||{});
   if(['hours','dollars','both'].indexOf(set.view)<0)set.view='both';
   var jobs=(Array.isArray(s.jobs)&&s.jobs.length?s.jobs:[{id:'j1',name:'My job'}]).map(function(j){
@@ -361,7 +370,9 @@ function entryErr(E,openOk){
   if(!E.date||!E.s||!E.e)return 'Enter a date, start time, and end time.';if(!tvalid(E.s)||!tvalid(E.e))return 'Use 24-hour time, like 14:00.';if(wmin(E)<=0)return 'Those times leave no paid time. Check the break.';if(E.ot!=null&&E.ot>wmin(E)/60)return 'Overtime can\'t be more than the hours worked.';return pbErr(E);
 }
 /* Paid breaks are a record only and never change pay, but each one needs both times in 24-hour form. */
-function pbErr(E){return (E.pb||[]).some(function(p){return (p.f||p.t)&&!(tvalid(p.f)&&tvalid(p.t));})?'Give each paid break a start and an end in 24-hour time, like 12:30.':'';}
+function pbErr(E){return (E.pb||[]).some(function(p){return (p.f||p.t)&&!(tvalid(p.f)&&tvalid(p.t));})?'Give each paid break a start and an end in 24-hour time, like 12:30.':cardErr(E);}
+/* The optional From and To on run cards 2 and up: a note only, but when typed they must be 24-hour times. */
+function cardErr(E){var L=Array.isArray(E.cards)?E.cards:[];for(var i=0;i<L.length;i++){var c=L[i]||{};if((c.f&&!tvalid(c.f))||(c.t&&!tvalid(c.t)))return 'Run card '+(i+2)+': use 24-hour time, like 14:00.';}return '';}
 
 function calc(list){
   var cr={},cd={},G={},rows=[];
@@ -516,9 +527,23 @@ function unmark(k){A.marks=A.marks.filter(function(m){return m.date!==k;});}
 /* ---- V1.3: open shifts and the run card ---- */
 function openOn(k,jid){return A.entries.some(function(e){return e.open&&e.date===k&&(!jid||roleJob(e.role)===jid);});}
 function openDays(jid){return A.entries.filter(function(e){return e.open&&(!jid||roleJob(e.role)===jid);}).sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:(a.s<b.s?-1:1);});}
-/* The run card on a shift, as one line: duty, then route (what riders see), run (like 48-1) and coach number. */
-function runPlain(e){var p=[],q=[];if(e.duty)p.push('Duty '+e.duty);if(e.route)q.push('Rt '+e.route);if(e.run)q.push('Run '+e.run);if(e.coach)q.push('Coach '+e.coach);if(q.length)p.push(q.join(' '));return p.join(' · ');}
+/* ---- V1.4: several run cards in one shift. Card 1 is the shift's own duty, route, run and coach (the V1.3 shape, untouched,
+   so a shift logged before V1.4 is card 1 exactly). Cards 2 and up live in e.cards as {duty,route,run,coach,f,t}, every
+   field optional, f and t (From and To) a note only. Cards never change pay; the shift's Started and Ended do. ---- */
+function cardsOf(e){var L=[{duty:e.duty||'',route:e.route||'',run:e.run||'',coach:e.coach||''}];(Array.isArray(e.cards)?e.cards:[]).forEach(function(c){if(c&&typeof c==='object')L.push(c);});return L;}
+function moreCards(e){return Array.isArray(e.cards)?e.cards.length:0;}
+/* One run card as one line: duty, then route (what riders see), run (like 48-1) and coach number, then its own times if any. */
+function cardPlain(c){var p=[],q=[];if(c.duty)p.push('Duty '+c.duty);if(c.route)q.push('Rt '+c.route);if(c.run)q.push('Run '+c.run);if(c.coach)q.push('Coach '+c.coach);if(q.length)p.push(q.join(' '));if(c.f&&c.t)p.push(c.f+' to '+c.t);else if(c.f)p.push('from '+c.f);else if(c.t)p.push('to '+c.t);return p.join(' · ');}
+/* The run card on a shift as one line: card 1 only, or with all=true every card joined by " / " (exports, the email, search). */
+function runPlain(e,all){var L=cardsOf(e);return all?L.map(cardPlain).filter(Boolean).join(' / '):cardPlain(L[0]);}
 function runLine(e){return esc(runPlain(e));}
+/* A row's run line: card 1 plus "+N more" when the shift has more cards. */
+function runShort(e){var n=moreCards(e),l=runPlain(e);return l+(n?(l?' · ':'')+'+'+n+' more':'');}
+/* The Run field in number mode: when the run is empty or reads "<route>-<digits>", the card's route and "-" are a fixed
+   prefix and only the digits are typed (the iPhone number keypad has no hyphen). Anything else is shown whole and saved as typed. */
+function runFits(route,run){route=String(route||'');run=String(run||'');return !!route&&(run===''||(run.indexOf(route+'-')===0&&/^\d+$/.test(run.slice(route.length+1))));}
+function runNum(route,run){return runFits(route,run)?String(run||'').slice(String(route).length+1):String(run||'');}
+function runFull(route,typed,pfx){typed=String(typed||'').trim();return pfx&&route&&typed?route+'-'+typed:typed;}
 /* Save a logged day (new or edited). A logged day and a "did not work" mark never share a date. */
 function putEntry(o){
   var f=false;if(o.id){for(var i=0;i<A.entries.length;i++)if(A.entries[i].id===o.id){A.entries[i]=o;f=true;}}
@@ -910,15 +935,15 @@ function tlHtml(R,rows){
 }
 function summaryText(s,e){
   var rows=rowsFor(s,e),T=tot(rows),L=['Hours '+fmtD(s)+' to '+fmtD(e)+', '+e.getFullYear()];
-  rows.forEach(function(r){var d=pd(r.e.date),ro=role(r.e.role);L.push(DN[d.getDay()]+' '+fmtD(d)+'  '+t24(r.e.s)+' to '+t24(r.e.e)+'  '+(ro?ro.name:'')+'  '+nm(r.w)+' h'+(r.ot>0?' ('+nm(r.ot)+' OT)':'')+(runPlain(r.e)?'  ['+runPlain(r.e)+']':'')+(r.e.note?'  - '+r.e.note:''));});
+  rows.forEach(function(r){var d=pd(r.e.date),ro=role(r.e.role);L.push(DN[d.getDay()]+' '+fmtD(d)+'  '+t24(r.e.s)+' to '+t24(r.e.e)+'  '+(ro?ro.name:'')+'  '+nm(r.w)+' h'+(r.ot>0?' ('+nm(r.ot)+' OT)':'')+(runPlain(r.e,true)?'  ['+runPlain(r.e,true)+']':'')+(r.e.note?'  - '+r.e.note:''));});
   L.push('Worked '+nm(T.worked)+' h, overtime '+nm(T.ot)+' h counts as '+nm(T.otPh)+' paid h');
   L.push('Paid hours '+nm(T.ph)+' h, adjustments '+usd(T.adj)+', gross '+usd(T.usd));
   L.push('Estimates from Nurri\'s Tracker. Not a payroll record.');
   return L.join('\n');
 }
 function csvFor(s,e){
-  var q=function(x){return '"'+String(x).replace(/"/g,'""')+'"';},L=['date,day,start,end,break_min,work_type,job,worked_h,overtime_h,paid_h,rate,gross_usd,adjustment_usd,duty,route,run,coach,paid_breaks,note'];
-  rowsFor(s,e).forEach(function(r){var ro=role(r.e.role),jb=ro?jobOf(ro.job):null,d=pd(r.e.date);L.push([r.e.date,DN[d.getDay()],r.e.s,r.e.e,r.e.b,q(ro?ro.name:''),q(jb?jb.name:''),nm(r.w),nm(r.ot),nm(r.ph),r.rate,r.usd.toFixed(2),(+r.e.adj||0),q(r.e.duty||''),q(r.e.route||''),q(r.e.run||''),q(r.e.coach||''),q((r.e.pb||[]).map(function(p){return p.f+'-'+p.t;}).join(' / ')),q(r.e.note)].join(','));});
+  var q=function(x){return '"'+String(x).replace(/"/g,'""')+'"';},cj=function(e,k){var C=cardsOf(e);return C.length>1?C.map(function(c){return c[k]||'';}).join(' / '):(C[0][k]||'');},L=['date,day,start,end,break_min,work_type,job,worked_h,overtime_h,paid_h,rate,gross_usd,adjustment_usd,duty,route,run,coach,paid_breaks,note'];
+  rowsFor(s,e).forEach(function(r){var ro=role(r.e.role),jb=ro?jobOf(ro.job):null,d=pd(r.e.date);L.push([r.e.date,DN[d.getDay()],r.e.s,r.e.e,r.e.b,q(ro?ro.name:''),q(jb?jb.name:''),nm(r.w),nm(r.ot),nm(r.ph),r.rate,r.usd.toFixed(2),(+r.e.adj||0),q(cj(r.e,'duty')),q(cj(r.e,'route')),q(cj(r.e,'run')),q(cj(r.e,'coach')),q((r.e.pb||[]).map(function(p){return p.f+'-'+p.t;}).join(' / ')),q(r.e.note)].join(','));});
   return L.join('\n');
 }
 function copyTxt(txt,id,msg){
@@ -944,7 +969,8 @@ function readEd(){
   var g=function(i){var x=document.getElementById(i);return x?x.value:null;};
   if(g('ed-date')!=null)E.date=g('ed-date');if(g('ed-s')!=null)E.s=tfix(g('ed-s'));if(g('ed-e')!=null)E.e=tfix(g('ed-e'));
   if(g('ed-b')!=null)E.b=parseFloat(g('ed-b'))||0;
-  if(g('bu-duty')!=null){E.duty=g('bu-duty');E.route=g('bu-route');E.run=g('bu-run');E.coach=g('bu-coach');}
+  if(g('bu-duty')!=null){E.duty=g('bu-duty');E.route=g('bu-route');E.run=runRead('bu-run',E.route);E.coach=g('bu-coach');}
+  (E.cards||[]).forEach(function(c,i){if(g('bc-duty-'+i)==null)return;c.duty=g('bc-duty-'+i);c.route=g('bc-route-'+i);c.run=runRead('bc-run-'+i,c.route);c.coach=g('bc-coach-'+i);if(g('bc-f-'+i)!=null){c.f=tfix(g('bc-f-'+i));c.t=tfix(g('bc-t-'+i));}});
   (E.pb||[]).forEach(function(p,i){var f=g('pb-f'+i),t=g('pb-t'+i);if(f!=null)p.f=tfix(f);if(t!=null)p.t=tfix(t);});
   var hc=document.getElementById('ed-hol');if(hc)E.hol=hc.checked;var hn=document.getElementById('ed-holn');if(hn)E.holN=hn.value;
   if(g('ed-ot')!=null)E.ot=parseFloat(g('ed-ot'))||0;if(g('ed-adj')!=null)E.adj=parseFloat(g('ed-adj'))||0;if(g('ed-note')!=null)E.note=g('ed-note');
@@ -1039,6 +1065,7 @@ function entryOf(){
   var o={id:E.id,date:E.date,s:E.s,e:E.e,b:E.b,role:E.role,ot:E.ot,adj:E.adj,note:E.note};
   if(!E.e)o.open=true;
   ['duty','route','run','coach'].forEach(function(k){var v=String(E[k]||'').trim();if(v)o[k]=v;});
+  var cs=(E.cards||[]).map(function(c){var x={};['duty','route','run','coach','f','t'].forEach(function(k){var v=String(c[k]||'').trim();if(v)x[k]=v;});return x;}).filter(function(x){return Object.keys(x).length;});if(cs.length)o.cards=cs;
   var pb=(E.pb||[]).filter(function(p){return p.f&&p.t;});if(pb.length)o.pb=pb;
   return o;
 }
@@ -1049,18 +1076,43 @@ function sameAsLast(){
   E.duty=l.duty||'';E.route=l.route||'';E.run=l.run||'';E.coach=l.coach||'';render();toast('Filled from '+fmtD(pd(l.date))+'. Change anything that was different.');
 }
 /* Up to four recent values of a run-card field, newest first. A chip passes its position, not the text. */
-function recentVals(k){var seen={},out=[];A.entries.slice().sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:(a.s<b.s?1:-1);}).forEach(function(x){var v=x[k];if(v&&!seen[v]){seen[v]=1;out.push(v);}});return out.slice(0,4);}
-function pickVal(k,i){readEd();var v=recentVals(k)[i];if(v!=null)E[k]=v;render();}
-function valChips(k){var v=recentVals(k);if(!v.length)return '';return '<div class="chips mini">'+v.map(function(x,i){return '<button class="chip" onclick="pickVal(\''+k+'\','+i+')">'+esc(x)+'</button>';}).join('')+'</div>';}
+function recentVals(k){var seen={},out=[];A.entries.slice().sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:(a.s<b.s?1:-1);}).forEach(function(x){cardsOf(x).forEach(function(c){var v=c[k];if(v&&!seen[v]){seen[v]=1;out.push(v);}});});return out.slice(0,4);}
+function pickVal(k,i,c){readEd();var v=recentVals(k)[i];if(v!=null){if(c==null)E[k]=v;else if(E.cards&&E.cards[c])E.cards[c][k]=v;}render();}
+function valChips(k,c){var v=recentVals(k);if(!v.length)return '';return '<div class="chips mini">'+v.map(function(x,i){return '<button class="chip" onclick="pickVal(\''+k+'\','+i+(c==null?'':','+c)+')">'+esc(x)+'</button>';}).join('')+'</div>';}
 function addPb(){readEd();E.pb=E.pb||[];E.pb.push({f:'',t:''});render();}
 function delPb(i){readEd();E.pb.splice(i,1);render();}
-function runCard(){
-  var h='<div class="busbox"><div class="hd" style="margin-bottom:0"><h3>Run card</h3><button class="chip" onclick="sameAsLast()">Same as last time</button></div>';
-  h+='<label class="f" for="bu-duty" style="margin-top:6px">Duty</label><input id="bu-duty" value="'+esc(E.duty||'')+'" placeholder="111" autocomplete="off">'+valChips('duty');
-  h+='<div class="two"><div><label class="f" for="bu-route">Route</label><input id="bu-route" value="'+esc(E.route||'')+'" placeholder="48" autocomplete="off"></div><div><label class="f" for="bu-run">Run</label><input id="bu-run" value="'+esc(E.run||'')+'" placeholder="48-1" autocomplete="off"></div></div>'+valChips('route');
-  h+='<label class="f" for="bu-coach">Coach number</label><input id="bu-coach" value="'+esc(E.coach||'')+'" placeholder="7243" inputmode="numeric" autocomplete="off">'+valChips('coach');
+/* V1.4: one box per run card. Card 1 is the shift's own fields (ids bu-*); card i+2 is E.cards[i] (ids bc-*-i). Each card has
+   the 123 | ABC keyboard switch; cards 2 and up have Remove and a collapsed "+ Add times (optional)" (open when times are saved). */
+function kbdSeg(){var f=!!A.set.kbd;return '<div class="kseg" role="group" aria-label="Keyboard for run cards"><button class="'+(f?'':'on')+'" aria-pressed="'+!f+'" aria-label="Number keypad" onclick="setKbd(false)">123</button><button class="'+(f?'on':'')+'" aria-pressed="'+f+'" aria-label="Full keyboard" onclick="setKbd(true)">ABC</button></div>';}
+/* A run-card text field: the number keypad (inputmode numeric, pattern [0-9]*) unless the full keyboard is on. */
+function nin(id,val,ph,fn){return '<input id="'+id+'" value="'+esc(val||'')+'" placeholder="'+ph+'"'+(A.set.kbd?'':' inputmode="numeric" pattern="[0-9]*"')+' autocomplete="off"'+(fn?' oninput="'+fn+'"':'')+'>';}
+/* The Run field: free text with the full keyboard; in number mode the card's route and "-" are a fixed prefix (hidden while the route is empty) and only the digits are typed, unless the stored run does not fit, which is shown whole. */
+function runIn(id,route,run){
+  if(A.set.kbd)return '<input id="'+id+'" value="'+esc(run||'')+'" placeholder="48-1" autocomplete="off">';
+  var pfx=!run||runFits(route,run);
+  return '<div class="runp"><span id="'+id+'-p" class="pfx" aria-hidden="true"'+(pfx&&route?'':' hidden')+'>'+esc(route||'')+'-</span><input id="'+id+'" value="'+esc(pfx?runNum(route,run):run||'')+'" placeholder="'+(pfx?'1':'48-1')+'" inputmode="numeric" pattern="[0-9]*" data-pfx="'+(pfx?1:0)+'" autocomplete="off"></div>';
+}
+function runPfx(el,rid){var r=document.getElementById(rid),p=document.getElementById(rid+'-p');if(!r||!p||r.getAttribute('data-pfx')!=='1')return;p.textContent=el.value+'-';p.hidden=!el.value;}
+function runRead(id,route){var x=document.getElementById(id);return x?runFull(route,x.value,x.getAttribute('data-pfx')==='1'):'';}
+function cardHtml(c,i){
+  var one=i==null,p=one?'bu-':'bc-',s=one?'':'-'+i,n=one?1:i+2,id=function(k){return p+k+s;};
+  var h='<div class="busbox"><div class="hd" style="margin-bottom:0"><h3>Run card '+n+'</h3><div class="bhr">'+kbdSeg()+(one?'':'<button class="lx" aria-label="Remove run card '+n+'" onclick="delCard('+i+')">Remove</button>')+'</div></div>';
+  if(one)h+='<div class="chips mini" style="margin-top:8px"><button class="chip" onclick="sameAsLast()">Same as last time</button></div>';
+  h+='<label class="f" for="'+id('duty')+'" style="margin-top:6px">Duty</label>'+nin(id('duty'),c.duty,'111')+valChips('duty',i);
+  h+='<div class="two"><div><label class="f" for="'+id('route')+'">Route</label>'+nin(id('route'),c.route,'48','runPfx(this,\''+id('run')+'\')')+'</div><div><label class="f" for="'+id('run')+'">Run</label>'+runIn(id('run'),c.route,c.run)+'</div></div>'+valChips('route',i);
+  h+='<label class="f" for="'+id('coach')+'">Coach number</label>'+nin(id('coach'),c.coach,'7243')+valChips('coach',i);
+  if(!one){
+    if(c.x||c.f||c.t)h+='<div class="two" style="margin-top:12px"><div><label class="f" for="bc-f-'+i+'" style="margin:0 0 4px">From (optional)</label>'+tin('bc-f-'+i,c.f||'','','Run card '+n+' from, 24 hour')+'</div><div><label class="f" for="bc-t-'+i+'" style="margin:0 0 4px">To (optional)</label>'+tin('bc-t-'+i,c.t||'','','Run card '+n+' to, 24 hour')+'</div></div><div class="note">Only a note. Pay comes from the shift\'s Started and Ended.</div>';
+    else h+='<button class="lx" style="padding:6px 0" onclick="expCard('+i+')">+ Add times (optional)</button>';
+  }
   return h+'</div>';
 }
+function runCard(){var h=cardHtml(E,null);(E.cards||[]).forEach(function(c,i){h+=cardHtml(c,i);});return h+'<button class="btn dim" style="margin-top:10px" onclick="addCard()">+ Add another run card</button>';}
+function addCard(){readEd();E.cards=E.cards||[];E.cards.push({duty:'',route:'',run:'',coach:'',f:'',t:''});render();}
+function delCard(i){readEd();E.cards.splice(i,1);render();}
+function expCard(i){readEd();E.cards[i].x=true;render();}
+/* One stored setting behind both keyboard switches (More, and the top of every run card). Re-rendering swaps the keyboard type at once. */
+function setKbd(v){if(U.tab==='edit'&&E)readEd();A.set.kbd=v===true;save();render();}
 /* Paid breaks live in More options next to the unpaid break, in their own box: start and end times, a note only. */
 function paidBreaks(){
   var h='<div class="brk"><h4>☕ Paid break</h4><div class="note" style="margin-top:2px">Only a note. It never changes your pay.</div>';
@@ -1069,7 +1121,7 @@ function paidBreaks(){
 }
 /* The next bus: a new shift on the same day that starts at the last end time, with the same duty and work type. */
 function startNext(prev){
-  E=newDay(prev.date,prev.role);E.role=prev.role;E.s=prev.e||hhmm(rnd(now()));E.e='';E.prefilled=false;E.duty=prev.duty||'';E.route=E.run=E.coach='';E.pb=[];
+  E=newDay(prev.date,prev.role);E.role=prev.role;E.s=prev.e||hhmm(rnd(now()));E.e='';E.prefilled=false;E.duty=prev.duty||'';E.route=E.run=E.coach='';E.pb=[];E.cards=[];
   edHol();E.more=+E.b>0;E.pick=false;E.mode='w';E.nw='none';U.confirm='';if(U.tab!=='edit')U.from=U.tab;U.tab='edit';render();window.scrollTo(0,0);
 }
 function saveNext(){
@@ -1081,7 +1133,7 @@ function saveNext(){
 function openCards(){
   var h='',td=ymd(now());
   openDays(U.job==='all'?null:U.job).forEach(function(e){
-    var d=pd(e.date),late=e.date<td,rl=runLine(e);
+    var d=pd(e.date),late=e.date<td,rl=esc(runShort(e));
     h+='<section class="card opn'+(late?' late':'')+'" style="margin-top:0;margin-bottom:12px"><div class="hd"><h2 style="margin:0">'+(late?'Still open from '+DN[d.getDay()]+' '+fmtD(d):'A bus is in progress')+'</h2><span class="pill '+(late?'ot':'go')+'">'+(late?'Needs finishing':'Working')+'</span></div>';
     h+=(rl?'<div class="mid" style="margin:6px 0 2px"><b>'+rl+'</b></div>':'<div class="note">No run card yet.</div>');
     h+='<div class="note" style="margin:0 0 8px">Not counted until you finish it.</div>';
@@ -1104,16 +1156,16 @@ function finishOpen(id,next){
 var SHF={};
 function shiftIdx(rows){var o={};rows.forEach(function(r){var ro=role(r.e.role);if(r.e.hol||!ro||ro.kind!=='work')return;var k=r.e.date;o[k]=o[k]||{n:0,i:{}};o[k].n++;o[k].i[r.e.id]=o[k].n;});return o;}
 function runHtml(e){
-  var rl=runLine(e),sh=SHF[e.date],tag=sh&&sh.n>1&&sh.i[e.id]?'Bus '+sh.i[e.id]+' of '+sh.n+(rl?' · ':''):'';
+  var rl=esc(runShort(e)),sh=SHF[e.date],tag=sh&&sh.n>1&&sh.i[e.id]?'Bus '+sh.i[e.id]+' of '+sh.n+(rl?' · ':''):'';
   return (rl||tag)?'<span class="sub bl">'+tag+rl+'</span>':'';
 }
 /* Find a bus: every shift whose run card or note holds the text, newest first. */
 function busFind(v){U.q=v;var r=document.getElementById('bres');if(r)r.innerHTML=busResults(v);}
 function busResults(v){
   v=(v||'').trim().toLowerCase();if(!v)return '';
-  var hits=A.entries.filter(function(e){return (runPlain(e)+' '+(e.note||'')).toLowerCase().indexOf(v)>=0;}).sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:(a.s<b.s?1:-1);});
+  var hits=A.entries.filter(function(e){return (runPlain(e,true)+' '+(e.note||'')).toLowerCase().indexOf(v)>=0;}).sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:(a.s<b.s?1:-1);});
   if(!hits.length)return '<div class="note">No shifts match "'+esc(v)+'".</div>';
-  return '<div class="note" style="margin:8px 0 2px"><b>'+hits.length+' shift'+(hits.length>1?'s':'')+'</b> match</div>'+hits.slice(0,12).map(function(e){var d=pd(e.date);return '<div class="row"'+rb('openEdit(\''+e.id+'\')')+'><div class="day"><b>'+DN[d.getDay()]+'</b><span>'+fmtD(d)+'</span></div><div class="mid">'+(runLine(e)||'No run card')+'<span class="sub">'+t24(e.s)+(e.e?' to '+t24(e.e):' (open)')+(e.note?' · '+esc(e.note):'')+'</span></div></div>';}).join('');
+  return '<div class="note" style="margin:8px 0 2px"><b>'+hits.length+' shift'+(hits.length>1?'s':'')+'</b> match</div>'+hits.slice(0,12).map(function(e){var d=pd(e.date);return '<div class="row"'+rb('openEdit(\''+e.id+'\')')+'><div class="day"><b>'+DN[d.getDay()]+'</b><span>'+fmtD(d)+'</span></div><div class="mid">'+(esc(runShort(e))||'No run card')+'<span class="sub">'+t24(e.s)+(e.e?' to '+t24(e.e):' (open)')+(e.note?' · '+esc(e.note):'')+'</span></div></div>';}).join('');
 }
 function saveNoWork(){
   readEd();var jid=roleJob(E.role),r=noWorkApply(E.date,jid,E.nw);
@@ -1125,7 +1177,7 @@ function delEd(){readEd();askDel(E.id);}
 function askDel(id){
   var e=A.entries.filter(function(x){return x.id===id;})[0];if(!e)return;
   var d=pd(e.date),what=DN[d.getDay()]+' '+fmtD(d)+', '+t24(e.s)+(e.e?' to '+t24(e.e):' (not finished)');
-  confirmBox('Delete this shift?',esc(what)+(runPlain(e)?'<br>'+runLine(e):''),'🗑️ Delete','doDel(\''+id+'\')');
+  confirmBox('Delete this shift?',esc(what)+(runShort(e)?'<br>'+esc(runShort(e)):''),'🗑️ Delete','doDel(\''+id+'\')');
 }
 function doDel(id){
   var e=A.entries.filter(function(x){return x.id===id;})[0];closeModal();if(!e)return;
@@ -1225,7 +1277,7 @@ function emailFor(q,c,who){
   b+='My time records: '+nm(T.reg)+' regular hours (including leave) and '+nm(T.ot)+' overtime hours. Expected gross pay: '+usd(T.usd)+'.\n';
   b+='My paystub: gross pay '+usd(st.gross)+(num(st.hrs)!=null?', '+nm(st.hrs)+' regular hours':'')+(num(st.othrs)!=null?', '+nm(st.othrs)+' overtime hours':'')+'.\n';
   b+='Difference: '+usd(Math.abs(c.diff))+(c.diff<0?' more than I was paid':' more than I expected')+'.\n\n';
-  b+='Daily hours:\n'+c.rows.map(function(r){var d=pd(r.e.date);return DN[d.getDay()]+' '+fmtD(d)+': '+t24(r.e.s)+' to '+t24(r.e.e)+', '+nm(r.w)+' h'+(r.ot>0?' ('+nm(r.ot)+' OT)':'')+(runPlain(r.e)?', '+runPlain(r.e):'');}).join('\n');
+  b+='Daily hours:\n'+c.rows.map(function(r){var d=pd(r.e.date);return DN[d.getDay()]+' '+fmtD(d)+': '+t24(r.e.s)+' to '+t24(r.e.e)+', '+nm(r.w)+' h'+(r.ot>0?' ('+nm(r.ot)+' OT)':'')+(runPlain(r.e,true)?', '+runPlain(r.e,true):'');}).join('\n');
   b+='\n\nCould you review this and tell me what changed? I can send my full time records.\n\nThank you,\n'+(C.me||'[your name]');
   return {to:to,sub:sb,body:b};
 }
@@ -1279,7 +1331,8 @@ function copyMail(){var b=document.getElementById('m-body');copyTxt('Subject: '+
 function vMore(){
   var h='<header class="top"><div><div class="sub">Settings and tools</div><h1>More</h1><div class="purpose">Pay rules, the tax helper, export and backup.</div></div></header>';
   var items=[['rules','Pay rules','Jobs, work types, pay period, overtime, contacts, reminders'],['tax','Tax helper','Year to date, overtime deduction check, W-2 check'],['export','Export and backup','Copy or share hours, save a backup, import a backup or setup file']];
-  h+='<section class="card" style="margin-top:0;padding:4px 16px">'+items.map(function(i){return '<div class="row"'+rb('sub(\''+i[0]+'\')')+'><div class="mid"><b style="font:600 20px var(--fd)">'+i[1]+'</b><span class="sub" style="white-space:normal">'+i[2]+'</span></div><div class="rt sub" style="font-size:22px">&#8250;</div></div>';}).join('')+'</section>';
+  h+='<section class="card" style="margin-top:0">'+cb('kbd',!!A.set.kbd,'setKbd(this.checked)','Full keyboard for run cards')+'<div class="note">Off: a number keypad for Duty, Route, Run and Coach number on run cards. Turn it on when a route or run needs letters. The same switch sits on each run card. Temporary, until we know what is needed.</div></section>';
+  h+='<section class="card" style="padding:4px 16px">'+items.map(function(i){return '<div class="row"'+rb('sub(\''+i[0]+'\')')+'><div class="mid"><b style="font:600 20px var(--fd)">'+i[1]+'</b><span class="sub" style="white-space:normal">'+i[2]+'</span></div><div class="rt sub" style="font-size:22px">&#8250;</div></div>';}).join('')+'</section>';
   h+='<section class="card"><h2>Your data</h2><div class="dl"><span>Stored in</span><span>'+(DB?'This phone':'This browser only')+'</span></div><div class="dl"><span>Kept when space runs low</span><span>'+(PERSIST?'Yes':'Not promised')+'</span></div><div class="dl"><span>Shifts logged</span><span>'+A.entries.length+'</span></div><div class="dl"><span>Paystubs</span><span>'+A.stubs.length+'</span></div><div class="dl"><span>Last backup</span><span>'+(A.set.lastExport?fmtDY(new Date(A.set.lastExport)):'Never')+'</span></div>';
   h+='<div class="note">Nothing leaves this phone unless you share it. Save a backup now and then in Export and backup.</div>';
   h+='<button class="btn warn" onclick="eraseAll()">'+(U.confirm==='erase'?'Tap again to erase everything on this phone':'Erase all data')+'</button>'+(U.confirm==='erase'?'<div class="note">This removes every day, paystub and rule. It cannot be undone. Save a backup first.</div>':'')+'</section>';
