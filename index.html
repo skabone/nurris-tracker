@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="app-build-id" content="2026-10-14-V1.3">
+<meta name="app-build-id" content="2026-10-14-V1.3.1">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <title>Nurri's Tracker</title>
 <meta name="description" content="Log your hours in 24-hour time, see your pay the way your stubs work it out, and check every paycheck.">
@@ -230,6 +230,9 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .busbox h3{font:600 20px var(--fd);margin:0}
 .lx{border:0;background:none;color:var(--ot);font-size:14px;font-weight:600;padding:6px 4px;min-height:44px}
 .chips.mini{margin-top:6px}.chips.mini .chip{padding:5px 11px;font-size:14px}
+.brkh{font:600 20px var(--fd);margin:0}
+.brk{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px}.brk+.brk{margin-top:16px}
+.brk h4{margin:0;font-size:17px;font-weight:600}.brk label.f{margin-top:10px}.brk .lx{color:var(--ink2)}
 .pbr{display:flex;gap:8px;align-items:center;margin-top:8px}.pbr input{flex:1;min-width:0;width:auto;padding:0 8px;text-align:center}.pbr span,.pbr .lx{flex:none}
 .mid .sub.bl{color:var(--ink);font-weight:500;white-space:normal}
 .srch{margin-top:14px}.srch input{width:100%}
@@ -238,11 +241,12 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .fstrip::-webkit-scrollbar{display:none}
 .fstrip .chip{flex:none;white-space:nowrap}
 .fstrip.tight{margin-top:0}
-.acts{display:flex;gap:8px;margin-top:8px}
-.act{flex:none;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:0 12px;min-height:44px;font-size:14px;font-weight:500}
+.acts{display:flex;gap:8px;margin-top:10px}
+.act{position:relative;flex:none;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:0 9px;height:24px;min-height:0;font-size:13px;font-weight:500;line-height:22px;white-space:nowrap}
+.act::after{content:'';position:absolute;left:0;right:0;top:-11px;bottom:-11px}
 .act.del{color:var(--bad);border-color:var(--bad)}
 .act.go{background:var(--go);color:var(--on-go);border-color:var(--go)}
-.act3{display:flex;gap:8px;margin-top:10px}.act3 .btn{margin-top:0;flex:1;padding:0 6px;font-size:16px;white-space:nowrap}.act3 .btn.solid{flex:1.4}
+.act3{display:flex;gap:8px;margin-top:10px;align-items:center}.act3 .btn{margin-top:0;flex:1;padding:0 6px;font-size:16px;white-space:nowrap}
 .tl .sh .v{background:var(--lv-fg)}.tl .sh .c{background:var(--hol-fg)}
 .modal{position:fixed;inset:0;background:rgba(10,16,20,.55);display:flex;align-items:center;justify-content:center;padding:20px;z-index:20}
 .modal[hidden]{display:none}
@@ -264,7 +268,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 <script id="model">
 /* Pay model: pure functions over the state object A. No DOM here; test.js runs this block in Node. */
-const BUILD='2026-10-14-V1.3';
+const BUILD='2026-10-14-V1.3.1';
 var APP_V=(/-(V\d+(?:\.\d+)*)$/.exec(BUILD)||[0,'V1'])[1];
 var DN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],DL=['S','M','T','W','T','F','S'],MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var A=null,U={job:'all'},NOW=null,REV=0,MC={k:null,v:null},FLSA=40,HOL_H=8,SCHEMA=3;
@@ -932,7 +936,7 @@ function shareFile(name,type,text,done){
 function openEdit(id,date){
   if(id){var o=A.entries.filter(function(e){return e.id===id;})[0];if(!o)return;E=JSON.parse(JSON.stringify(o));}
   else E=newDay(date||ymd(now()),U.role);
-  edHol();E.more=!!(E.id&&(+E.adj||(+E.b)||E.hol||(E.note&&(role(E.role)||{}).kind!=='work')));E.pick=false;E.mode='w';E.nw='none';
+  edHol();E.more=!!(+E.b>0||(E.pb||[]).length||E.id&&(+E.adj||E.hol||(E.note&&(role(E.role)||{}).kind!=='work')));E.pick=false;E.mode='w';E.nw='none';
   if(U.tab!=='edit')U.from=U.tab;U.tab='edit';U.confirm='';render();window.scrollTo(0,0);
 }
 function edHol(){var jid=roleJob(E.role),hi=holIdx(jid,E.date);E.hol=hi>=0;E.holN=hi>=0?jr(jid).hol.list[hi].n:'Holiday';}
@@ -1007,11 +1011,12 @@ function vEdit(){
   }
   h+='<button class="btn solid big2" id="ed-save" onclick="saveEd()">'+(E.e?'Save shift':'Save and finish later')+'</button>';
   if(work)h+='<button class="btn" onclick="saveNext()">Save, then add the next bus</button>';
-  h+='<button class="btn dim" aria-expanded="'+!!E.more+'" onclick="togMore()">'+(E.more?'Fewer options':'More options: unpaid break, adjustment, holiday')+'</button>';
+  h+='<button class="btn dim" aria-expanded="'+!!E.more+'" onclick="togMore()">'+(E.more?'Fewer options':'More options: breaks, adjustment, holiday')+'</button>';
   if(E.more){
     h+='<div class="job" style="margin-top:12px">';
-    h+='<label class="f" for="ed-b" style="margin-top:0">Unpaid break (minutes)</label><input id="ed-b" type="number" inputmode="numeric" min="0" value="'+E.b+'" oninput="edPrev()"><div class="note">0 means you are paid for the whole shift.</div>';
-    h+='<label class="f" for="ed-adj">Adjustment in dollars (minus to deduct)</label><input id="ed-adj" type="number" inputmode="decimal" step="1" value="'+E.adj+'" oninput="edPrev()">';
+    h+='<h3 class="brkh">Breaks</h3><div class="brk"><h4>🚫💵 Unpaid break</h4><div class="note" style="margin-top:2px">Minutes taken off your pay. 0 means you are paid for the whole shift.</div><label class="f" for="ed-b">Minutes</label><input id="ed-b" type="number" inputmode="numeric" min="0" value="'+E.b+'" oninput="edPrev()"></div>';
+    if(work)h+=paidBreaks();
+    h+='<label class="f" for="ed-adj" style="margin-top:18px">Adjustment in dollars (minus to deduct)</label><input id="ed-adj" type="number" inputmode="decimal" step="1" value="'+E.adj+'" oninput="edPrev()">';
     if(!work)h+='<label class="f" for="ed-note">Note</label><textarea id="ed-note" placeholder="Left early for dentist">'+esc(E.note)+'</textarea>';
     h+='<label class="chk" style="margin-top:14px"><input type="checkbox" id="ed-hol"'+(E.hol?' checked':'')+' onchange="holChg()"> This day is a holiday</label>';
     if(E.hol)h+='<label class="f" for="ed-holn">Holiday name</label><input id="ed-holn" value="'+esc(E.holN||'Holiday')+'" placeholder="Holiday name" oninput="edPrev()"><div class="note">'+(isOff(job,E.date)?'It is a day off, so you get '+HOL_H+' hours of straight comp credit. Hours worked are all overtime.':'It is a work day, so the '+HOL_H+' hour credit fills the day. Any hours worked are all overtime.')+'</div><button class="btn" onclick="saveHolOnly()">Save the holiday only, no hours</button>';
@@ -1054,16 +1059,18 @@ function runCard(){
   h+='<label class="f" for="bu-duty" style="margin-top:6px">Duty</label><input id="bu-duty" value="'+esc(E.duty||'')+'" placeholder="111" autocomplete="off">'+valChips('duty');
   h+='<div class="two"><div><label class="f" for="bu-route">Route</label><input id="bu-route" value="'+esc(E.route||'')+'" placeholder="48" autocomplete="off"></div><div><label class="f" for="bu-run">Run</label><input id="bu-run" value="'+esc(E.run||'')+'" placeholder="48-1" autocomplete="off"></div></div>'+valChips('route');
   h+='<label class="f" for="bu-coach">Coach number</label><input id="bu-coach" value="'+esc(E.coach||'')+'" placeholder="7243" inputmode="numeric" autocomplete="off">'+valChips('coach');
-  h+='<label class="f">Paid breaks</label>';
-  if(!(E.pb||[]).length)h+='<div class="note" style="margin-top:0">Optional. Only a record: paid breaks never change pay. The unpaid break is in More options.</div>';
+  return h+'</div>';
+}
+/* Paid breaks live in More options next to the unpaid break, in their own box: start and end times, a note only. */
+function paidBreaks(){
+  var h='<div class="brk"><h4>☕ Paid break</h4><div class="note" style="margin-top:2px">Only a note. It never changes your pay.</div>';
   (E.pb||[]).forEach(function(p,i){h+='<div class="pbr"><span>Break</span>'+tin('pb-f'+i,p.f,'edPrev()','Paid break '+(i+1)+' start, 24 hour')+'<span>to</span>'+tin('pb-t'+i,p.t,'edPrev()','Paid break '+(i+1)+' end, 24 hour')+'<button class="lx" aria-label="Remove paid break '+(i+1)+'" onclick="delPb('+i+')">Remove</button></div>';});
-  h+='<button class="btn dim" style="margin-top:8px" onclick="addPb()">+ Add a paid break</button></div>';
-  return h;
+  return h+'<button class="btn dim" style="margin-top:8px" onclick="addPb()">+ Add a paid break</button></div>';
 }
 /* The next bus: a new shift on the same day that starts at the last end time, with the same duty and work type. */
 function startNext(prev){
   E=newDay(prev.date,prev.role);E.role=prev.role;E.s=prev.e||hhmm(rnd(now()));E.e='';E.prefilled=false;E.duty=prev.duty||'';E.route=E.run=E.coach='';E.pb=[];
-  edHol();E.more=false;E.pick=false;E.mode='w';E.nw='none';U.confirm='';if(U.tab!=='edit')U.from=U.tab;U.tab='edit';render();window.scrollTo(0,0);
+  edHol();E.more=+E.b>0;E.pick=false;E.mode='w';E.nw='none';U.confirm='';if(U.tab!=='edit')U.from=U.tab;U.tab='edit';render();window.scrollTo(0,0);
 }
 function saveNext(){
   readEd();var m=entryErr(E,true);if(m){document.getElementById('edr').textContent=m;return;}
@@ -1080,7 +1087,7 @@ function openCards(){
     h+='<div class="note" style="margin:0 0 8px">Not counted until you finish it.</div>';
     h+='<div class="two bt"><div><label class="f" for="of-s-'+e.id+'" style="margin:0 0 4px">Started</label>'+tin('of-s-'+e.id,e.s,'','Start time, 24 hour')+'</div><div><label class="f" for="of-e-'+e.id+'" style="margin:0 0 4px">Ended</label>'+tin('of-e-'+e.id,'','','End time, 24 hour')+'</div></div>';
     h+='<div class="chips mini"><button class="chip" onclick="nowTo(\'of-e-'+e.id+'\')">Ended just now</button></div><div class="err" id="of-r-'+e.id+'" role="alert"></div>';
-    h+='<div class="act3"><button class="btn solid big2" onclick="finishOpen(\''+e.id+'\')">✅ Finish</button><button class="btn big2" onclick="openEdit(\''+e.id+'\')">✏️ Edit</button><button class="btn warn big2" onclick="askDel(\''+e.id+'\')">🗑️ Delete</button></div><button class="btn dim" onclick="finishOpen(\''+e.id+'\',true)">⏭️ Finish and start the next bus</button></section>';
+    h+='<div class="act3"><button class="btn solid big2" onclick="finishOpen(\''+e.id+'\')">✅ Finish</button><button class="act" onclick="openEdit(\''+e.id+'\')">✏️ Edit</button><button class="act del" onclick="askDel(\''+e.id+'\')">🗑️ Delete</button></div><button class="btn dim" onclick="finishOpen(\''+e.id+'\',true)">⏭️ Finish and start the next bus</button></section>';
   });
   return h;
 }
