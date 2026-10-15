@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="app-build-id" content="2026-10-15-V1.4">
+<meta name="app-build-id" content="2026-10-15-V2">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <title>Nurri's Tracker</title>
 <meta name="description" content="Log your hours in 24-hour time, see your pay the way your stubs work it out, and check every paycheck.">
@@ -115,6 +115,7 @@ input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible,[ro
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(92px + env(safe-area-inset-bottom,0px));background:var(--stop);color:var(--on-stop);padding:10px 16px;border-radius:12px;font-size:15px;max-width:90%;z-index:6}
 .upd{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--go);color:var(--on-go);border:0;border-radius:99px;padding:0 20px;min-height:44px;font-weight:600;z-index:5;box-shadow:0 2px 10px rgba(0,0,0,.2)}
 .foot{text-align:center;color:var(--ink2);font-size:12px;margin-top:22px}
+.foot .fver{font:600 26px/1.1 var(--fd);color:var(--ink);margin-bottom:2px}.foot .fbuild{font-size:14px;color:var(--ink2);margin-bottom:12px}
 .note{font-size:13px;color:var(--ink2);margin-top:6px}
 .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
 .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;min-width:0}
@@ -146,7 +147,7 @@ input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible,[ro
 .pc.un{border:1.5px dashed var(--bad)}
 .pc.nw{background:var(--field)}
 .pc .mu{font-weight:500;font-size:12px;color:var(--ink2)}
-.pc u{position:absolute;top:2px;right:3px;font:700 11px var(--fb);text-decoration:none;background:var(--stop);color:var(--on-stop);border-radius:6px;padding:0 4px;line-height:15px}
+.pc u{position:absolute;top:2px;right:3px;font:700 11px var(--fb);text-decoration:none;background:var(--pay);color:var(--on-pay);border-radius:6px;padding:0 4px;line-height:15px}
 .pc.td{outline:2px solid var(--ink);outline-offset:1px}
 .pc.bt{min-height:62px;height:auto;padding:3px 0}.pc i{font:400 11px var(--fb);font-style:normal}
 .pbar{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:12px}
@@ -209,10 +210,10 @@ input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible,[ro
 .lgd i.r{background:var(--go-bg);border:1px solid var(--go)}.lgd i.o{background:var(--ot-bg);border:1px solid var(--ot)}
 .lgd i.od{background:var(--off-bg)}.lgd i.hl{background:var(--hol-bg)}.lgd i.lv{background:var(--lv-bg)}
 .lgd i.un{border:1.5px dashed var(--bad)}
-.lgd i.pdy{background:var(--stop);color:var(--on-stop);font:700 10px/14px var(--fb);text-align:center}
+.lgd i.pdy{background:var(--pay);color:var(--on-pay);font:700 10px/14px var(--fb);text-align:center}
 .lgd i.mix{background:linear-gradient(135deg,var(--off-bg) 0 34%,var(--hol-bg) 34% 67%,var(--ot-bg) 67% 100%)}
 .bc .b .c{background:var(--hol-fg)}.bc .b .v{background:var(--lv-fg)}
-.bl.bd span.pdy{background:var(--stop);color:var(--on-stop);border-radius:7px;font-weight:700}
+.bl.bd span.pdy{background:var(--pay);color:var(--on-pay);border-radius:7px;font-weight:700}
 .pcard{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:8px;min-height:44px}
 .pcard.on{border-color:var(--go);box-shadow:0 0 0 1px var(--go)}
 .pcard b{display:block;font:600 20px var(--fd)}.pcard span{font-size:13px;color:var(--ink2)}
@@ -263,6 +264,35 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .mbox h3{margin:0 0 8px;font:600 22px var(--fd)}.mbox p{margin:0 0 6px}
 .mbox .two{margin-top:12px}.mbox .btn{margin-top:0}
 .errbar{position:fixed;left:12px;right:12px;top:12px;z-index:30;background:var(--bad);color:#fff;border:0;border-radius:12px;padding:12px;font-size:15px}
+/* V2: the payday badge is neon green with dark text in both modes (one meaning, one colour) */
+:root{--pay:#39FF14;--on-pay:#06230F}
+/* V2: Home header, the Building now and Next payday strips */
+.hrow{display:flex;justify-content:space-between;align-items:baseline;gap:10px}.hrow h1{white-space:nowrap}.hrow .hdate{font:600 36px/1 var(--fd);margin:2px 0 0;letter-spacing:.2px;white-space:nowrap;color:var(--go)}.hrow h1,.hrow .hdate{font-size:min(36px,8vw)}
+.btn.strip{display:flex;flex-direction:column;align-items:stretch;text-align:left;padding:10px 14px;gap:2px}.strip .sr{display:flex;justify-content:space-between;gap:8px}.strip .sub2{font-size:13px;color:var(--ink2)}
+.strip .sub2 .th{font-size:15px;color:var(--ink)}
+.strip .cd{font:600 26px/1.1 var(--fd);color:var(--go);margin-top:4px}
+.strip .cdr{align-items:flex-end}.strip .cut{color:var(--bad);font-size:15px;font-weight:600}.strip .cut b{font:600 20px var(--fd)}
+.strip .segbar{display:flex;gap:2px;height:6px;margin-top:6px}.strip .segbar i{flex:1;border-radius:2px;background:var(--line)}.strip .segbar i.on{background:var(--go)}
+/* V2: Keys that fold away */
+.keyx{margin-top:10px}.keyx>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-size:14px;font-weight:500;color:var(--ink2);list-style:none}.keyx>summary::-webkit-details-marker{display:none}.keyx>summary::before{content:'\25B8';margin-right:8px;transition:transform .15s}.keyx[open]>summary::before{transform:rotate(90deg)}
+/* V2: the pay calendar by period, its payday label on the left like a y-axis, the period being built tinted */
+.pcw{margin-top:10px}.pgh{display:grid;grid-template-columns:40px repeat(7,1fr);gap:4px;margin-bottom:4px}.pgh .wd{font-size:11px;color:var(--ink2);text-align:center}
+.pblk{display:grid;grid-template-columns:40px 1fr;gap:4px;align-items:center;border-radius:12px;padding:4px;margin:0 -4px 4px}
+.pblk.cur{background:rgba(14,124,95,.10)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .pblk.cur{background:rgba(60,197,154,.14)}}
+:root[data-theme="dark"] .pblk.cur{background:rgba(60,197,154,.14)}
+.pg7{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.plab{display:flex;flex-direction:column;align-items:center;font:600 14px/1.1 var(--fd);color:var(--go)}.plab .pi{font-size:16px;margin-bottom:2px}.plab small{font:500 10px var(--fb);color:var(--ink2);margin-top:2px}
+/* V2: upcoming days are greyed with a big centred date */
+.pc.fut:not(.m){background:var(--field);border:1px solid var(--line)}
+.pc.fut{opacity:.8}
+.pc.fut .dnum{font:600 33px/1 var(--fd);color:var(--ink2)}
+.pc.fut .ftag{font:500 10px/1 var(--fb);color:var(--ink2);margin-top:1px}.pc.fut.m .dnum{line-height:.9}
+/* V2: Stats */
+.hb{display:flex;flex-direction:column;gap:6px}.hbr{display:grid;grid-template-columns:64px 1fr 66px;align-items:center;gap:8px;font-size:13px}
+.hbk{color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hbt{height:14px;background:var(--field);border-radius:4px;overflow:hidden}.hbt i{display:block;height:100%;background:var(--go);border-radius:0 4px 4px 0}.hbv{text-align:right;color:var(--ink);font-variant-numeric:tabular-nums}
+.stt{width:100%;border-collapse:collapse;font-size:14px}.stt th{font-size:12px;font-weight:500;color:var(--ink2);text-align:left;padding:4px 4px 6px;border-bottom:1px solid var(--line)}.stt td{padding:8px 4px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}.stt td .pill{font-size:11px;padding:2px 7px}
+.hm{width:100%;border-collapse:separate;border-spacing:3px;font-size:12px}.hm th{font-weight:500;color:var(--ink2);text-align:center}.hm tbody th{text-align:left;width:40px}.hm td{padding:0}.hm td span{display:flex;align-items:center;justify-content:center;height:30px;border-radius:6px;background:var(--field);font-weight:600;font-variant-numeric:tabular-nums}
 </style>
 </head>
 <body>
@@ -272,12 +302,13 @@ input,textarea{-webkit-user-select:text;user-select:text}
   <button id="tb-home" onclick="go('home')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>Home</button>
   <button id="tb-hours" onclick="go('hours')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg>Shifts</button>
   <button id="tb-pay" onclick="go('pay')"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v.01M18 15v.01"/></svg>Pay</button>
+  <button id="tb-stats" onclick="go('stats')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V5M19 20v-6M3 20h18"/></svg>Stats</button>
   <button id="tb-more" onclick="go('more')"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>More</button>
 </nav>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 <script id="model">
 /* Pay model: pure functions over the state object A. No DOM here; test.js runs this block in Node. */
-const BUILD='2026-10-15-V1.4';
+const BUILD='2026-10-15-V2';
 var APP_V=(/-(V\d+(?:\.\d+)*)$/.exec(BUILD)||[0,'V1'])[1];
 var DN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],DL=['S','M','T','W','T','F','S'],MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var A=null,U={job:'all'},NOW=null,REV=0,MC={k:null,v:null},FLSA=40,HOL_H=8,SCHEMA=3;
@@ -635,6 +666,94 @@ function readFile(o){
   if(!st)return {err:'This file comes from a newer version of the app'};
   return {kind:o.kind,state:st};
 }
+/* ---- V2: the Home strips, the pay calendar by period, upcoming days, Stats. Pure: the UI only draws these. ---- */
+/* Days from today to a date, and the payday countdown words. */
+function daysTo(d){var t=now();return dd(new Date(t.getFullYear(),t.getMonth(),t.getDate()),d);}
+function countdown(n){return n<=0?'Today':n===1?'Tomorrow':'In '+n+' days';}
+/* The Building now strip's bar: one segment per day of the period, on for the days so far (today included). */
+function segsOf(S){var L=[];for(var i=0;i<S.len;i++)L.push(i<S.day);return L;}
+/* Half of the expected take-home, rounded to the dollar ("Mintay Gets"); 0 when there is no take-home estimate. */
+function halfNet(net){return net>0?Math.round(net/2):0;}
+/* The pay calendar as two blocks (the last period and the one being built), each labelled with its payday, when the
+   periods start on the job's week-start day. null keeps the old grid. */
+function calBlocks(jid){
+  var bu=payState(jid).building,prev=periodShift(bu,-1,jid),T=ymd(now());
+  if(ymd(wkStart(prev.s,jid))!==ymd(prev.s)||ymd(addD(wkStart(bu.e,jid),6))!==ymd(bu.e))return null;
+  return [prev,bu].map(function(p){var cur=p===bu;return {p:p,cur:cur,tag:cur?'building':ymd(p.pay)>=T?'coming':'paid'};});
+}
+/* An upcoming day with nothing logged: after today, no hours, no paid leave, no open shift, not marked. */
+function isFut(P){return !P.today&&P.k>ymd(now())&&!(P.x.w>0)&&!(P.x.lv>0)&&P.st!=='op'&&P.st!=='nw';}
+/* Stats. Work shifts only (no holiday credit or paid leave rows, no open shifts). A shift's run cards are the cards with
+   anything filled in. */
+function statCards(e){return cardsOf(e).filter(function(c){return c.duty||c.route||c.run||c.coach;});}
+function workRows(s,e){return rowsFor(s,e).filter(function(r){var ro=role(r.e.role);return !r.e.hol&&ro&&ro.kind==='work';});}
+function statRange(r,jid){
+  var t=now(),T0=new Date(t.getFullYear(),t.getMonth(),t.getDate());
+  if(r==='30')return {s:addD(T0,-29),e:T0,l:'Last 30 days'};
+  if(r==='all'){var lo=ymd(addD(T0,-13));A.entries.forEach(function(x){if(x.date<lo)lo=x.date;});return {s:pd(lo),e:T0,l:'Everything logged'};}
+  var p=periodOf(t,jid);return {s:p.s,e:p.e,l:'This pay period'};
+}
+function statData(s,e,jid){
+  var rows=workRows(s,e),D={rows:rows,hrs:0,ot:0,coach:{},route:{},duty:{},wd:[0,0,0,0,0,0,0],st:{},ncards:{1:0,2:0,3:0},pbMin:0,ubMin:0,noCard:0,noCoach:0,notes:[],days:{},multiDays:0,miss:0,opens:0},byDay={},T=ymd(now());
+  rows.forEach(function(r){
+    var x=r.e,cs=statCards(x),share=cs.length?r.w/cs.length:0;D.hrs+=r.w;D.ot+=r.ot;D.days[x.date]=1;byDay[x.date]=(byDay[x.date]||0)+1;
+    D.wd[pd(x.date).getDay()]+=r.w;var sh=Math.floor(tmin(x.s)/60);D.st[sh]=(D.st[sh]||0)+1;
+    if(!cs.length)D.noCard++;else D.ncards[Math.min(3,cs.length)]++;
+    (x.pb||[]).forEach(function(p){if(p.f&&p.t)D.pbMin+=Math.max(0,tmin(p.t)-tmin(p.f));});D.ubMin+=(+x.b||0);
+    if(x.note)D.notes.push({d:x.date,n:x.note,rl:runPlain(x)});
+    cs.forEach(function(c){
+      if(c.coach){var o=D.coach[c.coach]||(D.coach[c.coach]={n:0,last:'',routes:{},iss:0});o.n++;if(x.date>o.last)o.last=x.date;if(c.route)o.routes[c.route]=1;if(x.note)o.iss++;}else D.noCoach++;
+      if(c.route){var q=D.route[c.route]||(D.route[c.route]={n:0,h:0});q.n++;q.h+=share;}
+      if(c.duty){var u=D.duty[c.duty]||(D.duty[c.duty]={n:0,h:0,ot:0});u.n++;u.h+=share;u.ot+=r.ot/cs.length;}
+    });
+  });
+  Object.keys(byDay).forEach(function(k){if(byDay[k]>1)D.multiDays++;});
+  D.notes.sort(function(a,b){return a.d<b.d?1:-1;});
+  D.CK=Object.keys(D.coach).sort(function(a,b){return D.coach[b].n-D.coach[a].n||(D.coach[b].last>D.coach[a].last?1:-1);});
+  D.RK=Object.keys(D.route).sort(function(a,b){return D.route[b].h-D.route[a].h;});
+  D.DK=Object.keys(D.duty).sort(function(a,b){return D.duty[b].n-D.duty[a].n;});
+  for(var d=new Date(s);ymd(d)<T&&ymd(d)<=ymd(e);d=addD(d,1)){var k=ymd(d);if(!isOff(jid,k)&&holIdx(jid,k)<0&&!isMarked(k)&&!A.entries.some(function(x){return x.date===k;}))D.miss++;}
+  D.opens=A.entries.filter(function(x){return x.open;}).length;
+  return D;
+}
+function topOf(m){var k=Object.keys(m).sort(function(a,b){return m[b]-m[a];})[0];return k?{k:k,n:m[k]}:null;}
+/* Patterns in everything logged. Each needs a minimum count; at most 3 weekday findings lead, then the other kinds, so
+   weekday findings cannot crowd out the rest. Every other week is week 1 or 2 of a 14-day pay period. */
+function patternData(jid){
+  var T=now(),lo=ymd(T);A.entries.forEach(function(x){if(x.date<lo)lo=x.date;});
+  var rows=workRows(pd(lo),T),pl=jr(jid).pp,two=pl.type==='biweekly';
+  var byWd=[0,1,2,3,4,5,6].map(function(){return {n:0,route:{},coach:{},start:0,ot:0};}),par=[{route:{},n:0},{route:{},n:0}],dutyRoute={},coachDays={},routes={};
+  rows.forEach(function(r){
+    var x=r.e,d=pd(x.date),w=byWd[d.getDay()],wk=two?Math.floor(dd(periodOf(d,jid).s,d)/7)%2:0;
+    w.n++;w.start+=tmin(x.s);w.ot+=r.ot;
+    statCards(x).forEach(function(c){
+      if(c.route){w.route[c.route]=(w.route[c.route]||0)+1;par[wk].route[c.route]=(par[wk].route[c.route]||0)+1;par[wk].n++;routes[c.route]=(routes[c.route]||0)+1;}
+      if(c.coach){w.coach[c.coach]=(w.coach[c.coach]||0)+1;(coachDays[c.coach]=coachDays[c.coach]||{})[x.date]=1;}
+      if(c.duty&&c.route){var q=dutyRoute[c.duty]||(dutyRoute[c.duty]={});q[c.route]=(q[c.route]||0)+1;}
+    });
+  });
+  return {rows:rows,byWd:byWd,par:par,two:two,dutyRoute:dutyRoute,coachDays:coachDays,routes:routes,from:pd(lo)};
+}
+var WDF=['Sundays','Mondays','Tuesdays','Wednesdays','Thursdays','Fridays','Saturdays'];
+function patterns(P){
+  var F=[],W=[],full=WDF;
+  if(P.rows.length<6)return null;
+  P.byWd.forEach(function(w,i){if(w.n<2)return;
+    var tr=topOf(w.route),tc=topOf(w.coach),r=tr&&tr.n/w.n>=0.6,c=tc&&tc.n>=2&&tc.n/w.n>=0.5;
+    if(r||c)W.push({s:(r?tr.n/w.n:0)+(c?tc.n/w.n:0),k:'wd',f:['🗓️',full[i]+': usually '+(r?'Route '+tr.k:'')+(r&&c?' on ':'')+(c?'coach '+tc.k:''),(r?'Route '+tr.k+' on '+tr.n+' of '+w.n:'')+(r&&c?' · ':'')+(c?'coach '+tc.k+' on '+tc.n+' of '+w.n:'')+' '+full[i]]});
+  });
+  W.sort(function(a,b){return b.s-a.s;});
+  var hm=function(m){m=Math.round(m);return pad(Math.floor(m/60))+':'+pad(m%60);};
+  var sw=P.byWd.map(function(w,i){return {i:i,a:w.n?w.start/w.n:null,n:w.n};}).filter(function(x){return x.n>=2;});
+  if(sw.length>=2){sw.sort(function(a,b){return a.a-b.a;});var e=sw[0],l=sw[sw.length-1];if(l.a-e.a>=20)F.push({k:'start',f:['⏰','Earliest starts on '+full[e.i]+' ('+hm(e.a)+' on average)','Latest on '+full[l.i]+' ('+hm(l.a)+')']});}
+  var ow=P.byWd.map(function(w,i){return {i:i,ot:w.ot,n:w.n};}).filter(function(x){return x.n>=2;}).sort(function(a,b){return b.ot-a.ot;})[0];
+  if(ow&&ow.ot>0)F.push({k:'ot',f:['⏱️','Most overtime lands on '+full[ow.i],n1(ow.ot)+' h of overtime across '+ow.n+' '+full[ow.i]]});
+  var a=topOf(P.par[0].route),b=topOf(P.par[1].route);
+  if(P.two&&a&&b&&a.k!==b.k&&P.par[0].n>=3&&P.par[1].n>=3)F.push({k:'alt',f:['🔁','Every other week the route changes','Week 1 of each pay period: mostly Route '+a.k+'. Week 2: mostly Route '+b.k]});
+  Object.keys(P.dutyRoute).forEach(function(d){var m=P.dutyRoute[d],t=topOf(m),n=Object.keys(m).reduce(function(s,k){return s+m[k];},0);if(n>=3&&t.n/n>=0.75)F.push({k:'duty',f:['🧾','Duty '+d+' is almost always Route '+t.k,t.n+' of '+n+' run cards']});});
+  Object.keys(P.coachDays).forEach(function(c){var ds=Object.keys(P.coachDays[c]).sort(),run=1,best=1,end=ds[0];for(var i=1;i<ds.length;i++){if(dd(pd(ds[i-1]),pd(ds[i]))===1){run++;if(run>best){best=run;end=ds[i];}}else run=1;}if(best>=3)F.push({k:'coach',f:['📍','Coach '+c+' '+best+' days in a row','Ending '+fmtD(pd(end))]});});
+  return W.slice(0,3).concat(F).slice(0,8);
+}
 /* A setup file replaces the setup and keeps every logged day and mark on the phone. Days in the file are added only
    on dates that have nothing logged and no mark, so nothing is doubled. */
 function mergeSetup(st,cur){
@@ -652,7 +771,7 @@ window.addEventListener('error',function(ev){var b=document.getElementById('errb
 document.addEventListener('keydown',function(ev){if(ev.key==='Escape')closeModal();});
 var LINES=[['fed','Federal income tax'],['ss','Social Security'],['med','Medicare'],['fli','State family leave'],['mli','State medical leave'],['ltc','State long-term care'],['ben','Benefit fee (pre-tax)'],['dc','Deferred compensation (pre-tax)'],['pers','Retirement (pre-tax)'],['atu','Insurance (after tax)'],['li','Industrial insurance'],['dues','Union dues'],['assess','Union assessment'],['other','Other deductions']];
 var E=null,DB=null,SEQ=0,SNAP={core:'',ent:{}},PEND=Promise.resolve(),MT=0,PERSIST=null,WAITING=null,WANT=false,P='nurris-tracker:';
-Object.assign(U,{tab:'home',sub:'menu',cust:{},sh:null,rng:'all',off:0,hv:'list',cs:'',ce:'',role:'',confirm:'',ex:{src:'range',fmt:'text',pp:0},who:'pay',chk:null,st:null,imp:null,from:'',adv:{},q:'',srch:false,undo:null});
+Object.assign(U,{tab:'home',sub:'menu',cust:{},sh:null,rng:'pp',off:0,hv:'list',cs:'',ce:'',role:'',confirm:'',ex:{src:'range',fmt:'text',pp:0},who:'pay',chk:null,st:null,imp:null,from:'',adv:{},q:'',srch:false,undo:null});
 
 /* Storage: IndexedDB (database nurris-tracker) holds the state, one record per day entry, so an ordinary tap writes only what changed.
    A localStorage mirror (keys nurris-tracker:*) is written shortly after and used when IndexedDB is missing or behind. */
@@ -740,7 +859,7 @@ function pickJob(id){U.job=id;if(id!=='all')U.role=firstWork(id);render();}
 function toast(m){var t=document.getElementById('toast');t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){t.hidden=true;},2400);}
 function go(t){closeModal();U.tab=t;U.sub='menu';U.confirm='';U.imp=null;render();window.scrollTo(0,0);}
 function sub(s){U.sub=s;U.confirm='';U.imp=null;render();window.scrollTo(0,0);}
-function foot(){return '<div class="foot">Nurri\'s Tracker '+APP_V+' · '+esc(BUILD)+'<br>Estimates only. Not a payroll record or tax advice; confirm with payroll or a preparer.</div>';}
+function foot(){return '<div class="foot"><div class="fver">Nurri\'s Tracker '+APP_V+'</div><div class="fbuild">'+esc(BUILD)+'</div>Estimates only. Not a payroll record or tax advice; confirm with payroll or a preparer.</div>';}
 function dlt(a,b,f,u){var d=a-b;if(Math.abs(d)<0.005)return 'Same as the 2 weeks before';return (d>0?'+':'')+f(d)+u+' vs the 2 weeks before';}
 function setView(v){A.set.view=v;save();render();}
 function vv(h,d,cls){var m=A.set.view;if(m==='hours')return n1(h);if(m==='dollars')return usd0(d);return n1(h)+(cls==='tl'?'<br>':' ')+'<em>'+usd0(d)+'</em>';}
@@ -752,7 +871,7 @@ function backupDue(){if(!A.entries.length&&!A.stubs.length)return 0;var since=A.
 function vHome(){
   var t=now(),T0=new Date(t.getFullYear(),t.getMonth(),t.getDate()),s14=addD(T0,-13),m=A.set.view,jid=curJob().id,tk=ymd(T0);
   var R=rowsFor(s14,T0);
-  var h='<header class="top"><div><div class="sub">'+DN[t.getDay()]+', '+fmtD(t)+'</div><h1>Nurri\'s Tracker '+APP_V+'</h1><div class="purpose">A summary of everything: what needs you today, your pay calendar and the last 2 weeks.</div></div></header>';
+  var h='<header class="top"><div style="flex:1"><div class="hrow"><h1>Nurri\'s Tracker</h1><span class="hdate">'+DN[t.getDay()]+', '+fmtD(t)+'</span></div><div class="purpose">A summary of everything: what needs you today, your pay calendar and the last 2 weeks.</div></div></header>';
   h+=jobBar();
   if(!A.entries.length&&!A.stubs.length)h+='<section class="card" style="margin:0 0 14px"><h2>Welcome</h2><div>Start by setting up your job: hourly rate, pay period, overtime rules and days off.</div><div class="note">Have a setup file? Import it in More, Export and backup. Everything you enter stays on this phone.</div><button class="btn solid" onclick="U.tab=\'more\';sub(\'rules\')">Open Pay rules</button><button class="btn" onclick="U.tab=\'more\';sub(\'export\')">Import a setup file</button></section>';
   var bd=backupDue();if(bd)h+='<div class="alert"'+rb('U.tab=\'more\';sub(\'export\')')+'><b>'+(A.set.lastExport?'Your last backup was '+bd+' days ago.':'You have not saved a backup yet.')+'</b><span>Save a backup file to Files, Mail or iCloud &#8250;</span></div>';
@@ -762,6 +881,8 @@ function vHome(){
   if(lc.st==='short'||lc.st==='over')h+='<div class="alert"'+rb('openCheck(\''+ymd(lastClosed().s)+'\')')+'><b>Your last paycheck looks '+usd(Math.abs(lc.diff))+' '+(lc.st==='short'?'short':'over')+'.</b><span>Review it and draft an email &#8250;</span></div>';
   h+=openCards();
   if(!hasHol&&!isMarked(tk)&&!A.entries.some(function(e){return e.date===tk;}))h+='<div class="log" id="today-log"><div><b>Nothing logged for today</b><span>'+(isOff(jid,tk)&&jr(jid).offOT!==false?'It is a day off, so any hours are all overtime.':'Start a shift, add the hours you worked, or mark that you did not.')+'</span></div><div class="lgb"><button onclick="startShift()">▶️ Start a shift</button><button onclick="openEdit(null,\''+tk+'\')">Add hours</button><button class="alt" onclick="openNoWork(\''+tk+'\')">Did not work</button></div></div>';
+  h+=buildLine();
+  h+=nextPayLine();
   h+=payCal();
   h+='<section class="card"><div class="hd"><h2 style="margin:0">Last 2 weeks</h2>'+tab3()+'</div><div class="sub">'+fmtD(s14)+' to '+fmtD(T0)+'</div>';
   var by={};R.forEach(function(r){var x=by[r.e.date]||(by[r.e.date]={w:0,o:0,d:0,od:0,c:0,cd:0,v:0,vd:0});x.w+=r.w;x.o+=r.ot;x.d+=r.usd;x.od+=r.otUsd;if(r.e.hol||r.xtra>0){x.c+=r.w;x.cd+=r.usd;}else if(r.leaveUsd>0){x.v+=r.w;x.vd+=r.usd;}});
@@ -775,15 +896,15 @@ function vHome(){
     labD+='<span class="'+(isT?'td ':'')+(pay?'pdy':'')+'">'+d.getDate()+'</span>';
     lab2+='<span>'+(x?Math.round(x.d):'')+'</span>';
   }
-  h+='<div class="bars" id="bars">'+bars+'</div><div class="bl">'+lab+'</div><div class="bl bd">'+labD+'</div>'+(m==='both'?'<div class="bl b2">'+lab2+'</div>':'')+'<div class="lg"><span><i style="background:var(--go)"></i>Regular</span><span><i style="background:var(--ot-bar)"></i>Overtime</span><span><i style="background:var(--hol-fg)"></i>Holiday credit</span><span><i style="background:var(--lv-fg)"></i>Paid leave</span><span><i style="background:var(--off-fg)"></i>Day off</span><span><i style="background:var(--stop);border-radius:6px;width:14px"></i>Payday</span><span>'+(m==='dollars'?'Bars show dollars':m==='both'?'Bars hours, dollars below':'Bars show hours')+'</span></div></section>';
-  h+=nextPayLine();
+  h+='<div class="bars" id="bars">'+bars+'</div><div class="bl">'+lab+'</div><div class="bl bd">'+labD+'</div>'+(m==='both'?'<div class="bl b2">'+lab2+'</div>':'')+'<details class="keyx"'+(U.chartKeyOpen?' open':'')+' ontoggle="U.chartKeyOpen=this.open"><summary>Key</summary><div class="lg"><span><i style="background:var(--go)"></i>Regular</span><span><i style="background:var(--ot-bar)"></i>Overtime</span><span><i style="background:var(--hol-fg)"></i>Holiday credit</span><span><i style="background:var(--lv-fg)"></i>Paid leave</span><span><i style="background:var(--off-fg)"></i>Day off</span><span><i style="background:var(--pay);border-radius:6px;width:14px"></i>Payday</span><span>'+(m==='dollars'?'Bars show dollars':m==='both'?'Bars hours, dollars below':'Bars show hours')+'</span></div></details></section>';
   h+=foot();
   h+='<button class="fab" aria-label="Add a shift" onclick="openEdit(null,\''+tk+'\')">+</button>';
   return h;
 }
 function inDays(a,b){var n=dd(a,b);return n===0?'today':n===1?'tomorrow':'in '+n+' days';}
-/* Home: one button to the next payday; the pay cards themselves live on Pay. */
-function nextPayLine(){var S=payState(curJob().id),nx=S.next;return '<button class="btn" onclick="go(\'pay\')">💵 Next payday '+DN[nx.pay.getDay()]+' '+fmtD(nx.pay)+' · open Pay &#8250;</button>';}
+/* Home: the Building now and Next payday strips (V2); the full pay cards live on Pay. */
+function buildLine(){var S=payState(curJob().id),bu=S.building,c=checkOf(bu);return '<button class="btn strip" id="bstrip" style="margin:0 0 8px" onclick="go(\'pay\')"><span class="sr"><span>🛠️ Building now · Day '+S.day+' of '+S.len+'</span><span><b>'+usd0(c.T.usd)+'</b> so far</span></span><span class="sr sub2"><span>'+fmtD(bu.s)+' to '+fmtD(bu.e)+'</span><span>pays '+DN[bu.pay.getDay()]+' '+fmtD(bu.pay)+' &#8250;</span></span><span class="segbar" aria-label="Day '+S.day+' of '+S.len+'">'+segsOf(S).map(function(on){return '<i'+(on?' class="on"':'')+'></i>';}).join('')+'</span></button>';}
+function nextPayLine(){var S=payState(curJob().id),nx=S.next,c=checkOf(nx),net=model()?netOf(c.T,nx.pay):0,half=halfNet(net);return '<button class="btn strip" id="pstrip" style="margin:0 0 12px" onclick="go(\'pay\')"><span class="sr"><span>💵 Next payday · '+DN[nx.pay.getDay()]+' '+fmtD(nx.pay)+'</span><span><b>'+usd0(c.T.usd)+'</b> expected</span></span><span class="sr sub2"><span>'+fmtD(nx.s)+' to '+fmtD(nx.e)+'</span><span class="th">'+(net>0?'≈ <b>'+usd0(net)+'</b> take-home ':'')+'&#8250;</span></span><span class="sr cdr"><span class="cd">'+countdown(daysTo(nx.pay))+'</span>'+(half?'<span class="cut">Mintay Gets <b>'+usd0(half)+'</b></span>':'')+'</span></button>';}
 /* Pay: the four number cards for the last 2 weeks (on Home until V1.3). */
 function kpiCards(){
   var t=now(),T0=new Date(t.getFullYear(),t.getMonth(),t.getDate()),s14=addD(T0,-13),p14=addD(T0,-27),pe=addD(T0,-14),C=tot(rowsFor(s14,T0)),Rp=tot(rowsFor(p14,pe)),h='';
@@ -812,11 +933,24 @@ function payCards(){
 function payCal(){
   var jid=curJob().id,S=payState(jid),m=A.set.view,bu=S.building,h='';
   var prev=periodShift(bu,-1,jid),from=prev.s,to=bu.e,rows=rowsFor(from,to,null,null,jid),a=wkStart(from,jid),z=addD(wkStart(to,jid),6);
-  h+='<section class="card" style="margin-top:0"><div class="hd"><h2 style="margin:0">Pay calendar</h2>'+tab3()+'</div><div class="sub">'+fmtD(from)+' to '+fmtD(to)+'. Tap a day to log or edit it.</div><div class="pg" id="pcal">';
-  for(var i=0;i<7;i++)h+='<div class="wd">'+DL[(jr(jid).ws+i)%7]+'</div>';
-  for(var d=a;ymd(d)<=ymd(z);d=addD(d,1)){var k=ymd(d);h+=(k<ymd(from)||k>ymd(to))?'<button class="pc x" tabindex="-1" aria-hidden="true"></button>':calCell(dayParts(k,jid,rows),m);}
+  h+='<section class="card" style="margin-top:0"><div class="hd"><h2 style="margin:0">Pay calendar</h2>'+tab3()+'</div><div class="sub">'+fmtD(from)+' to '+fmtD(to)+'. Tap a day to log or edit it.</div>';
+  var B=calBlocks(jid);
+  if(B){ /* V2: each pay period is a block, its payday on the left like a y-axis label; the period being built is tinted */
+    h+='<div class="pcw" id="pcal"><div class="pgh"><span></span>';
+    for(var i=0;i<7;i++)h+='<div class="wd">'+DL[(jr(jid).ws+i)%7]+'</div>';
+    h+='</div>';
+    B.forEach(function(b){var p=b.p;
+      h+='<div class="pblk'+(b.cur?' cur':'')+'"><div class="plab" aria-label="Paid '+DN[p.pay.getDay()]+' '+fmtD(p.pay)+', '+b.tag+'"><span class="pi">💵</span><b>'+MN[p.pay.getMonth()]+'</b><b>'+p.pay.getDate()+'</b><small>'+b.tag+'</small></div><div class="pg7">';
+      for(var d=p.s;ymd(d)<=ymd(p.e);d=addD(d,1))h+=calCell(dayParts(ymd(d),jid,rows),m);
+      h+='</div></div>';
+    });
+  }else{
+    h+='<div class="pg" id="pcal">';
+    for(var i=0;i<7;i++)h+='<div class="wd">'+DL[(jr(jid).ws+i)%7]+'</div>';
+    for(var d=a;ymd(d)<=ymd(z);d=addD(d,1)){var k=ymd(d);h+=(k<ymd(from)||k>ymd(to))?'<button class="pc x" tabindex="-1" aria-hidden="true"></button>':calCell(dayParts(k,jid,rows),m);}
+  }
   var G=jr(jid).guar;
-  h+='</div>'+legendHtml()+'<div class="note">A day you do not log counts as no work.'+(G>0?' The '+G+'-hour guarantee tops up a finished period, but a "?" on a day you did work means pay is missing.':' A "?" on a day you did work means pay is missing.')+'</div></section>';
+  h+='</div><details class="keyx"'+(U.keyOpen?' open':'')+' ontoggle="U.keyOpen=this.open"><summary>Key</summary>'+legendHtml()+'<div class="note">A day you do not log counts as no work.'+(G>0?' The '+G+'-hour guarantee tops up a finished period, but a "?" on a day you did work means pay is missing.':' A "?" on a day you did work means pay is missing.')+'</div></details></section>';
   return h;
 }
 var PCOL={off:'var(--off-bg)',hol:'var(--hol-bg)',lv:'var(--lv-bg)',reg:'var(--go-bg)',ot:'var(--ot-bg)'},PNAME={off:'day off',hol:'holiday',lv:'paid leave',reg:'regular',ot:'overtime'};
@@ -837,8 +971,10 @@ function calCell(P,m){
     st=' style="background:'+bg+'"';cl+=' m';
   }
   if(P.today)cl+=' td';
+  var dn='<small>'+d.getDate()+'</small>';
+  if(isFut(P)){cl+=' fut';dn='<span class="dnum">'+d.getDate()+'</span>';body=has('off')?'<i class="ftag">off</i>':has('hol')?'<i class="ftag">holiday</i>':'';}
   var lab=DN[d.getDay()]+' '+fmtD(d)+(P.parts.length?', '+P.parts.map(function(p){return PNAME[p];}).join(' and '):'')+(P.st==='op'?', a shift not finished yet':P.st==='un'?', not logged':P.st==='nw'?', did not work':'')+(P.pay?', payday':'');
-  return '<button class="'+cl+'"'+st+' data-parts="'+P.parts.join(' ')+'" onclick="dayTap(\''+P.k+'\')" aria-label="'+lab+'"><small>'+d.getDate()+'</small>'+body+(P.pay?'<u>$</u>':'')+'</button>';
+  return '<button class="'+cl+'"'+st+' data-parts="'+P.parts.join(' ')+'" onclick="dayTap(\''+P.k+'\')" aria-label="'+lab+'">'+dn+body+(P.pay?'<u>$</u>':'')+'</button>';
 }
 function legendHtml(){return '<div class="lgd"><span><i class="s r"></i>Regular</span><span><i class="s o"></i>Overtime</span><span><i class="s od"></i>Day off</span><span><i class="s hl"></i>Holiday credit</span><span><i class="s lv"></i>Paid leave</span><span><i class="s mix"></i>More than one</span></div><div class="lgd" style="margin-top:6px"><span><i class="s un"></i>? Not logged</span><span><i class="s pdy">$</i>Payday</span><span style="flex-basis:100%">When a day has two or three of these, its colours share the square.</span></div>';}
 function openPeriod(off){U.rng='pp';U.off=off;U.hv='list';go('hours');}
@@ -1219,7 +1355,7 @@ function vPaychecks(){
   var p=periodOf(t),list=[p];for(var i=1;i<=4;i++)list.push(periodShift(p,-i));
   list.forEach(function(q,i){
     var c=checkOf(q),T=c.T,cur=i===0;
-    h+='<div class="row"'+rb('openCheck(\''+ymd(q.s)+'\')')+'><div class="mid"><b style="font:600 20px var(--fd)">'+fmtD(q.s)+' to '+fmtD(q.e)+'</b><span class="sub">'+(cur?'Current · ':'')+'Paid '+DN[q.pay.getDay()]+' '+fmtD(q.pay)+'</span><span class="sub" style="color:var(--ink)">Expected '+usd0(T.usd)+(M?' · '+netTxt(T,q.pay).replace(/<span.*<\/span>/,''):'')+'</span></div><div class="rt">'+(cur?'<span class="pill">In progress</span>':chipFor(c))+'</div></div>';
+    h+='<div class="row"'+rb('openCheck(\''+ymd(q.s)+'\')')+'><div class="mid"><b style="display:block;font:600 20px var(--fd);color:var(--go)">💵 '+WDF[q.pay.getDay()].slice(0,-1)+' '+fmtD(q.pay)+'</b><b style="display:block;font:600 20px var(--fd)">'+fmtD(q.s)+' to '+fmtD(q.e)+'</b>'+(cur?'<span class="sub">Current</span>':'')+'<span class="sub" style="color:var(--ink)">Expected '+usd0(T.usd)+(M?' · '+netTxt(T,q.pay).replace(/<span.*<\/span>/,''):'')+'</span></div><div class="rt">'+(cur?'<span class="pill">In progress</span>':chipFor(c))+'</div></div>';
   });
   var nt=curJob().rules.third?nextThird():null;
   h+='<button class="btn solid" onclick="openCheck(null)">📄 Add a paystub</button></section><div class="note" style="margin:10px 4px">Pay dates follow the pay period you set in Pay rules.'+(nt?' The next third payday is '+fmtDY(nt.pay)+' (period ending '+fmtD(nt.e)+'), when some deductions are skipped.':'')+'</div>';
@@ -1624,14 +1760,75 @@ function vSheet(){
   h+='<button class="btn solid" onclick="shSave()">Save timesheet</button>';
   return h;
 }
+/* ---- V2: Stats (buses, run cards, routes, duties, when you work, what is missing). The numbers come from the model's
+   statData and patterns; this only draws them. Single-hue bars and tables; a bar for zero draws nothing. ---- */
+function setSrng(v){U.srng=v;render();}
+function hbars(items,fmt){
+  var max=Math.max.apply(null,items.map(function(i){return i.v;}).concat([1]));
+  return '<div class="hb">'+items.map(function(i){return '<div class="hbr" title="'+esc(i.k+': '+fmt(i.v)+(i.t?' · '+i.t:''))+'"><span class="hbk">'+esc(i.k)+'</span><span class="hbt"><i style="width:'+(i.v>0?Math.max(2,i.v/max*100):0)+'%"></i></span><span class="hbv">'+fmt(i.v)+'</span></div>';}).join('')+'</div>';
+}
+function patternsHtml(jid){
+  var P=patternData(jid),F=patterns(P);
+  if(!F)return '<section class="card"><h2>Patterns</h2><div class="note">Log a few more weeks and patterns show up here.</div></section>';
+  var h='<section class="card" id="patterns"><h2>Patterns</h2><div class="note" style="margin:-4px 0 6px">Found in everything logged since '+fmtD(P.from)+'. They get sharper with more weeks.</div>';
+  h+=F.length?F.map(function(x){var f=x.f;return '<div class="why"><b>'+f[0]+' '+esc(f[1])+'</b><br><span class="sub" style="display:inline">'+esc(f[2])+'</span></div>';}).join(''):'<div class="note">No clear patterns yet.</div>';
+  h+='</section>';
+  /* day by route: darker = more run cards on that day of the week */
+  var RK=Object.keys(P.routes).sort(function(x,y){return P.routes[y]-P.routes[x];}).slice(0,5),mx=1;
+  if(!RK.length)return h;
+  P.byWd.forEach(function(w){RK.forEach(function(k){mx=Math.max(mx,w.route[k]||0);});});
+  h+='<section class="card"><h2>Day by route</h2><div class="note" style="margin:-4px 0 8px">How many run cards on each route, by day of the week. Darker means more.</div><table class="hm"><thead><tr><th></th>'+RK.map(function(k){return '<th>Rt '+esc(k)+'</th>';}).join('')+'</tr></thead><tbody>';
+  [0,1,2,3,4,5,6].forEach(function(i){var w=P.byWd[i];h+='<tr><th>'+DN[i]+'</th>'+RK.map(function(k){var v=w.route[k]||0;return '<td title="'+DN[i]+', Rt '+esc(k)+': '+v+' run card'+(v===1?'':'s')+'"><span style="background:rgba(14,124,95,'+(v?0.15+0.85*v/mx:0)+');color:'+(v/mx>0.55?'#fff':'var(--ink)')+'">'+(v||'')+'</span></td>';}).join('')+'</tr>';});
+  return h+'</tbody></table></section>';
+}
+function vStats(){
+  var jid=curJob().id,R=statRange(U.srng||'pp',jid),D=statData(R.s,R.e,jid),rows=D.rows;
+  var h='<header class="top"><div><div class="sub">'+esc(R.l)+' · '+fmtD(R.s)+' to '+fmtD(R.e)+'</div><h1>Stats</h1><div class="purpose">Your buses, routes and run cards, and what is missing from your records.</div></div></header>';
+  h+='<div class="fstrip" role="group" aria-label="Range">'+[['pp','This pay period'],['30','Last 30 days'],['all','All']].map(function(i){var on=(U.srng||'pp')===i[0];return '<button class="chip'+(on?' on':'')+'" aria-pressed="'+on+'" onclick="setSrng(\''+i[0]+'\')">'+i[1]+'</button>';}).join('')+'</div>';
+  if(!rows.length)return h+'<section class="card"><div class="empty">No shifts in this range yet.</div></section>'+foot();
+  var coach=D.coach,route=D.route,duty=D.duty,CK=D.CK,RK=D.RK,DK=D.DK;
+  h+='<div class="kpis">';
+  h+='<div class="kpi"><div class="l">Shifts</div><div class="v">'+rows.length+'</div><div class="d">'+Object.keys(D.days).length+' days · avg '+n1(D.hrs/rows.length)+' h</div></div>';
+  h+='<div class="kpi"><div class="l">Buses driven</div><div class="v">'+CK.length+'</div><div class="d">'+(CK.length?'Most: coach '+esc(CK[0])+' ('+coach[CK[0]].n+'×)':'No coach numbers yet')+'</div></div>';
+  h+='<div class="kpi"><div class="l">Routes</div><div class="v">'+RK.length+'</div><div class="d">'+(RK.length?'Most hours: Rt '+esc(RK[0]):'No routes yet')+'</div></div>';
+  h+='<div class="kpi ot"><div class="l">Overtime</div><div class="v">'+n1(D.ot)+'<small>h</small></div><div class="d">'+Math.round(D.hrs?D.ot/D.hrs*100:0)+'% of '+n1(D.hrs)+' h worked</div></div>';
+  h+='</div>';
+  h+=patternsHtml(jid);
+  h+='<section class="card"><h2>Hours by route</h2>'+(RK.length?hbars(RK.slice(0,8).map(function(k){return {k:'Rt '+k,v:route[k].h,t:route[k].n+' run card'+(route[k].n>1?'s':'')};}),function(v){return n1(v)+' h';}):'<div class="note">No routes recorded in this range.</div>')+'<div class="note">A shift with several run cards splits its hours evenly between them.</div></section>';
+  h+='<section class="card"><h2>Buses (coach numbers)</h2>';
+  if(CK.length){h+='<table class="stt"><thead><tr><th>Coach</th><th>Times</th><th>Routes</th><th>Last</th><th>Notes</th></tr></thead><tbody>'+CK.slice(0,10).map(function(k){var o=coach[k];return '<tr><td><b>'+esc(k)+'</b></td><td>'+o.n+'</td><td>'+esc(Object.keys(o.routes).join(', ')||'–')+'</td><td>'+fmtD(pd(o.last))+'</td><td>'+(o.iss?'<span class="pill">'+o.iss+' note'+(o.iss>1?'s':'')+'</span>':'–')+'</td></tr>';}).join('')+'</tbody></table>';
+    if(CK.length>10)h+='<div class="note">'+(CK.length-10)+' more buses not shown.</div>';}
+  else h+='<div class="note">No coach numbers recorded in this range.</div>';
+  h+='</section>';
+  h+='<section class="card"><h2>Duties</h2>'+(DK.length?'<table class="stt"><thead><tr><th>Duty</th><th>Run cards</th><th>Hours</th><th>Overtime</th></tr></thead><tbody>'+DK.slice(0,8).map(function(k){var u=duty[k];return '<tr><td><b>'+esc(k)+'</b></td><td>'+u.n+'</td><td>'+n1(u.h)+' h</td><td>'+n1(u.ot)+' h</td></tr>';}).join('')+'</tbody></table>':'<div class="note">No duties recorded in this range.</div>')+'</section>';
+  var SH=Object.keys(D.st).map(Number).sort(function(a,b){return a-b;});
+  h+='<section class="card"><h2>When you work</h2><div class="sub" style="margin-bottom:6px">Hours by day of the week</div>'+hbars([0,1,2,3,4,5,6].map(function(i){return {k:DN[i],v:D.wd[i]};}),function(v){return v?n1(v)+' h':'–';});
+  h+='<div class="sub" style="margin:12px 0 6px">Start times</div>'+hbars(SH.map(function(k){return {k:pad(k)+':00',v:D.st[k]};}),function(v){return v+' shift'+(v>1?'s':'');})+'</section>';
+  h+='<section class="card"><h2>Run cards and breaks</h2>';
+  h+='<div class="dl"><span>Shifts with 1 run card</span><span>'+D.ncards[1]+'</span></div><div class="dl"><span>Shifts with 2 run cards</span><span>'+D.ncards[2]+'</span></div><div class="dl"><span>Shifts with 3 or more</span><span>'+D.ncards[3]+'</span></div><div class="dl"><span>Days with more than one shift</span><span>'+D.multiDays+'</span></div>';
+  h+='<div class="dl"><span>Paid breaks (a note only)</span><span>'+Math.round(D.pbMin)+' min</span></div><div class="dl"><span>Unpaid breaks (taken off pay)</span><span>'+Math.round(D.ubMin)+' min</span></div></section>';
+  if(D.notes.length)h+='<section class="card"><h2>Notes log</h2>'+D.notes.slice(0,6).map(function(n){var d=pd(n.d);return '<div class="why"><b>'+DN[d.getDay()]+' '+fmtD(d)+'</b>'+(n.rl?' · <span class="sub" style="display:inline">'+esc(n.rl)+'</span>':'')+'<br>'+esc(n.n)+'</div>';}).join('')+'</section>';
+  h+='<section class="card"><h2>What is missing</h2>';
+  h+='<div class="dl"><span>Past work days not logged ("?")</span><span>'+D.miss+'</span></div><div class="dl"><span>Shifts with no run card</span><span>'+D.noCard+'</span></div><div class="dl"><span>Run cards with no coach number</span><span>'+D.noCoach+'</span></div><div class="dl"><span>Shifts still open (no end time)</span><span>'+D.opens+'</span></div>';
+  h+='<div class="note">Fill these in and the pay check and the stats both get more accurate.</div></section>';
+  h+='<section class="card"><h2>Worth tracking next</h2><div class="note" style="margin-top:-4px">Ideas, not built yet.</div>'+[
+    ['Pull-out and pull-in base','which base or garage the shift starts and ends at'],
+    ['Bus problems','a yes/no "reported a defect" per bus, so each coach gets a history'],
+    ['Relief points','where you picked up or handed off a bus on a split run card'],
+    ['Late or early','minutes behind schedule, to spot routes that run late'],
+    ['Incidents','a quick log for passenger or road incidents, with the run card attached'],
+    ['Spread time','the hours from first start to last end on split days, for spread pay rules']
+  ].map(function(x){return '<div class="why"><b>'+x[0]+'</b><br><span class="sub" style="display:inline">'+x[1]+'</span></div>';}).join('')+'</section>';
+  return h+foot();
+}
 function render(){
   if(!A)return;
   var m=document.getElementById('main'),t=U.tab,h;
-  if(t==='home')h=vHome();else if(t==='hours')h=vHours();else if(t==='edit')h=vEdit();else if(t==='pay')h=vPaychecks();else if(t==='check')h=vCheck();else if(t==='sheet')h=vSheet();
+  if(t==='home')h=vHome();else if(t==='hours')h=vHours();else if(t==='edit')h=vEdit();else if(t==='pay')h=vPaychecks();else if(t==='stats')h=vStats();else if(t==='check')h=vCheck();else if(t==='sheet')h=vSheet();
   else h=U.sub==='rules'?vRules():U.sub==='tax'?vTax():U.sub==='export'?vExport():vMore();
   m.innerHTML=h;
   var act=t==='edit'?(U.from||'hours'):t==='check'?'pay':t==='sheet'?(U.from==='check'?'pay':(U.from||'hours')):t;
-  ['home','hours','pay','more'].forEach(function(k){var b=document.getElementById('tb-'+k);b.className=act===k?'on':'';if(act===k)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
+  ['home','hours','pay','stats','more'].forEach(function(k){var b=document.getElementById('tb-'+k);b.className=act===k?'on':'';if(act===k)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
   if(t==='edit')edPrev();
   if(t==='sheet')shTotals();
 }
