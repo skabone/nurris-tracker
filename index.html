@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="app-build-id" content="2026-10-13-V1.2">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="app-build-id" content="2026-10-14-V1.2.1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <title>Nurri's Tracker</title>
 <meta name="description" content="Log your hours in 24-hour time, see your pay the way your stubs work it out, and check every paycheck.">
 <meta name="theme-color" content="#EDF0F2" media="(prefers-color-scheme: light)">
@@ -228,6 +228,11 @@ input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible,[ro
 .pcard .r{text-align:right;flex:none}.pcard .r b{font-size:22px}.pcard .r .pill{margin-top:4px}
 .pill.hol{background:var(--hol-bg);color:var(--hol-fg)}.pill.lv{background:var(--lv-bg);color:var(--lv-fg)}
 .btn.big2{min-height:54px;font-size:18px}
+/* V1.2.1: behave like an app: no double-tap zoom, no text-selection callouts on the controls. */
+html{touch-action:manipulation}
+body{-webkit-touch-callout:none}
+button,[role="button"],nav,.row,.pcard,.pc,.chip{-webkit-user-select:none;user-select:none}
+input,textarea{-webkit-user-select:text;user-select:text}
 </style>
 </head>
 <body>
@@ -242,7 +247,7 @@ input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible,[ro
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 <script id="model">
 /* Pay model: pure functions over the state object A. No DOM here; test.js runs this block in Node. */
-const BUILD='2026-10-13-V1.2';
+const BUILD='2026-10-14-V1.2.1';
 var APP_V=(/-(V\d+(?:\.\d+)*)$/.exec(BUILD)||[0,'V1'])[1];
 var DN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],DL=['S','M','T','W','T','F','S'],MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var A=null,U={job:'all'},NOW=null,REV=0,MC={k:null,v:null},FLSA=40,HOL_H=8,SCHEMA=2;
