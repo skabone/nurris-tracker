@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="app-build-id" content="2026-10-15-V2">
+<meta name="app-build-id" content="2026-10-20-V2.1">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <title>Nurri's Tracker</title>
 <meta name="description" content="Log your hours in 24-hour time, see your pay the way your stubs work it out, and check every paycheck.">
@@ -308,7 +308,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 <script id="model">
 /* Pay model: pure functions over the state object A. No DOM here; test.js runs this block in Node. */
-const BUILD='2026-10-15-V2';
+const BUILD='2026-10-20-V2.1';
 var APP_V=(/-(V\d+(?:\.\d+)*)$/.exec(BUILD)||[0,'V1'])[1];
 var DN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],DL=['S','M','T','W','T','F','S'],MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var A=null,U={job:'all'},NOW=null,REV=0,MC={k:null,v:null},FLSA=40,HOL_H=8,SCHEMA=3;
@@ -770,7 +770,7 @@ function mergeSetup(st,cur){
 window.addEventListener('error',function(ev){var b=document.getElementById('errbar');if(!b){b=document.createElement('button');b.id='errbar';b.className='errbar';b.onclick=function(){location.reload();};document.body.appendChild(b);}b.textContent='Something went wrong ('+(ev.message||'error')+'). Tap to reload.';});
 document.addEventListener('keydown',function(ev){if(ev.key==='Escape')closeModal();});
 var LINES=[['fed','Federal income tax'],['ss','Social Security'],['med','Medicare'],['fli','State family leave'],['mli','State medical leave'],['ltc','State long-term care'],['ben','Benefit fee (pre-tax)'],['dc','Deferred compensation (pre-tax)'],['pers','Retirement (pre-tax)'],['atu','Insurance (after tax)'],['li','Industrial insurance'],['dues','Union dues'],['assess','Union assessment'],['other','Other deductions']];
-var E=null,DB=null,SEQ=0,SNAP={core:'',ent:{}},PEND=Promise.resolve(),MT=0,PERSIST=null,WAITING=null,WANT=false,P='nurris-tracker:';
+var E=null,DB=null,SEQ=0,SNAP={core:'',ent:{}},PEND=Promise.resolve(),MT=0,PERSIST=null,WAITING=null,WANT=false,FRESH=true,EDIT=false,P='nurris-tracker:';
 Object.assign(U,{tab:'home',sub:'menu',cust:{},sh:null,rng:'pp',off:0,hv:'list',cs:'',ce:'',role:'',confirm:'',ex:{src:'range',fmt:'text',pp:0},who:'pay',chk:null,st:null,imp:null,from:'',adv:{},q:'',srch:false,undo:null});
 
 /* Storage: IndexedDB (database nurris-tracker) holds the state, one record per day entry, so an ordinary tap writes only what changed.
@@ -781,7 +781,7 @@ function readMirror(){try{var c=localStorage.getItem(P+'core');if(!c)return null
 function coreOf(){var o={};for(var k in A)if(k!=='entries')o[k]=A[k];return o;}
 function snapAll(){SNAP={core:JSON.stringify(coreOf()),ent:{}};A.entries.forEach(function(e){SNAP.ent[e.id]=JSON.stringify(e);});}
 function save(){
-  REV++;SEQ++;var core=JSON.stringify(coreOf()),put=[],del=[],seen={},q=SEQ;
+  REV++;SEQ++;EDIT=false;var core=JSON.stringify(coreOf()),put=[],del=[],seen={},q=SEQ;
   A.entries.forEach(function(e){var s=JSON.stringify(e);seen[e.id]=1;if(SNAP.ent[e.id]!==s){SNAP.ent[e.id]=s;put.push(s);}});
   Object.keys(SNAP.ent).forEach(function(id){if(!seen[id]){delete SNAP.ent[id];del.push(id);}});
   var cc=core!==SNAP.core;SNAP.core=core;
@@ -805,17 +805,33 @@ function boot(){
   });
 }
 
-/* Service worker: a worker already waiting when the page loads takes over on this load; one that arrives mid-session waits behind "Update ready". */
+/* Service worker. An open is a page load or a return to the foreground (the iPhone app resumes without reloading, V2.1).
+   A new worker that is waiting at an open, or finishes installing before the first tap after it, takes over then: the
+   page reloads once by itself. One that arrives after the user has started tapping, or finds a half-typed form or a
+   pop-up, waits behind "Update ready". An automatic takeover that the old worker holds back past the first tap
+   does not reload the page either; it shows the button. */
+function quiet(){var m=document.getElementById('modal');return FRESH&&!EDIT&&!(m&&!m.hidden);}
+function offerUpd(w){WAITING=w;if(quiet())applyUpd('auto');else document.getElementById('upd').hidden=false;}
+function watchInstall(w){if(w)w.addEventListener('statechange',function(){if(w.state==='installed'&&navigator.serviceWorker.controller)offerUpd(w);});}
 function registerSW(){
   if(!('serviceWorker' in navigator)||!/^(https:|http:\/\/(localhost|127\.0\.0\.1)[:/])/.test(location.href))return;
-  navigator.serviceWorker.addEventListener('controllerchange',function(){if(WANT){WANT=false;location.reload();}});
+  document.addEventListener('pointerdown',function(){FRESH=false;},true);
+  document.addEventListener('keydown',function(){FRESH=false;},true);
+  document.addEventListener('input',function(){EDIT=true;},true);
+  navigator.serviceWorker.addEventListener('controllerchange',function(){var how=WANT;WANT=false;if(how==='tap'||(how==='auto'&&FRESH))location.reload();else if(how)document.getElementById('upd').hidden=false;});
   navigator.serviceWorker.register('sw.js').then(function(reg){
-    if(reg.waiting&&navigator.serviceWorker.controller){WANT=true;reg.waiting.postMessage('skipWaiting');return;}
-    reg.addEventListener('updatefound',function(){var w=reg.installing;if(!w)return;w.addEventListener('statechange',function(){if(w.state==='installed'&&navigator.serviceWorker.controller){WAITING=w;document.getElementById('upd').hidden=false;}});});
-    document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')reg.update().catch(function(){});});
+    if(reg.waiting&&navigator.serviceWorker.controller)offerUpd(reg.waiting);
+    watchInstall(reg.installing);
+    reg.addEventListener('updatefound',function(){watchInstall(reg.installing);});
+    document.addEventListener('visibilitychange',function(){
+      if(document.visibilityState!=='visible')return;
+      FRESH=true;
+      if(reg.waiting&&navigator.serviceWorker.controller&&!WANT)offerUpd(reg.waiting);
+      reg.update().catch(function(){});
+    });
   }).catch(function(){});
 }
-function applyUpd(){var w=WAITING;if(!w)return;PEND.then(function(){WANT=true;w.postMessage('skipWaiting');});}
+function applyUpd(how){var w=WAITING;if(!w)return;PEND.then(function(){if(w.state==='activated'){location.reload();return;}WANT=how==='auto'?'auto':'tap';w.postMessage('skipWaiting');});}
 
 function tmask(el){var d=el.value.replace(/[^0-9]/g,'').slice(0,4);el.value=d.length>=3?d.slice(0,2)+':'+d.slice(2):d;}
 function tnorm(el){el.value=tfix(el.value);}
