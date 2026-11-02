@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="app-build-id" content="2026-10-20-V2.1">
+<meta name="app-build-id" content="2026-11-01-V3">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <title>Nurri's Tracker</title>
 <meta name="description" content="Log your hours in 24-hour time, see your pay the way your stubs work it out, and check every paycheck.">
@@ -235,17 +235,14 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .brk{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px}.brk+.brk{margin-top:16px}
 .brk h4{margin:0;font-size:17px;font-weight:600}.brk label.f{margin-top:10px}.brk .lx{color:var(--ink2)}
 .pbr{display:flex;gap:8px;align-items:center;margin-top:8px}.pbr input{flex:1;min-width:0;width:auto;padding:0 8px;text-align:center}.pbr span,.pbr .lx{flex:none}
-/* V1.4: several run cards, the 123 | ABC keyboard switch (24 px drawn, 46 px tap area) and the fixed route prefix on Run in number mode. */
+/* V1.4: several run cards and the 123 | ABC keyboard switch (24 px drawn, 46 px tap area). */
 .busbox .bhr{display:flex;align-items:center;gap:10px;flex:none}.busbox .lx{color:var(--ink2)}
 .kseg{display:inline-flex;flex:none}
 .kseg button{position:relative;border:1px solid var(--line);background:var(--card);color:var(--ink2);height:24px;min-height:0;padding:0 9px;font-size:13px;font-weight:600;line-height:22px}
 .kseg button:first-child{border-radius:8px 0 0 8px;border-right:0}.kseg button:last-child{border-radius:0 8px 8px 0}
 .kseg button.on{background:var(--stop);color:var(--on-stop);border-color:var(--stop)}
 .kseg button::after{content:'';position:absolute;left:0;right:0;top:-11px;bottom:-11px}
-.runp{display:flex;align-items:stretch}.runp .pfx{display:flex;align-items:center;height:46px;padding:0 3px 0 12px;border:1px solid var(--line);border-right:0;border-radius:10px 0 0 10px;background:var(--field);color:var(--ink2);font-size:16px;white-space:nowrap}
-.runp .pfx[hidden]{display:none}.runp .pfx+input{border-radius:0 10px 10px 0;padding-left:3px;min-width:0}.runp .pfx[hidden]+input{border-radius:10px;padding-left:12px}
 .mid .sub.bl{color:var(--ink);font-weight:500;white-space:normal}
-.srch{margin-top:14px}.srch input{width:100%}
 .opn{border-color:var(--go)}.opn.late{border-color:var(--ot)}
 .fstrip{display:flex;gap:8px;overflow-x:auto;padding:2px 0 6px;margin-top:10px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .fstrip::-webkit-scrollbar{display:none}
@@ -291,8 +288,18 @@ input,textarea{-webkit-user-select:text;user-select:text}
 /* V2: Stats */
 .hb{display:flex;flex-direction:column;gap:6px}.hbr{display:grid;grid-template-columns:64px 1fr 66px;align-items:center;gap:8px;font-size:13px}
 .hbk{color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hbt{height:14px;background:var(--field);border-radius:4px;overflow:hidden}.hbt i{display:block;height:100%;background:var(--go);border-radius:0 4px 4px 0}.hbv{text-align:right;color:var(--ink);font-variant-numeric:tabular-nums}
-.stt{width:100%;border-collapse:collapse;font-size:14px}.stt th{font-size:12px;font-weight:500;color:var(--ink2);text-align:left;padding:4px 4px 6px;border-bottom:1px solid var(--line)}.stt td{padding:8px 4px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}.stt td .pill{font-size:11px;padding:2px 7px}
+.sth{background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left;min-height:32px}.sth.on{color:var(--go);font-weight:600}.stt tr.tap,.hbr.tap{cursor:pointer}.stt tr.gap td{color:var(--ink2)}.stt tr.tot td{font-weight:600;border-top:2px solid var(--line);border-bottom:0}.stt{width:100%;border-collapse:collapse;font-size:14px}.stt th{font-size:12px;font-weight:500;color:var(--ink2);text-align:left;padding:4px 4px 6px;border-bottom:1px solid var(--line)}.stt td{padding:8px 4px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}.stt td .pill{font-size:11px;padding:2px 7px}
 .hm{width:100%;border-collapse:separate;border-spacing:3px;font-size:12px}.hm th{font-weight:500;color:var(--ink2);text-align:center}.hm tbody th{text-align:left;width:40px}.hm td{padding:0}.hm td span{display:flex;align-items:center;justify-content:center;height:30px;border-radius:6px;background:var(--field);font-weight:600;font-variant-numeric:tabular-nums}
+/* V3: the Base row, the lost and found stepper, the search bar, the calendar, the active-range bar, the phone copies */
+.rr select{flex:1;min-width:0}
+.stp{display:flex;align-items:center;gap:10px}.stp button{width:46px;height:46px;flex:none;border:1px solid var(--line);background:var(--card);border-radius:10px;font-size:22px;color:var(--ink)}.stp b{font:600 26px var(--fd);min-width:26px;text-align:center;font-variant-numeric:tabular-nums}.stp .note{margin:0}
+.fbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-top:12px}.fhd{font-size:13px;font-weight:600;color:var(--ink2)}.fbox .fbar{margin-top:6px}.fbox .fstrip{margin-top:6px;padding-bottom:2px}.fbar{display:flex;gap:8px;margin-top:10px}.fbar input{flex:1;min-width:0;width:auto}
+.calp{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:10px}
+.calh{display:flex;justify-content:space-between;align-items:center;margin:10px 0 6px}.calh b{font:600 20px var(--fd)}.calh button{width:44px;height:44px;border:1px solid var(--line);background:var(--card);border-radius:12px;font-size:22px}
+.cg{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}.cg .wd{font-size:11px;color:var(--ink2);text-align:center}
+.cg button{height:44px;border:0;border-radius:8px;background:transparent;font:500 15px var(--fb);padding:0;color:var(--ink)}.cg button.lgd{background:var(--go-bg);color:var(--go);font-weight:600}.cg button.td{outline:2px solid var(--ink);outline-offset:-2px}.cg button.sel{background:var(--go);color:var(--on-go)}
+.dbar{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--go-bg);color:var(--go);border-radius:12px;padding:6px 8px 6px 12px;margin-top:10px;font-weight:500}.dbar button{border:0;background:var(--go);color:var(--on-go);border-radius:10px;min-height:44px;padding:0 14px;font-weight:600;flex:none}
+.bkr{padding:10px 0;border-bottom:1px solid var(--line)}.bkr:last-child{border-bottom:0}.bkr.hi{background:var(--go-bg);margin:0 -16px;padding:10px 16px}.bkr .hrow b{font:600 18px var(--fd)}.bkb{display:flex;gap:8px}.bkb .btn{flex:1}.mbox .bkb{margin-top:12px}
 </style>
 </head>
 <body>
@@ -308,10 +315,10 @@ input,textarea{-webkit-user-select:text;user-select:text}
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 <script id="model">
 /* Pay model: pure functions over the state object A. No DOM here; test.js runs this block in Node. */
-const BUILD='2026-10-20-V2.1';
+const BUILD='2026-11-01-V3';
 var APP_V=(/-(V\d+(?:\.\d+)*)$/.exec(BUILD)||[0,'V1'])[1];
 var DN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],DL=['S','M','T','W','T','F','S'],MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-var A=null,U={job:'all'},NOW=null,REV=0,MC={k:null,v:null},FLSA=40,HOL_H=8,SCHEMA=3;
+var A=null,U={job:'all'},NOW=null,REV=0,MC={k:null,v:null},FLSA=40,HOL_H=8,LF_MIN=5,SCHEMA=4;
 function now(){return NOW?pd(NOW):new Date();}
 function pad(n){return (n<10?'0':'')+n;}
 function ymd(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
@@ -341,7 +348,7 @@ function curJob(){return U.job==='all'?A.jobs[0]:(jobOf(U.job)||A.jobs[0]);}
 function role(id){for(var i=0;i<A.roles.length;i++)if(A.roles[i].id===id)return A.roles[i];return null;}
 function roleJob(rid){var r=role(rid);return r?r.job:A.jobs[0].id;}
 function firstWork(jid){var r=A.roles.filter(function(x){return x.kind==='work'&&(!jid||x.job===jid);})[0];return r?r.id:A.roles[0].id;}
-function newRules(pp){var t=ymd(now());return {mode:'auto',thr:40,mult:1.5,ws:1,dOn:false,dHrs:8,wOn:true,offOT:true,off:{sched:[{from:'2000-01-01',days:[]}],next:''},hol:{on:true,list:[]},guar:0,bank:{on:false,cap:80,bal:80,date:t},pp:pp||{type:'biweekly',anchor:t,lag:7},third:false};}
+function newRules(pp){var t=ymd(now());return {mode:'auto',thr:40,mult:1.5,ws:1,dOn:false,dHrs:8,wOn:true,offOT:true,dayMin:0,offRound:0,off:{sched:[{from:'2000-01-01',days:[]}],next:''},hol:{on:true,list:[]},guar:0,bank:{on:false,cap:80,bal:80,date:t},pp:pp||{type:'biweekly',anchor:t,lag:7},third:false};}
 function bindSet(){['mode','thr','mult','ws','dOn','dHrs','wOn','guar','bank','pp'].forEach(function(k){Object.defineProperty(A.set,k,{get:function(){return curJob().rules[k];},set:function(v){curJob().rules[k]=v;},enumerable:false,configurable:true});});}
 function useState(s){A=s;REV++;MC.k=null;bindSet();}
 
@@ -349,7 +356,8 @@ function useState(s){A=s;REV++;MC.k=null;bindSet();}
    "did not work"). Version 3 (V1.3) adds optional fields on a shift: the run card (duty, route, run, coach), paid
    breaks (pb, a record only) and open (saved with no end yet). It also retires the live clock: a clock session stored
    in sess becomes one open shift and sess is cleared. Every other part passes through untouched, and the break
-   setting is never changed here. Runs on load and on import, before norm(). Re-running it changes nothing. Data from
+   setting is never changed here. Version 4 (V3) converts runs, adds the schedule's report time, the day rules and the
+   Training work type (see to4). Runs on load and on import, before norm(). Re-running it changes nothing. Data from
    a newer app returns null. */
 function migrate(s){
   if(!s||typeof s!=='object')return null;
@@ -359,7 +367,58 @@ function migrate(s){
   var o={};for(var k in s)o[k]=s[k];
   o.schemaVersion=SCHEMA;if(!Array.isArray(o.marks))o.marks=[];
   if(o.sess){var x=sessShift(o.sess,o);if(x)o.entries=(Array.isArray(o.entries)?o.entries:[]).concat([x]);o.sess=null;}
+  if(v<4)to4(o);
   return o;
+}
+/* A stored run in the V3 form: the route and the run are separate. "28-02" with route 28 is run 2, "01" is 1, "4" stays 4.
+   With no route, "673-02" gives route 673 and run 2. Anything else stays as typed. */
+function runDig(x){return /^\d+$/.test(x)?String(x).replace(/^0+(?=\d)/,''):x;}
+function runConv(route,run){
+  route=String(route||'');run=String(run||'');
+  var m=/^(\d+)-(\d+)$/.exec(run);
+  if(route&&run.indexOf(route+'-')===0&&run.length>route.length+1)return {route:route,run:runDig(run.slice(route.length+1))};
+  if(!route&&m)return {route:m[1],run:runDig(m[2])};
+  return {route:route,run:runDig(run)};
+}
+/* Convert one card in place. was keeps what changed, so the conversion can be undone. */
+function cardConv(c){
+  if(!c||typeof c!=='object'||(!c.run&&!c.route))return;
+  var x=runConv(c.route,c.run);if(x.run===String(c.run||'')&&x.route===String(c.route||''))return;
+  c.was={run:c.run};if(x.route!==String(c.route||''))c.was.route=c.route||'';
+  c.run=x.run;if(x.route)c.route=x.route;
+}
+/* The most common start on a job's work days inside one schedule row, or '' when no shift falls there. */
+function rptFrom(ents,ids,rows,i){
+  var r=rows[i],to=rows[i+1]?rows[i+1].from:'9999',n={},best='',off=r.days||[];
+  ents.forEach(function(e){
+    if(!e||e.date<r.from||e.date>=to||ids.indexOf(e.role)<0||!tvalid(e.s)||off.indexOf(pd(e.date).getDay())>=0)return;
+    n[e.s]=(n[e.s]||0)+1;if(!best||n[e.s]>=n[best])best=e.s;
+  });
+  return best;
+}
+/* Version 3 to 4. Works on copies, so the state it was given is never touched. A job with a daily 8-hour rule and an
+   80-hour guarantee gets the day rules and a Training work type at its first work type's rate. No shift or id changes. */
+function to4(o){
+  var cl=function(x){return x==null?x:JSON.parse(JSON.stringify(x));};
+  o.jobs=cl(o.jobs);o.roles=cl(o.roles);o.entries=cl(o.entries);o.set=cl(o.set);
+  var ents=Array.isArray(o.entries)?o.entries:[],roles=Array.isArray(o.roles)?o.roles:[];
+  ents.forEach(function(e){if(!e)return;cardConv(e);(Array.isArray(e.cards)?e.cards:[]).forEach(cardConv);});
+  (Array.isArray(o.jobs)?o.jobs:[]).forEach(function(j){
+    var R=j.rules;if(!R)return;
+    var mine=roles.filter(function(r){return r&&r.job===j.id;}),w=mine.filter(function(r){return r.kind!=='leave';});
+    if(R.off&&Array.isArray(R.off.sched)){
+      var rows=R.off.sched.slice().sort(function(a,b){return a.from<b.from?-1:a.from>b.from?1:0;}),ids=w.map(function(r){return r.id;});
+      rows.forEach(function(r,i){if(!r.rpt){var v=rptFrom(ents,ids,rows,i);if(v)r.rpt=v;}});
+    }
+    if(R.dOn===true&&+R.dHrs===8&&+R.guar===80){
+      if(!(+R.dayMin>0))R.dayMin=8;if(!(+R.offRound>0))R.offRound=7;
+      if(w.length&&!mine.some(function(r){return /training/i.test(r.name||'');})){
+        var id='r-training';while(roles.some(function(r){return r&&r.id===id;}))id+='x';
+        roles.splice(roles.indexOf(w[w.length-1])+1,0,{id:id,job:j.id,name:'Training',rate:w[0].rate,kind:'work',ot:true});
+      }
+    }
+  });
+  o.set=o.set||{};if(!Array.isArray(o.set.bases))o.set.bases=[];
 }
 /* A running clock session from before V1.3, as an open shift: its date, start and work type, no end yet. The break
    is the one logged on the clock, or the automatic break setting when none was logged (as clocking out did). */
@@ -372,7 +431,7 @@ function sessShift(ss,o){
 }
 /* Fill in anything a stored, imported or brand-new state is missing. Generic defaults only. */
 function norm(s){
-  s=s||{};var t=ymd(now()),set=Object.assign({view:'both',brk:0,round:0,created:Date.now(),lastExport:0,kbd:false},s.set||{});set.kbd=set.kbd===true;
+  s=s||{};var t=ymd(now()),set=Object.assign({view:'both',brk:0,round:0,created:Date.now(),lastExport:0,kbd:false},s.set||{});set.kbd=set.kbd===true;set.bases=Array.isArray(set.bases)?set.bases.filter(function(b){return typeof b==='string'&&b;}):[];
   set.rem=Object.assign({inOn:false,inT:'06:30',outOn:false,outH:10},set.rem||{});
   if(['hours','dollars','both'].indexOf(set.view)<0)set.view='both';
   var jobs=(Array.isArray(s.jobs)&&s.jobs.length?s.jobs:[{id:'j1',name:'My job'}]).map(function(j){
@@ -397,15 +456,15 @@ function wmin(e){var d=tmin(e.e)-tmin(e.s)-(+e.b||0);if(tmin(e.e)<=tmin(e.s))d+=
 function wh(e){return wmin(e)/60;}
 /* openOk: a shift may be saved open (a start and no end yet); it is never counted until it has an end. */
 function entryErr(E,openOk){
-  if(openOk&&!E.e){if(!E.date||!E.s)return 'Enter a date and a start time.';if(!tvalid(E.s))return 'Use 24-hour time, like 14:00.';return pbErr(E);}
-  if(!E.date||!E.s||!E.e)return 'Enter a date, start time, and end time.';if(!tvalid(E.s)||!tvalid(E.e))return 'Use 24-hour time, like 14:00.';if(wmin(E)<=0)return 'Those times leave no paid time. Check the break.';if(E.ot!=null&&E.ot>wmin(E)/60)return 'Overtime can\'t be more than the hours worked.';return pbErr(E);
+  if(openOk&&!E.e){if(!E.date||!E.s)return 'Enter a date and a Report In time.';if(!tvalid(E.s))return 'Use 24-hour time, like 14:00.';return pbErr(E);}
+  if(!E.date||!E.s||!E.e)return 'Enter a date, a Report In time and a Report Out time.';if(!tvalid(E.s)||!tvalid(E.e))return 'Use 24-hour time, like 14:00.';if(wmin(E)<=0)return 'Those times leave no paid time. Check the break.';if(E.ot!=null&&E.ot>wmin(E)/60)return 'Overtime can\'t be more than the hours worked.';return pbErr(E);
 }
 /* Paid breaks are a record only and never change pay, but each one needs both times in 24-hour form. */
 function pbErr(E){return (E.pb||[]).some(function(p){return (p.f||p.t)&&!(tvalid(p.f)&&tvalid(p.t));})?'Give each paid break a start and an end in 24-hour time, like 12:30.':cardErr(E);}
-/* The optional From and To on run cards 2 and up: a note only, but when typed they must be 24-hour times. */
-function cardErr(E){var L=Array.isArray(E.cards)?E.cards:[];for(var i=0;i<L.length;i++){var c=L[i]||{};if((c.f&&!tvalid(c.f))||(c.t&&!tvalid(c.t)))return 'Run card '+(i+2)+': use 24-hour time, like 14:00.';}return '';}
+/* The optional bus times on every run card (Pull Out, then Pull In or Road Relief): a record only, but when typed they must be 24-hour times. */
+function cardErr(E){var L=[E].concat(Array.isArray(E.cards)?E.cards:[]);for(var i=0;i<L.length;i++){var c=L[i]||{};if((c.f&&!tvalid(c.f))||(c.t&&!tvalid(c.t)))return 'Run card '+(i+1)+': use 24-hour time, like 14:00.';}return '';}
 
-function calc(list){
+function calc(list,skip){
   var cr={},cd={},G={},rows=[];
   list.forEach(function(e){
     var r=role(e.role),job=r?r.job:A.jobs[0].id,R=jr(job),counts=r?r.ot!==false:true,wk=ymd(wkStart(pd(e.date),job))+'|'+job,dk=e.date+'|'+job;
@@ -420,14 +479,38 @@ function calc(list){
       }
       cr[wk]=c1+(w-ot);cd[dk]=d0+w;
     }else if(e.hol&&!(r&&r.extra)){cd[dk]=(cd[dk]||0)+w;}
-    var rate=r?r.rate:0,ph=(w-ot)+ot*R.mult,row={e:e,w:w,ot:ot,fed:0,ph:ph,otPh:ot*R.mult,usd:ph*rate+(+e.adj||0),otUsd:ot*R.mult*rate,rate:rate,job:job,mult:R.mult,leaveUsd:(counts||(r&&r.extra))?0:ph*rate,compUsed:(r&&r.bank)?w:0,xtra:(r&&r.extra)?w:0,workReg:counts?w-ot:0,hol:!!e.hol,dayOff:dayOff};
+    var rate=r?r.rate:0,ph=(w-ot)+ot*R.mult,row={e:e,w:w,ot:ot,fed:0,ph:ph,otPh:ot*R.mult,usd:ph*rate+(+e.adj||0),otUsd:ot*R.mult*rate,rate:rate,job:job,mult:R.mult,leaveUsd:(counts||(r&&r.extra))?0:ph*rate,compUsed:(r&&r.bank)?w:0,xtra:(r&&r.extra)?w:0,workReg:counts?w-ot:0,hol:!!e.hol,dayOff:dayOff,cnt:counts,otW:ot,xh:0,minH:0,minT:0,minOff:false,lfH:0};
     rows.push(row);
     if(counts){var g=G[wk]||(G[wk]={w:0,ot:0,rows:[]});g.w+=w;g.ot+=ot;g.rows.push(row);}
   });
   for(var k in G){var g=G[k],fed=Math.min(g.ot,Math.max(0,g.w-FLSA));if(g.ot>0)g.rows.forEach(function(r){r.fed=fed*r.ot/g.ot;});}
+  dayExtras(rows,cd,skip);
   return rows;
 }
-function tot(rows){var T={worked:0,ot:0,otPh:0,reg:0,ph:0,adj:0,usd:0,fed:0,prem:0,regUsd:0,otUsd:0,leaveUsd:0,compUsed:0,xtra:0,xtraUsd:0,workReg:0},dy={};rows.forEach(function(r){T.worked+=r.hol?0:r.w;T.workReg+=r.workReg;T.ot+=r.ot;T.otPh+=r.otPh;T.reg+=r.w-r.ot-r.xtra;T.xtra+=r.xtra;T.xtraUsd+=r.xtra*r.rate;T.ph+=r.ph;T.adj+=(+r.e.adj||0);T.usd+=r.usd;T.regUsd+=(r.w-r.ot-r.xtra)*r.rate;T.otUsd+=r.otUsd;T.leaveUsd+=r.leaveUsd;T.compUsed+=r.compUsed;T.fed+=r.fed;T.prem+=r.fed*r.rate*0.5;if(r.w>0&&!r.hol)dy[r.e.date]=1;});T.nd=Object.keys(dy).length;return T;}
+/* V3: the day minimums and lost and found, last, so they move no overtime count above. By day, never by shift: a day's
+   worked time is every work shift that date plus any holiday credit or leave filling it, and the hours added sit on its
+   last shift. A scheduled work day under dayMin pays dayMin at regular. A day off from offRound up to dayMin counts as
+   dayMin, all at overtime. A day with a shift still open gets no minimum yet. Lost and found adds its minutes at
+   overtime and never counts toward a minimum. */
+function dayExtras(rows,cd,skip){
+  var last={},lv={},opn={};
+  A.entries.forEach(function(x){if(x.open&&x.id!==skip)opn[x.date+'|'+roleJob(x.role)]=1;});
+  rows.forEach(function(r){
+    var k=r.e.date+'|'+r.job;
+    if(r.cnt){if(r.w>0)last[k]=r;var n=+r.e.lf||0;if(n>0){r.lfH=n*LF_MIN/60;bump(r,r.lfH,true);}}
+    else if(!r.e.hol&&!r.xtra)lv[k]=(lv[k]||0)+r.w;
+  });
+  Object.keys(last).forEach(function(k){
+    if(opn[k])return;
+    var r=last[k],R=jr(r.job),m=+R.dayMin||0,t=(cd[k]||0)+(lv[k]||0),off=isOff(r.job,r.e.date),a=m-t;
+    if(!(m>0)||a<1e-9)return;
+    if(off&&!(R.offOT!==false&&+R.offRound>0&&t+1e-9>=+R.offRound))return;
+    r.minH=a;r.minT=t;r.minOff=off;bump(r,a,off);
+  });
+}
+/* Add paid hours to a row: at overtime or at regular. w stays the time worked. */
+function bump(r,h,ot){r.xh+=h;if(ot)r.ot+=h;r.otPh=r.ot*r.mult;r.ph=(r.w+r.xh-r.ot)+r.otPh;r.otUsd=r.otPh*r.rate;r.usd=r.ph*r.rate+(+r.e.adj||0);r.workReg=r.w+r.xh-r.ot;}
+function tot(rows){var T={worked:0,ot:0,otPh:0,reg:0,ph:0,adj:0,usd:0,fed:0,prem:0,regUsd:0,otUsd:0,leaveUsd:0,compUsed:0,xtra:0,xtraUsd:0,workReg:0,xh:0,minH:0,lfH:0},dy={};rows.forEach(function(r){T.worked+=r.hol?0:r.w;T.workReg+=r.workReg;T.ot+=r.ot;T.otPh+=r.otPh;T.reg+=r.w+r.xh-r.ot-r.xtra;T.xh+=r.xh;T.minH+=r.minH;T.lfH+=r.lfH;T.xtra+=r.xtra;T.xtraUsd+=r.xtra*r.rate;T.ph+=r.ph;T.adj+=(+r.e.adj||0);T.usd+=r.usd;T.regUsd+=(r.w+r.xh-r.ot-r.xtra)*r.rate;T.otUsd+=r.otUsd;T.leaveUsd+=r.leaveUsd;T.compUsed+=r.compUsed;T.fed+=r.fed;T.prem+=r.fed*r.rate*0.5;if(r.w>0&&!r.hol)dy[r.e.date]=1;});T.nd=Object.keys(dy).length;return T;}
 /* Rows for days s..e. Open shifts (no end yet) are never counted. Six days before s are included in the calculation so a week's running overtime count is right. repl swaps a job's entries in lo..hi for a draft list (the timesheet). */
 function rowsFor(s,e,skip,extra,jid,repl){
   var jf=jid===undefined?(U.job==='all'?null:U.job):(jid==='all'?null:jid);
@@ -437,7 +520,7 @@ function rowsFor(s,e,skip,extra,jid,repl){
   L=L.concat(holidayRows(a,z,jf));
   if(extra)L.push(extra);
   L.sort(function(x,y){return x.date<y.date?-1:x.date>y.date?1:(x.s<y.s?-1:x.s>y.s?1:0);});
-  var lo=ymd(s);return calc(L).filter(function(r){return r.e.date>=lo&&r.e.date<=z;});
+  var lo=ymd(s);return calc(L,skip).filter(function(r){return r.e.date>=lo&&r.e.date<=z;});
 }
 function periodOf(d,jid){
   var P=jid?jr(jid).pp:A.set.pp,len={weekly:7,biweekly:14,fourweek:28}[P.type],s,e;
@@ -460,7 +543,11 @@ function holWith(jid,items,fn){
   try{items.forEach(function(x){syncHol(jid,x.d,x.hol,x.n);});r=fn();}finally{R.hol=JSON.parse(bak);}
   return r;
 }
-function offDays(jid,date){var O=jr(jid).off,d=[];if(!O||!O.sched)return d;O.sched.slice().sort(function(a,b){return a.from<b.from?-1:a.from>b.from?1:0;}).forEach(function(x){if(x.from<=date)d=x.days;});return d;}
+/* The schedule row in force on a date: its days off and its optional report time change together. */
+function schedOn(jid,date){var O=jr(jid).off,c=null;if(!O||!O.sched)return null;O.sched.slice().sort(function(a,b){return a.from<b.from?-1:a.from>b.from?1:0;}).forEach(function(x){if(x.from<=date)c=x;});return c;}
+function offDays(jid,date){var x=schedOn(jid,date);return x?x.days:[];}
+function rptOn(jid,date){var x=schedOn(jid,date);return x&&x.rpt?x.rpt:'';}
+function hasRpt(jid){var O=jr(jid).off;return !!(O&&O.sched&&O.sched.some(function(x){return x.rpt;}));}
 function isOff(jid,date){return offDays(jid,date).indexOf(pd(date).getDay())>=0;}
 function holPick(jid,dayOff){
   var rs=A.roles.filter(function(x){return x.job===jid&&x.kind==='leave';});
@@ -538,6 +625,7 @@ function checkOf(p){
     if((cs!=null||T.xtra>0)&&Math.abs((cs||0)-(T.xtraCash||0))>=0.05)c.push('Straight comp hours on the stub are '+nm(cs||0)+' h, and the app expects '+nm(T.xtraCash||0)+' h.');
     if(hr==null&&ot==null)c.push('Add the regular and overtime hours from the stub to see where the gap comes from.');
     if(T.gTop>0)c.push('The app added '+nm(T.gTop)+' guaranteed regular hours to reach '+jr(jid).guar+'.');
+    if(T.minH>0)c.push('Day minimums added '+nm(T.minH)+' hours to this period. If payroll did not round a day up, the gap shows here.');
     if(T.refill>0)c.push(nm(T.refill)+' hours went into the comp bank first ('+nm(T.bal0)+' h to '+nm(T.bal1)+' h), so they were not paid in cash.');
     if(T.adj)c.push('You logged '+usd(T.adj)+' in adjustments. Those may be paid on a different check.');
     c.push('Check that the period dates on the stub match yours (Pay rules, pay period).');
@@ -560,21 +648,37 @@ function openOn(k,jid){return A.entries.some(function(e){return e.open&&e.date==
 function openDays(jid){return A.entries.filter(function(e){return e.open&&(!jid||roleJob(e.role)===jid);}).sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:(a.s<b.s?-1:1);});}
 /* ---- V1.4: several run cards in one shift. Card 1 is the shift's own duty, route, run and coach (the V1.3 shape, untouched,
    so a shift logged before V1.4 is card 1 exactly). Cards 2 and up live in e.cards as {duty,route,run,coach,f,t}, every
-   field optional, f and t (From and To) a note only. Cards never change pay; the shift's Started and Ended do. ---- */
-function cardsOf(e){var L=[{duty:e.duty||'',route:e.route||'',run:e.run||'',coach:e.coach||''}];(Array.isArray(e.cards)?e.cards:[]).forEach(function(c){if(c&&typeof c==='object')L.push(c);});return L;}
+   field optional. V3: every card, card 1 too, also takes base and the bus times f (Pull Out) and t, with end saying
+   whether t is Pull In ('in') or Road Relief ('rr'). was holds a run as it stood before V3. Cards never change pay;
+   the shift's Report In and Report Out do. ---- */
+function cardsOf(e){var L=[{duty:e.duty||'',route:e.route||'',run:e.run||'',coach:e.coach||'',f:e.f||'',t:e.t||'',end:e.end||'',base:e.base||''}];(Array.isArray(e.cards)?e.cards:[]).forEach(function(c){if(c&&typeof c==='object')L.push(c);});return L;}
 function moreCards(e){return Array.isArray(e.cards)?e.cards.length:0;}
-/* One run card as one line: duty, then route (what riders see), run (like 48-1) and coach number, then its own times if any. */
-function cardPlain(c){var p=[],q=[];if(c.duty)p.push('Duty '+c.duty);if(c.route)q.push('Rt '+c.route);if(c.run)q.push('Run '+c.run);if(c.coach)q.push('Coach '+c.coach);if(q.length)p.push(q.join(' '));if(c.f&&c.t)p.push(c.f+' to '+c.t);else if(c.f)p.push('from '+c.f);else if(c.t)p.push('to '+c.t);return p.join(' · ');}
+/* Route and run together read 28/1. Old forms read the same, so 28-02 counts as 28/2 even before it is converted. */
+function runId(c){var x=runConv(c.route,c.run);return x.route&&x.run?x.route+'/'+x.run:x.route?'Rt '+x.route:x.run?'Run '+x.run:'';}
+function endWord(c){return c.end==='rr'?'Road Relief ':c.end==='in'?'Pull In ':'to ';}
+/* One run card as one line: duty, then route/run and coach number, then the base and its bus times if any. */
+function cardPlain(c){var p=[],q=[];if(c.duty)p.push('Duty '+c.duty);if(runId(c))q.push(runId(c));if(c.coach)q.push('Coach '+c.coach);if(q.length)p.push(q.join(' '));if(c.base)p.push(c.base);if(c.f)p.push('Pull Out '+c.f);if(c.t)p.push(endWord(c)+c.t);return p.join(' · ');}
 /* The run card on a shift as one line: card 1 only, or with all=true every card joined by " / " (exports, the email, search). */
 function runPlain(e,all){var L=cardsOf(e);return all?L.map(cardPlain).filter(Boolean).join(' / '):cardPlain(L[0]);}
 function runLine(e){return esc(runPlain(e));}
 /* A row's run line: card 1 plus "+N more" when the shift has more cards. */
 function runShort(e){var n=moreCards(e),l=runPlain(e);return l+(n?(l?' · ':'')+'+'+n+' more':'');}
-/* The Run field in number mode: when the run is empty or reads "<route>-<digits>", the card's route and "-" are a fixed
-   prefix and only the digits are typed (the iPhone number keypad has no hyphen). Anything else is shown whole and saved as typed. */
-function runFits(route,run){route=String(route||'');run=String(run||'');return !!route&&(run===''||(run.indexOf(route+'-')===0&&/^\d+$/.test(run.slice(route.length+1))));}
-function runNum(route,run){return runFits(route,run)?String(run||'').slice(String(route).length+1):String(run||'');}
-function runFull(route,typed,pfx){typed=String(typed||'').trim();return pfx&&route&&typed?route+'-'+typed:typed;}
+/* Search: what he logs on a shift (duty, route/run, coach, base, notes). A full route/run like 28/1 matches that run only, so it never finds 28/11.
+   One field: a chip, or the field's name typed first ("duty 49"). Duty, route, run and coach match whole, so duty 49 never finds 149. */
+var QF={duty:'duty',route:'route',rt:'route',run:'run',coach:'coach',bus:'coach',base:'base',note:'note',notes:'note'};
+function entryHit(e,v){
+  var L=cardsOf(e),m=/^([a-z]+)[:\s]\s*(\S.*)$/.exec(v),f=m&&QF[m[1]];
+  if(f){
+    var w=m[2].trim().replace(/^0+(?=\d)/,''),eq=function(x){return String(x||'').toLowerCase().replace(/^0+(?=\d)/,'')===w;};
+    if(f==='note')return (e.note||'').toLowerCase().indexOf(w)>=0;
+    if(f==='base')return String(e.base||'').toLowerCase().indexOf(w)>=0;
+    return L.some(function(c){return f==='run'?(eq(c.run)||runId(c).toLowerCase()===w):eq(c[f]);});
+  }
+  if(/^[^\s/]+\/[^\s/]+$/.test(v))return L.some(function(c){return runId(c).toLowerCase()===v;});
+  return (L.map(function(c){return [c.duty,runId(c),c.coach,c.base].join(' ');}).join(' ')+' '+(e.note||'')).toLowerCase().indexOf(v)>=0;
+}
+/* What a tab searches for: its box, with the chosen field in front. */
+function qText(t,v){var f=(U.sf||{})[t],s=(v||'').trim().toLowerCase();return s&&f?f+' '+s:s;}
 /* Save a logged day (new or edited). A logged day and a "did not work" mark never share a date. */
 function putEntry(o){
   var f=false;if(o.id){for(var i=0;i<A.entries.length;i++)if(A.entries[i].id===o.id){A.entries[i]=o;f=true;}}
@@ -589,7 +693,7 @@ function isPayday(k,jid){var P=jr(jid).pp,e=addD(pd(k),-(+P.lag||0));return ymd(
 function dayParts(k,jid,rows){
   jid=jid||curJob().id;
   var x={w:0,ot:0,d:0,cr:0,lv:0},H=jr(jid).hol,T=ymd(now()),parts=[],st='';
-  (rows||rowsFor(pd(k),pd(k),null,null,jid)).forEach(function(r){if(r.e.date!==k)return;if(r.e.hol||r.xtra>0){x.cr+=r.w;x.d+=r.usd;}else if(r.leaveUsd>0){x.lv+=r.w;x.d+=r.usd;}else{x.w+=r.w;x.ot+=r.ot;x.d+=r.usd;}});
+  (rows||rowsFor(pd(k),pd(k),null,null,jid)).forEach(function(r){if(r.e.date!==k)return;if(r.e.hol||r.xtra>0){x.cr+=r.w;x.d+=r.usd;}else if(r.leaveUsd>0){x.lv+=r.w;x.d+=r.usd;}else{x.w+=r.w+r.minH;x.ot+=r.ot;x.d+=r.usd;}});
   var off=isOff(jid,k),hol=!!(H&&H.on!==false&&holIdx(jid,k)>=0);
   if(off)parts.push('off');if(hol||x.cr>0)parts.push('hol');if(x.lv>0)parts.push('lv');if(x.w>0)parts.push(x.ot>0?'ot':'reg');
   if(!x.w&&!x.lv&&openOn(k,jid))st='op';
@@ -628,11 +732,20 @@ function noWorkApply(k,jid,why){
   unmark(k);A.marks.push({date:k});return 'mark';
 }
 /* A new day starts from the last finished work day logged for the same job (its start, end and type of work). The break is
-   the saved setting. A job set to "I choose each day" starts at 0 overtime hours. */
+   the saved setting. A job set to "I choose each day" starts at 0 overtime hours. V3: when the job's schedule has report
+   times, Report In comes from the row in force on that date, and a day off leaves both times blank. */
 function newDay(k,rid){
   var jid=roleJob(rid),last=null;
   A.entries.forEach(function(x){var r=role(x.role);if(r&&r.kind==='work'&&r.job===jid&&!x.open&&(!last||x.date>last.date||(x.date===last.date&&x.s>last.s)))last=x;});
-  return {id:null,date:k,s:last?last.s:'',e:last?last.e:'',b:A.set.brk,role:last?last.role:rid,ot:jr(jid).mode==='manual'?0:null,adj:0,note:'',prefilled:!!last};
+  var o={id:null,date:k,s:last?last.s:'',e:last?last.e:'',b:A.set.brk,role:last?last.role:rid,ot:jr(jid).mode==='manual'?0:null,adj:0,note:'',prefilled:!!last,base:lastBase()};
+  if(hasRpt(jid)){var off=isOff(jid,k),rp=rptOn(jid,k);if(off){o.s='';o.e='';o.prefilled=false;}else if(rp)o.s=rp;o.autoS=o.s;}
+  return o;
+}
+/* The base on the newest shift that has one, its last card first. */
+function lastBase(){
+  var L=A.entries.slice().sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:(a.s<b.s?1:-1);});
+  for(var i=0;i<L.length;i++){var C=cardsOf(L[i]);for(var j=C.length-1;j>=0;j--)if(C[j].base)return C[j].base;}
+  return '';
 }
 function listJoin(a){return a.length<2?a.join(''):a.slice(0,-1).join(', ')+' and '+a[a.length-1];}
 function offNames(jid){return offDays(jid,ymd(now())).slice().sort().map(function(d){return DN[d];});}
@@ -647,7 +760,10 @@ function rulesSummary(jid){
     if(!L.length)L.push('No automatic overtime rule is on.');
   }
   if(R.hol&&R.hol.on!==false)L.push('A holiday gives '+HOL_H+' hours of credit.');
-  if(R.guar>0)L.push('Regular pay is guaranteed at '+R.guar+' hours each pay period.');
+  if(R.dayMin>0)L.push('A scheduled work day pays at least '+R.dayMin+' hours at regular. Over '+R.dayMin+' pays to the minute.');
+  if(R.dayMin>0&&R.offRound>0&&R.offOT!==false)L.push('On a day off, '+R.offRound+' hours up to '+R.dayMin+' counts as '+R.dayMin+', all at '+R.mult+'x. Under '+R.offRound+' pays only the time worked, at '+R.mult+'x.');
+  L.push('Each lost and found item adds '+LF_MIN+' minutes at '+R.mult+'x on top of Report In to Report Out.');
+  if(R.guar>0)L.push('Regular pay is guaranteed at '+R.guar+' hours each pay period'+(R.dayMin>0?', counting any day minimum':'')+'.');
   if(R.bank&&R.bank.on)L.push('After you use bank hours, the hours you work refill the comp bank (AC, up to '+R.bank.cap+' hours) before they are paid.');
   return L;
 }
@@ -657,9 +773,10 @@ function otLine(jid){
   if(R.dOn)P.push('hours over '+R.dHrs+' in a day pay '+R.mult+'x');
   if(R.wOn!==false)P.push('hours over '+R.thr+' in a work week pay '+R.mult+'x');
   if(R.offOT!==false&&od.length)P.push('every hour on a day off pays '+R.mult+'x');
-  return P.length?'Overtime is worked out for you: '+listJoin(P)+'.':'Overtime is worked out for you from your Pay rules.';
+  var x=R.dayMin>0?' A scheduled work day pays at least '+R.dayMin+' hours.':'';
+  return (P.length?'Overtime is worked out for you: '+listJoin(P)+'.':'Overtime is worked out for you from your Pay rules.')+x;
 }
-/* Check a backup or setup file before it is shown for import. Files are version 1 (V1), 2 or 3; newer files are refused. */
+/* Check a backup or setup file before it is shown for import. Files are version 1 (V1) to 4; newer files are refused. */
 function readFile(o){
   if(!o||o.app!=='nurris-tracker'||(o.kind!=='backup'&&o.kind!=='setup')||!o.state||!Array.isArray(o.state.jobs)||!o.state.jobs.length)return {err:'That is not a Nurri\'s Tracker backup or setup file'};
   var st=+o.version>SCHEMA?null:migrate(o.state);
@@ -684,27 +801,42 @@ function calBlocks(jid){
 /* An upcoming day with nothing logged: after today, no hours, no paid leave, no open shift, not marked. */
 function isFut(P){return !P.today&&P.k>ymd(now())&&!(P.x.w>0)&&!(P.x.lv>0)&&P.st!=='op'&&P.st!=='nw';}
 /* Stats. Work shifts only (no holiday credit or paid leave rows, no open shifts). A shift's run cards are the cards with
-   anything filled in. */
+   anything filled in. q is the search text: only the shifts it matches count. */
 function statCards(e){return cardsOf(e).filter(function(c){return c.duty||c.route||c.run||c.coach;});}
-function workRows(s,e){return rowsFor(s,e).filter(function(r){var ro=role(r.e.role);return !r.e.hol&&ro&&ro.kind==='work';});}
+function workRows(s,e,q){return rowsFor(s,e).filter(function(r){var ro=role(r.e.role);return !r.e.hol&&ro&&ro.kind==='work'&&(!q||entryHit(r.e,q));});}
+/* V3: paid time off the bus on one shift, in minutes: Report In to the first Pull Out, gaps between buses, and the last
+   Pull In or Road Relief to Report Out. Null unless every card in use has both its times. Unpaid break minutes are not
+   paid, so they come off the gaps. */
+function offBus(e){
+  var L=cardsOf(e).filter(function(c){return c.duty||c.route||c.run||c.coach||c.f||c.t;});
+  if(!L.length||!e.e||!L.every(function(c){return tvalid(c.f)&&tvalid(c.t);}))return null;
+  var s0=tmin(e.s),at=function(t){return (tmin(t)-s0+1440)%1440;},span=wmin({s:e.s,e:e.e,b:0}),end=0,gap=0,pre=null,I;
+  I=L.map(function(c){var a=at(c.f),b=at(c.t);return [a,b<a?a:b];}).sort(function(x,y){return x[0]-y[0];});
+  I.forEach(function(x,i){if(i===0)pre=Math.min(x[0],span);else gap+=Math.max(0,Math.min(x[0],span)-end);end=Math.max(end,Math.min(x[1],span));});
+  gap=Math.max(0,gap-(+e.b||0));
+  return {pre:pre,gap:gap,post:Math.max(0,span-end),m:pre+gap+Math.max(0,span-end)};
+}
 function statRange(r,jid){
   var t=now(),T0=new Date(t.getFullYear(),t.getMonth(),t.getDate());
   if(r==='30')return {s:addD(T0,-29),e:T0,l:'Last 30 days'};
   if(r==='all'){var lo=ymd(addD(T0,-13));A.entries.forEach(function(x){if(x.date<lo)lo=x.date;});return {s:pd(lo),e:T0,l:'Everything logged'};}
   var p=periodOf(t,jid);return {s:p.s,e:p.e,l:'This pay period'};
 }
-function statData(s,e,jid){
-  var rows=workRows(s,e),D={rows:rows,hrs:0,ot:0,coach:{},route:{},duty:{},wd:[0,0,0,0,0,0,0],st:{},ncards:{1:0,2:0,3:0},pbMin:0,ubMin:0,noCard:0,noCoach:0,notes:[],days:{},multiDays:0,miss:0,opens:0},byDay={},T=ymd(now());
+function statData(s,e,jid,q){
+  var rows=workRows(s,e,q),D={rows:rows,hrs:0,ot:0,xh:0,off:{n:0,pre:0,gap:0,post:0,m:0,usd:0},run:{},coach:{},route:{},duty:{},wd:[0,0,0,0,0,0,0],st:{},ncards:{1:0,2:0,3:0},pbMin:0,ubMin:0,noCard:0,noCardH:0,noCardOt:0,noCoach:0,cards:0,gap:{route:{n:0,h:0},run:{n:0,h:0},coach:{n:0},duty:{n:0,h:0,ot:0}},notes:[],days:{},multiDays:0,miss:0,opens:0},byDay={},T=ymd(now());
   rows.forEach(function(r){
-    var x=r.e,cs=statCards(x),share=cs.length?r.w/cs.length:0;D.hrs+=r.w;D.ot+=r.ot;D.days[x.date]=1;byDay[x.date]=(byDay[x.date]||0)+1;
+    var x=r.e,cs=statCards(x),share=cs.length?r.w/cs.length:0,ob=offBus(x);D.hrs+=r.w;D.ot+=r.ot;D.xh+=r.xh;D.days[x.date]=1;
+    if(ob){var O=D.off;O.n++;O.pre+=ob.pre;O.gap+=ob.gap;O.post+=ob.post;O.m+=ob.m;if(r.w>0)O.usd+=ob.m/60*r.rate*((r.w-r.otW)+r.otW*r.mult)/r.w;}byDay[x.date]=(byDay[x.date]||0)+1;
     D.wd[pd(x.date).getDay()]+=r.w;var sh=Math.floor(tmin(x.s)/60);D.st[sh]=(D.st[sh]||0)+1;
-    if(!cs.length)D.noCard++;else D.ncards[Math.min(3,cs.length)]++;
+    if(!cs.length){D.noCard++;D.noCardH+=r.w;D.noCardOt+=r.ot;}else D.ncards[Math.min(3,cs.length)]++;
     (x.pb||[]).forEach(function(p){if(p.f&&p.t)D.pbMin+=Math.max(0,tmin(p.t)-tmin(p.f));});D.ubMin+=(+x.b||0);
     if(x.note)D.notes.push({d:x.date,n:x.note,rl:runPlain(x)});
+    D.cards+=cs.length;
     cs.forEach(function(c){
-      if(c.coach){var o=D.coach[c.coach]||(D.coach[c.coach]={n:0,last:'',routes:{},iss:0});o.n++;if(x.date>o.last)o.last=x.date;if(c.route)o.routes[c.route]=1;if(x.note)o.iss++;}else D.noCoach++;
-      if(c.route){var q=D.route[c.route]||(D.route[c.route]={n:0,h:0});q.n++;q.h+=share;}
-      if(c.duty){var u=D.duty[c.duty]||(D.duty[c.duty]={n:0,h:0,ot:0});u.n++;u.h+=share;u.ot+=r.ot/cs.length;}
+      if(c.coach){var o=D.coach[c.coach]||(D.coach[c.coach]={n:0,last:'',routes:{},iss:0});o.n++;if(x.date>o.last)o.last=x.date;if(c.route)o.routes[c.route]=1;if(x.note)o.iss++;}else{D.noCoach++;D.gap.coach.n++;}
+      if(c.route){var rt=D.route[c.route]||(D.route[c.route]={n:0,h:0});rt.n++;rt.h+=share;}else{D.gap.route.n++;D.gap.route.h+=share;}
+      var rk=runId(c);if(rk.indexOf('/')>0){var ru=D.run[rk]||(D.run[rk]={n:0,h:0});ru.n++;ru.h+=share;}else{D.gap.run.n++;D.gap.run.h+=share;}
+      if(c.duty){var u=D.duty[c.duty]||(D.duty[c.duty]={n:0,h:0,ot:0});u.n++;u.h+=share;u.ot+=r.ot/cs.length;}else{D.gap.duty.n++;D.gap.duty.h+=share;D.gap.duty.ot+=r.ot/cs.length;}
     });
   });
   Object.keys(byDay).forEach(function(k){if(byDay[k]>1)D.multiDays++;});
@@ -712,16 +844,19 @@ function statData(s,e,jid){
   D.CK=Object.keys(D.coach).sort(function(a,b){return D.coach[b].n-D.coach[a].n||(D.coach[b].last>D.coach[a].last?1:-1);});
   D.RK=Object.keys(D.route).sort(function(a,b){return D.route[b].h-D.route[a].h;});
   D.DK=Object.keys(D.duty).sort(function(a,b){return D.duty[b].n-D.duty[a].n;});
+  D.UK=Object.keys(D.run).sort(function(a,b){return D.run[b].n-D.run[a].n;});
   for(var d=new Date(s);ymd(d)<T&&ymd(d)<=ymd(e);d=addD(d,1)){var k=ymd(d);if(!isOff(jid,k)&&holIdx(jid,k)<0&&!isMarked(k)&&!A.entries.some(function(x){return x.date===k;}))D.miss++;}
-  D.opens=A.entries.filter(function(x){return x.open;}).length;
+  var lo=ymd(s),hi=ymd(e);D.opens=A.entries.filter(function(x){return x.open&&x.date>=lo&&x.date<=hi&&(!q||entryHit(x,q));}).length;
   return D;
 }
 function topOf(m){var k=Object.keys(m).sort(function(a,b){return m[b]-m[a];})[0];return k?{k:k,n:m[k]}:null;}
-/* Patterns in everything logged. Each needs a minimum count; at most 3 weekday findings lead, then the other kinds, so
-   weekday findings cannot crowd out the rest. Every other week is week 1 or 2 of a 14-day pay period. */
-function patternData(jid){
+/* Patterns in everything logged, or only the picked range and search when F holds them ({s,e,q}). Each needs a minimum
+   count; at most 3 weekday findings lead, then the other kinds, so weekday findings cannot crowd out the rest. Every
+   other week is week 1 or 2 of a 14-day pay period. */
+function patternData(jid,F){
   var T=now(),lo=ymd(T);A.entries.forEach(function(x){if(x.date<lo)lo=x.date;});
-  var rows=workRows(pd(lo),T),pl=jr(jid).pp,two=pl.type==='biweekly';
+  if(F&&F.s)lo=ymd(F.s);
+  var rows=workRows(pd(lo),F&&F.e?F.e:T,F&&F.q),pl=jr(jid).pp,two=pl.type==='biweekly';
   var byWd=[0,1,2,3,4,5,6].map(function(){return {n:0,route:{},coach:{},start:0,ot:0};}),par=[{route:{},n:0},{route:{},n:0}],dutyRoute={},coachDays={},routes={};
   rows.forEach(function(r){
     var x=r.e,d=pd(x.date),w=byWd[d.getDay()],wk=two?Math.floor(dd(periodOf(d,jid).s,d)/7)%2:0;
@@ -745,7 +880,7 @@ function patterns(P){
   W.sort(function(a,b){return b.s-a.s;});
   var hm=function(m){m=Math.round(m);return pad(Math.floor(m/60))+':'+pad(m%60);};
   var sw=P.byWd.map(function(w,i){return {i:i,a:w.n?w.start/w.n:null,n:w.n};}).filter(function(x){return x.n>=2;});
-  if(sw.length>=2){sw.sort(function(a,b){return a.a-b.a;});var e=sw[0],l=sw[sw.length-1];if(l.a-e.a>=20)F.push({k:'start',f:['⏰','Earliest starts on '+full[e.i]+' ('+hm(e.a)+' on average)','Latest on '+full[l.i]+' ('+hm(l.a)+')']});}
+  if(sw.length>=2){sw.sort(function(a,b){return a.a-b.a;});var e=sw[0],l=sw[sw.length-1];if(l.a-e.a>=20)F.push({k:'start',f:['⏰','Earliest Report In on '+full[e.i]+' ('+hm(e.a)+' on average)','Latest on '+full[l.i]+' ('+hm(l.a)+')']});}
   var ow=P.byWd.map(function(w,i){return {i:i,ot:w.ot,n:w.n};}).filter(function(x){return x.n>=2;}).sort(function(a,b){return b.ot-a.ot;})[0];
   if(ow&&ow.ot>0)F.push({k:'ot',f:['⏱️','Most overtime lands on '+full[ow.i],n1(ow.ot)+' h of overtime across '+ow.n+' '+full[ow.i]]});
   var a=topOf(P.par[0].route),b=topOf(P.par[1].route);
@@ -754,6 +889,41 @@ function patterns(P){
   Object.keys(P.coachDays).forEach(function(c){var ds=Object.keys(P.coachDays[c]).sort(),run=1,best=1,end=ds[0];for(var i=1;i<ds.length;i++){if(dd(pd(ds[i-1]),pd(ds[i]))===1){run++;if(run>best){best=run;end=ds[i];}}else run=1;}if(best>=3)F.push({k:'coach',f:['📍','Coach '+c+' '+best+' days in a row','Ending '+fmtD(pd(end))]});});
   return W.slice(0,3).concat(F).slice(0,8);
 }
+/* V3: the checks behind a data conversion. Counts of what a state holds, and whether a converted state still holds all of
+   it: the same days, shifts, cards, stubs and marks, and every id. A clock session from before V1.3 may add one shift. */
+function bkCounts(st){var d={};(st.entries||[]).forEach(function(e){d[e.date]=1;});return {days:Object.keys(d).length,shifts:(st.entries||[]).length,stubs:(st.stubs||[]).length};}
+function cntTxt(n){return n.days+' day'+(n.days===1?'':'s')+', '+n.shifts+' shift'+(n.shifts===1?'':'s')+', '+n.stubs+' paystub'+(n.stubs===1?'':'s');}
+function guardCheck(o,n,added){
+  if(!n||!Array.isArray(n.entries)||!Array.isArray(n.stubs))return 'the new record has no shifts';
+  added=added||0;
+  var a=bkCounts(o),b=bkCounts(n),cards=function(s){var c=0;s.entries.forEach(function(e){c+=cardsOf(e).length;});return c;};
+  if(b.shifts<a.shifts||b.shifts>a.shifts+added||b.days<a.days||b.days>a.days+added||a.stubs!==b.stubs)return 'before '+cntTxt(a)+', after '+cntTxt(b);
+  if((o.marks||[]).length!==(n.marks||[]).length)return 'the days marked "did not work" changed';
+  if(cards(n)<cards(o))return 'run cards are missing';
+  var ids={};n.entries.forEach(function(e){ids['e'+e.id]=1;});n.stubs.forEach(function(s){ids['s'+s.id]=1;});
+  var miss=o.entries.filter(function(e){return !ids['e'+e.id];}).length+o.stubs.filter(function(s){return !ids['s'+s.id];}).length;
+  return miss?miss+' ids are missing':'';
+}
+/* The readable list of every shift, open ones too, oldest first: what the Back up button saves beside the JSON file. */
+function allShiftsText(){
+  var L=['Every shift in Nurri\'s Tracker, made '+fmtDY(now()),''],E_=A.entries.slice().sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:(a.s<b.s?-1:1);}),by={};
+  if(E_.length){rowsFor(pd(E_[0].date),pd(E_[E_.length-1].date),null,null,'all').forEach(function(r){by[r.e.id]=r;});}
+  E_.forEach(function(e){
+    var d=pd(e.date),ro=role(e.role),r=by[e.id],w=DN[d.getDay()]+' '+fmtD(d)+', '+d.getFullYear()+'  Report In '+t24(e.s)+'  Report Out '+(e.e?t24(e.e):'not finished')+'  '+(ro?ro.name:'');
+    if(r)w+='  '+nm(r.w)+' h'+(r.ot>0?' ('+nm(r.ot)+' OT)':'');
+    L.push(w);
+    if(r&&r.minH>0)L.push('  '+minWords(r));
+    if(+e.b)L.push('  Unpaid break '+e.b+' min');
+    cardsOf(e).map(cardPlain).forEach(function(c,i,a){if(c)L.push('  '+(a.length>1?'Run card '+(i+1)+': ':'')+c);});
+    if(+e.lf)L.push('  Lost and found: '+e.lf);
+    if(+e.adj)L.push('  Adjustment '+usd(+e.adj));
+    if(e.note)L.push('  Note: '+e.note);
+  });
+  L.push('',E_.length+' shift'+(E_.length===1?'':'s')+'. Estimates from Nurri\'s Tracker. Not a payroll record.');
+  return L.join('\n');
+}
+/* A plain line for a day that got a minimum. */
+function minWords(r){return 'Worked '+nm(r.minT)+' h'+(r.minOff?', counts as ':', paid ')+nm(r.minT+r.minH)+' h'+(r.minOff?' (day-off round-up)':' (work-day minimum)');}
 /* A setup file replaces the setup and keeps every logged day and mark on the phone. Days in the file are added only
    on dates that have nothing logged and no mark, so nothing is doubled. */
 function mergeSetup(st,cur){
@@ -771,11 +941,12 @@ window.addEventListener('error',function(ev){var b=document.getElementById('errb
 document.addEventListener('keydown',function(ev){if(ev.key==='Escape')closeModal();});
 var LINES=[['fed','Federal income tax'],['ss','Social Security'],['med','Medicare'],['fli','State family leave'],['mli','State medical leave'],['ltc','State long-term care'],['ben','Benefit fee (pre-tax)'],['dc','Deferred compensation (pre-tax)'],['pers','Retirement (pre-tax)'],['atu','Insurance (after tax)'],['li','Industrial insurance'],['dues','Union dues'],['assess','Union assessment'],['other','Other deductions']];
 var E=null,DB=null,SEQ=0,SNAP={core:'',ent:{}},PEND=Promise.resolve(),MT=0,PERSIST=null,WAITING=null,WANT=false,FRESH=true,EDIT=false,P='nurris-tracker:';
-Object.assign(U,{tab:'home',sub:'menu',cust:{},sh:null,rng:'pp',off:0,hv:'list',cs:'',ce:'',role:'',confirm:'',ex:{src:'range',fmt:'text',pp:0},who:'pay',chk:null,st:null,imp:null,from:'',adv:{},q:'',srch:false,undo:null});
+Object.assign(U,{tab:'home',sub:'menu',cust:{},sh:null,rng:'pp',off:0,hv:'list',cs:'',ce:'',role:'',confirm:'',ex:{src:'range',fmt:'text',pp:0},who:'pay',chk:null,st:null,imp:null,from:'',adv:{},q:'',sq:'',dr:{hours:null,stats:null},cal:{on:false,mode:'day',y:0,m:0,a:''},nb:null,undo:null});
 
 /* Storage: IndexedDB (database nurris-tracker) holds the state, one record per day entry, so an ordinary tap writes only what changed.
-   A localStorage mirror (keys nurris-tracker:*) is written shortly after and used when IndexedDB is missing or behind. */
-function openDB(){return new Promise(function(res){try{var r=indexedDB.open('nurris-tracker',1);r.onupgradeneeded=function(){var d=r.result;if(!d.objectStoreNames.contains('kv'))d.createObjectStore('kv');if(!d.objectStoreNames.contains('entries'))d.createObjectStore('entries',{keyPath:'id'});};r.onsuccess=function(){res(r.result);};r.onerror=function(){res(null);};r.onblocked=function(){res(null);};}catch(e){res(null);}});}
+   A localStorage mirror (keys nurris-tracker:*) is written shortly after and used when IndexedDB is missing or behind.
+   Version 2 of the database (V3) adds the store backups, the full copies kept on this phone. */
+function openDB(){return new Promise(function(res){try{var r=indexedDB.open('nurris-tracker',2);r.onupgradeneeded=function(){var d=r.result;if(!d.objectStoreNames.contains('kv'))d.createObjectStore('kv');if(!d.objectStoreNames.contains('entries'))d.createObjectStore('entries',{keyPath:'id'});if(!d.objectStoreNames.contains('backups'))d.createObjectStore('backups',{keyPath:'key'});};r.onsuccess=function(){r.result.onversionchange=function(){r.result.close();};res(r.result);};r.onerror=function(){res(null);};r.onblocked=function(){res(null);};}catch(e){res(null);}});}
 function readDB(){if(!DB)return Promise.resolve(null);return new Promise(function(res){try{var tx=DB.transaction(['kv','entries'],'readonly'),out={},kv=tx.objectStore('kv');kv.get('core').onsuccess=function(e){out.core=e.target.result;};kv.get('seq').onsuccess=function(e){out.seq=+e.target.result||0;};tx.objectStore('entries').getAll().onsuccess=function(e){out.entries=e.target.result||[];};tx.oncomplete=function(){res(out.core?out:null);};tx.onerror=function(){res(null);};}catch(e){res(null);}});}
 function readMirror(){try{var c=localStorage.getItem(P+'core');if(!c)return null;return {core:c,entries:JSON.parse(localStorage.getItem(P+'entries')||'[]'),seq:+localStorage.getItem(P+'seq')||0};}catch(e){return null;}}
 function coreOf(){var o={};for(var k in A)if(k!=='entries')o[k]=A[k];return o;}
@@ -789,21 +960,203 @@ function save(){
   clearTimeout(MT);if(DB)MT=setTimeout(mirrorNow,600);else mirrorNow();
 }
 function mirrorNow(){try{localStorage.setItem(P+'core',SNAP.core);localStorage.setItem(P+'entries','['+Object.keys(SNAP.ent).map(function(k){return SNAP.ent[k];}).join(',')+']');localStorage.setItem(P+'seq',String(SEQ));}catch(e){}}
+function bootMsg(t){document.getElementById('main').innerHTML='<div class="empty">'+t+'</div>';registerSW();}
 function boot(){
-  openDB().then(function(db){DB=db;return readDB();}).then(function(got){
-    var mir=readMirror(),st=null,fromDB=false;
+  openDB().then(function(db){DB=db;bkBind();return readDB();}).then(function(got){
+    var mir=readMirror(),st=null,fromDB=false,obj=null,take=function(x){try{var o=JSON.parse(x.core);o.entries=x.entries;obj=o;SEQ=x.seq||0;return true;}catch(e){return false;}};
     if(got&&(!mir||got.seq>=mir.seq)){st=got;fromDB=true;}else if(mir)st=mir;
-    var obj=null;if(st){try{obj=JSON.parse(st.core);obj.entries=st.entries;SEQ=st.seq||0;}catch(e){obj=null;}}
+    if(st&&!take(st)){var alt=fromDB?mir:got;if(!alt||!take(alt)){bootMsg('Your records could not be read just now. Close the app and open it again. Nothing was changed.');return;}st=alt;fromDB=!fromDB;}
     var v0=obj?obj.schemaVersion:SCHEMA;
-    if(obj){var mg=migrate(obj);if(!mg){document.getElementById('main').innerHTML='<div class="empty">This phone holds records from a newer version of Nurri\'s Tracker. Close the app and open it again to load that version. Nothing was changed.</div>';registerSW();return;}obj=mg;}
-    useState(obj?norm(obj):fresh());
-    if(obj&&fromDB){snapAll();if(v0!==SCHEMA){SNAP.core='';var had={};st.entries.forEach(function(e){had[e.id]=JSON.stringify(e);});Object.keys(SNAP.ent).forEach(function(id){if(SNAP.ent[id]!==had[id])delete SNAP.ent[id];});}}
-    if(!obj||!fromDB||v0!==SCHEMA)save();
-    if(navigator.storage&&navigator.storage.persist&&navigator.storage.persisted){navigator.storage.persisted().then(function(p){return p||navigator.storage.persist();}).then(function(p){PERSIST=!!p;}).catch(function(){});}
-    U.role=firstWork();U.ce=ymd(now());U.cs=ymd(addD(now(),-13));
-    render();registerSW();
+    if(obj&&+v0>SCHEMA){bootMsg('This phone holds records from a newer version of Nurri\'s Tracker. Close the app and open it again to load that version. Nothing was changed.');return;}
+    if(obj&&v0!==SCHEMA)return guardRun(obj,v0).then(function(G){bootDone(G.st||obj,st,fromDB,v0,G);});
+    bootDone(obj?migrate(obj):obj,st,fromDB,v0,null);
   });
 }
+/* G is the guard's result when stored data needed converting: G.st holds the new state, or the conversion failed and obj
+   is the old data, used as it was. Its version stays, nothing is written, and the next open tries again. */
+function bootDone(obj,st,fromDB,v0,G){
+    var conv=!!(G&&G.st),failed=!!(G&&!G.st);
+    useState(obj?norm(obj):fresh());
+    if(failed){A.schemaVersion=v0;BK.fail={copy:G.copy};}
+    if(obj&&fromDB){snapAll();if(conv){SNAP.core='';var had={};st.entries.forEach(function(e){had[e.id]=JSON.stringify(e);});Object.keys(SNAP.ent).forEach(function(id){if(SNAP.ent[id]!==had[id])delete SNAP.ent[id];});}}
+    if(!obj||!fromDB||conv)save();
+    if(navigator.storage&&navigator.storage.persist&&navigator.storage.persisted){navigator.storage.persisted().then(function(p){return p||navigator.storage.persist();}).then(function(p){PERSIST=!!p;}).catch(function(){});}
+    U.role=firstWork();U.ce=ymd(now());U.cs=ymd(addD(now(),-13));
+    render();registerSW();bkBoot();
+}
+/* ---- V3: copies on this phone and the update guard. A copy is the same text as a backup file: every day, run card, stub,
+   mark and setting, with its counts and a checksum, so a damaged copy is refused before anything changes. Copies live in
+   the IndexedDB store backups, or in localStorage when IndexedDB is missing. If neither can hold a copy, nothing that
+   depends on one goes ahead. ---- */
+var BK={db:false,mem:[],memOk:false,list:[],bad:{},ready:false,busy:false,keep:{daily:7,pre:3,restore:3},fail:null,hi:''};
+function bkBind(){
+  BK.db=!!(DB&&DB.objectStoreNames&&DB.objectStoreNames.contains('backups'));
+  try{BK.mem=JSON.parse(localStorage.getItem(P+'backups')||'[]');}catch(e){BK.mem=[];}
+}
+function bkClone(r){return JSON.parse(JSON.stringify(r));}
+function bkHash(t){var h=2166136261;for(var i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619);}return (h>>>0).toString(16);}
+function bkKey(t,kind){var d=new Date(t);return ymd(d)+' '+hhmm(d)+':'+pad(d.getSeconds())+'.'+String(d.getMilliseconds()).padStart(3,'0')+' '+kind;}
+function bkWhen(r,sep){var d=new Date(r.at);return DN[d.getDay()]+', '+fmtD(d)+(sep||' · ')+hhmm(d);}
+function bkKind(r){return r.kind==='daily'?'Daily':r.kind==='restore'?'Before restore':(r.why||'Before update');}
+function bkNewest(a,b){return b.at-a.at;}
+function bkRec(kind,why,t,txt){return {key:bkKey(t,kind),at:t,kind:kind,why:why||'',n:bkCounts(JSON.parse(txt).state),sum:bkHash(txt),data:txt};}
+function bkAll(){
+  if(!BK.db||!DB)return Promise.resolve(BK.mem.map(bkClone));
+  return new Promise(function(res,rej){try{var q=DB.transaction('backups','readonly').objectStore('backups').getAll();q.onsuccess=function(){var L=q.result||[];res(L.concat(BK.mem.filter(function(x){return !L.some(function(r){return r.key===x.key;});}).map(bkClone)));};q.onerror=function(){rej(q.error||new Error('the copies could not be read'));};}catch(e){rej(e);}});
+}
+function bkGet(key){
+  if(!BK.db||!DB){var m=BK.mem.filter(function(x){return x.key===key;})[0];return Promise.resolve(m?bkClone(m):null);}
+  return new Promise(function(res,rej){try{var q=DB.transaction('backups','readonly').objectStore('backups').get(key);q.onsuccess=function(){var m=BK.mem.filter(function(x){return x.key===key;})[0];res(q.result||(m?bkClone(m):null));};q.onerror=function(){rej(q.error||new Error('the copy could not be read'));};}catch(e){rej(e);}});
+}
+function bkWrite(puts,dels){
+  if(!BK.db||!DB){
+    BK.mem=BK.mem.filter(function(x){return dels.indexOf(x.key)<0&&!puts.some(function(r){return r.key===x.key;});}).concat(puts.map(bkClone));
+    try{localStorage.setItem(P+'backups',JSON.stringify(BK.mem));}catch(e){if(!BK.memOk)return Promise.reject(e);}
+    return Promise.resolve();
+  }
+  return new Promise(function(res,rej){try{var tx=DB.transaction('backups','readwrite'),os=tx.objectStore('backups');puts.forEach(function(r){os.put(r);});dels.forEach(function(k){os.delete(k);});tx.oncomplete=function(){var left=BK.mem.filter(function(x){return dels.indexOf(x.key)<0;});if(left.length<BK.mem.length){BK.mem=left;try{localStorage.setItem(P+'backups',JSON.stringify(left));}catch(e){}}res();};tx.onerror=tx.onabort=function(){rej(tx.error||new Error('the phone refused to save the copy'));};}catch(e){rej(e);}});
+}
+/* A copy can be restored only when its text matches its checksum, it reads as a backup file and its counts match. */
+function bkVerify(r){
+  var dam='This copy is damaged, so it cannot be restored. Nothing was changed. Try an older copy.';
+  if(!r||typeof r.data!=='string'||bkHash(r.data)!==r.sum)return {err:dam};
+  var o=null;try{o=JSON.parse(r.data);}catch(e){return {err:dam};}
+  var c=bkCounts(o.state||{}),got=readFile(o);if(got.err)return {err:got.err+'. Nothing was changed.'};
+  if(!r.n||c.days!==r.n.days||c.shifts!==r.n.shifts||c.stubs!==r.n.stubs)return {err:dam};
+  return {state:got.state};
+}
+/* Write a copy and read it back. Only then are older copies of its kind removed: daily keeps one per day for the 7 newest
+   days. A failed clean-up leaves extra copies, which is safe, so it never fails the copy. */
+function bkKeep(rec){
+  return bkWrite([rec],[]).then(function(){return bkGet(rec.key);}).then(function(back){
+    if(!back||back.data!==rec.data||back.sum!==rec.sum)throw new Error('the copy did not read back the same, so older copies were kept');
+    return bkPrune(rec.kind,rec.key).catch(function(){}).then(function(){return rec;});
+  });
+}
+function bkMake(kind,why){return bkKeep(bkRec(kind,why,Date.now(),fileOf('backup')));}
+function bkPrune(kind,newKey){
+  return bkAll().then(function(L){
+    var mine=L.filter(function(x){return x.kind===kind;}).sort(bkNewest),gone=[],days={},kept=0;
+    mine.forEach(function(x){
+      if(x.key===newKey){kept++;days[ymd(new Date(x.at))]=1;return;}
+      var d=ymd(new Date(x.at));
+      if(bkVerify(x).err||kept>=BK.keep[kind]||(kind==='daily'&&days[d]))gone.push(x.key);else{kept++;days[d]=1;}
+    });
+    return gone.length?bkWrite([],gone):null;
+  });
+}
+function bkRefresh(){return bkAll().then(function(L){BK.list=L.sort(bkNewest);BK.bad={};L.forEach(function(r){if(bkVerify(r).err)BK.bad[r.key]=1;});BK.ready=true;});}
+/* The first open of each day saves a copy. A return to the foreground counts: the iPhone app can stay in memory for days. */
+function bkOnOpen(){
+  if(!A||(!A.entries.length&&!A.stubs.length))return Promise.resolve();
+  return bkAll().then(function(L){
+    var d=L.filter(function(x){return x.kind==='daily';}).sort(bkNewest)[0];
+    if(d&&ymd(new Date(d.at))>=ymd(now()))return;
+    return bkMake('daily');
+  });
+}
+function bkDraw(){if(!EDIT&&(U.tab==='home'||(U.tab==='more'&&U.sub==='backups')))render();}
+function bkOpen(){return bkOnOpen().catch(function(){}).then(bkRefresh).then(bkDraw).catch(function(){});}
+function bkBoot(){bkOpen();document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')bkOpen();});}
+/* The update guard: what a change of stored data does. 1 save a "before update" copy of the data exactly as stored and
+   read it back, 2 convert into a new record, so the stored data is never touched, 3 check the new record against the old,
+   4 only then let boot switch to it. Any failure returns no st, and boot keeps the old data. A step that hangs counts
+   as a failure, so the app always opens. */
+function guardRun(obj,v0,cv){
+  var old,txt,rec;
+  try{old=bkClone(obj);txt=JSON.stringify({app:'nurris-tracker',kind:'backup',version:+v0||1,made:ymd(now()),state:old},null,1);rec=bkRec('pre','Before update to '+APP_V,Date.now(),txt);}catch(e){return Promise.resolve({copy:false});}
+  return new Promise(function(res,rej){var t=setTimeout(function(){rej(new Error('timed out'));},8000);bkKeep(rec).then(function(r){clearTimeout(t);res(r);},function(e){clearTimeout(t);rej(e);});}).then(function(){
+    try{
+      var nu=norm((cv||migrate)(JSON.parse(txt).state));
+      if(guardCheck(norm(bkClone(old)),nu,old.sess?1:0))return {copy:true};
+      return {st:nu};
+    }catch(e){return {copy:true};}
+  },function(){return {copy:false};});
+}
+function bkBanner(){
+  if(!BK.fail)return '';
+  return '<div class="alert" role="alert" style="cursor:default"><b>An update could not convert your data. Nothing was lost: the app is using your data as it was.'+(BK.fail.copy?' A copy was saved.':'')+'</b><button class="pill" style="margin-top:8px" onclick="BK.fail=null;render()">OK</button></div>';
+}
+function bkHomeAlert(){
+  if(!BK.ready||(!A.entries.length&&!A.stubs.length))return '';
+  var r=BK.list.filter(function(x){return !BK.bad[x.key];})[0],d=r?Math.floor((Date.now()-r.at)/864e5):null;
+  if(r&&d<3)return '';
+  return '<div class="alert"'+rb('U.tab=\'more\';sub(\'backups\')')+'><b>'+(r?'No backup on this phone for '+d+' days.':'No backup on this phone yet.')+'</b><span>Open Backups on this phone &#8250;</span></div>';
+}
+/* One copy-changing job at a time. */
+function bkGo(fn){
+  if(BK.busy){toast('One moment, still working');return;}
+  BK.busy=true;
+  Promise.resolve().then(fn).catch(function(e){toast('That did not finish: '+(e&&e.message||e));})
+    .then(function(){BK.busy=false;return bkRefresh();}).then(function(){if(U.tab==='more'&&U.sub==='backups')render();});
+}
+function bkModal(title,body,btns){
+  var m=document.getElementById('modal');
+  if(!m){m=document.createElement('div');m.id='modal';m.className='modal';document.body.appendChild(m);}
+  m.innerHTML='<div class="mbox" role="alertdialog" aria-modal="true" aria-labelledby="mt"><h3 id="mt">'+esc(title)+'</h3>'+body+'<div class="two bkb">'+btns+'</div></div>';
+  m.onclick=function(ev){if(ev.target===m)closeModal();};m.hidden=false;
+  var c=m.querySelector('.btn');if(c)c.focus();
+}
+function bkAsk(key){
+  bkGet(key).then(function(r){
+    if(!r){toast('That copy is gone');return;}
+    bkModal('Restore this copy?','<p>The copy from <b>'+esc(bkWhen(r,' at '))+'</b> ('+esc(bkKind(r).toLowerCase())+'): '+esc(cntTxt(r.n))+'.</p><p>It replaces what is on this phone now: '+esc(cntTxt(bkCounts(A)))+'.</p><p class="note">Your data as it is now is saved as a backup first, so you can undo this.</p>',
+      '<button class="btn big2" onclick="closeModal()">Cancel</button><button class="btn warn big2" onclick="bkGo(function(){return bkRestore(\''+r.key+'\');})">Restore</button>');
+  });
+}
+/* Restore: check the copy, save today's data as a "before restore" copy, and only then replace. Undo restores that copy. */
+function bkRestore(key){
+  return bkGet(key).then(function(r){
+    var v=bkVerify(r);
+    if(v.err){bkModal('This copy can\'t be restored','<p>'+esc(v.err)+'</p>','<button class="btn big2" onclick="closeModal()">OK</button>');return;}
+    return bkMake('restore','Before restoring the copy from '+bkWhen(r,' at ')).then(function(safe){
+      useState(norm(v.state));U.job='all';U.cust={};U.role=firstWork();save();closeModal();render();
+      U.bkUndo=safe.key;toastAct('Restored the copy from '+bkWhen(r,' at ')+'. Your data from before the restore is saved as a backup.','Undo','bkUndoNow()');
+    },function(e){
+      bkModal('The restore did not run','<p>Today\'s data could not be saved as a copy first ('+esc(e&&e.message||e)+'), so nothing was replaced. Nothing was changed.</p>','<button class="btn big2" onclick="closeModal()">OK</button>');
+    });
+  });
+}
+function bkUndoNow(){var k=U.bkUndo;document.getElementById('toast').hidden=true;if(k)bkGo(function(){return bkRestore(k);});}
+function bkFiles(key){
+  bkGet(key).then(function(r){
+    var v=bkVerify(r);if(v.err){bkModal('This copy can\'t be saved','<p>'+esc(v.err.replace('restored','saved'))+'</p>','<button class="btn big2" onclick="closeModal()">OK</button>');return;}
+    var d=new Date(r.at);
+    shareFile('nurris-tracker-backup-'+ymd(d)+'-'+pad(d.getHours())+pad(d.getMinutes())+'.json','application/json',r.data,function(){A.set.lastExport=Date.now();save();render();toast('Copy saved. Keep it in Files or iCloud.');});
+  });
+}
+function bkNow(){bkGo(function(){return bkMake('daily').then(function(r){BK.hi=r.key;toast('Backup saved on this phone');});});}
+function vBackups(){
+  var since=A.set.lastExport,days=since?Math.floor((Date.now()-since)/864e5):null,due=!since||days>=7;
+  var h=bk()+'<header class="top"><div><div class="sub">Copies kept on this phone</div><h1>Backups</h1><div class="purpose">A full copy of your days, run cards, paystubs and settings, saved each day you open the app.</div></div></header>';
+  h+='<section class="card" style="margin-top:0"><div class="note" style="margin-top:0">These copies live only on this phone. If the app or its website data is deleted, they are deleted too. Once a week, save one to Files or iCloud.</div>';
+  if(due)h+='<div class="alert" style="cursor:default;margin:10px 0 0"><b>'+(since?'Your last save off this phone was '+days+' days ago.':'Nothing saved off this phone yet.')+'</b><span>Back up saves two files to Files or iCloud. It takes one tap.</span></div><button class="btn solid" onclick="backupBoth()">💾 Back up</button>';
+  else h+='<div class="dl"><span>Last saved off this phone</span><span>'+fmtDY(new Date(since))+'</span></div>';
+  h+='<button class="btn" onclick="bkNow()">Back up now, on this phone</button>';
+  h+='<div class="note">Keeps '+BK.keep.daily+' daily copies, the '+BK.keep.pre+' newest from before an update and the '+BK.keep.restore+' newest from before a restore. Older ones are removed only after a new copy is saved and read back.</div></section>';
+  h+='<section class="card"><h2>Copies, newest first</h2>';
+  if(!BK.ready)h+='<div class="empty">Reading the copies…</div>';
+  else if(!BK.list.length)h+='<div class="empty">No copies yet.</div>';
+  BK.list.forEach(function(r){
+    var bad=BK.bad[r.key];
+    h+='<div class="bkr'+(BK.hi===r.key?' hi':'')+'"><div class="hrow"><b>'+esc(bkWhen(r))+'</b><span class="pill'+(bad?' ot':r.kind==='daily'?'':' go')+'">'+(bad?'Damaged':esc(bkKind(r)))+'</span></div><div class="sub">'+esc(cntTxt(r.n))+(bad?' · this copy fails its check':'')+'</div><div class="bkb"><button class="btn" onclick="bkAsk(\''+r.key+'\')">Restore</button><button class="btn" onclick="bkFiles(\''+r.key+'\')">Save to Files</button></div></div>';
+  });
+  return h+'</section>'+foot();
+}
+/* The Back up button: both files, one share sheet. A phone that cannot share two files saves the JSON first, then offers
+   the text list on one more tap (a share needs its own tap). Cancelling the sheet changes nothing. */
+function backupBoth(){
+  var d=ymd(now()),jn='nurris-tracker-backup-'+d+'.json',tn='nurris-tracker-shifts-'+d+'.txt',jt=fileOf('backup'),tt=allShiftsText(),a=null,b=null;
+  try{a=new File([jt],jn,{type:'application/json'});b=new File([tt],tn,{type:'text/plain'});}catch(e){}
+  var seen=function(){A.set.lastExport=Date.now();save();render();};
+  var one=function(){shareFile(jn,'application/json',jt,function(){seen();U.bkTxt={n:tn,t:tt};toastAct('Backup saved. Now save the readable list.','Save it','bkText()');});};
+  if(a&&b&&navigator.canShare&&navigator.share){
+    var ok=false;try{ok=navigator.canShare({files:[a,b]});}catch(e){}
+    if(ok){navigator.share({files:[a,b]}).then(function(){seen();toast('Backup saved: both files');},function(err){if(err&&err.name==='AbortError')return;one();});return;}
+  }
+  one();
+}
+function bkText(){var x=U.bkTxt;document.getElementById('toast').hidden=true;if(x)shareFile(x.n,'text/plain',x.t,function(){toast('Readable list saved');});}
 
 /* Service worker. An open is a page load or a return to the foreground (the iPhone app resumes without reloading, V2.1).
    A new worker that is waiting at an open, or finishes installing before the first tap after it, takes over then: the
@@ -849,6 +1202,7 @@ function range(){
   else if(r==='3m'){s=new Date(t.getFullYear(),t.getMonth()+o*3-2,1);e=eom(new Date(t.getFullYear(),t.getMonth()+o*3,1));}
   else if(r==='year'){s=new Date(t.getFullYear()+o,0,1);e=new Date(t.getFullYear()+o,11,31);}
   else if(r==='all'){var lo='',hi=ymd(t);A.entries.forEach(function(x){if(!lo||x.date<lo)lo=x.date;if(x.date>hi)hi=x.date;});s=pd(lo||ymd(addD(t,-13)));e=pd(hi);}
+  else if(r==='pick'){s=pd(U.dr.hours.a);e=pd(U.dr.hours.b);}
   else{s=pd(U.cs);e=pd(U.ce);if(e<s){var x=s;s=e;e=x;}}
   return {s:s,e:e,n:dd(s,e)+1};
 }
@@ -856,10 +1210,11 @@ function rLabel(R){
   if(U.rng==='month')return ['January','February','March','April','May','June','July','August','September','October','November','December'][R.s.getMonth()]+' '+R.s.getFullYear();
   if(U.rng==='year')return String(R.s.getFullYear());
   if(U.rng==='all')return 'All shifts';
+  if(R.n===1)return fmtD(R.s);
   return fmtD(R.s)+' to '+fmtD(R.e);
 }
 function rSub(R){
-  var t=now(),cur=dd(R.s,t)>=0&&dd(t,R.e)>=0,nm_={week:'Week','2w':'Two weeks','3w':'Three weeks',month:'Month',pp:'Pay period',custom:'Custom range',all:'Everything logged','3m':'Three months',year:'Year'}[U.rng];
+  var t=now(),cur=dd(R.s,t)>=0&&dd(t,R.e)>=0,nm_={week:'Week','2w':'Two weeks','3w':'Three weeks',month:'Month',pp:'Pay period',custom:'Custom range',pick:'Picked on the calendar',all:'Everything logged','3m':'Three months',year:'Year'}[U.rng];
   if(U.rng==='pp'){var p=periodOf(R.s);return 'Pay period · paid '+fmtD(p.pay);}
   return nm_+' · '+R.n+' days'+(cur?' · includes today':'');
 }
@@ -873,7 +1228,8 @@ function jobBar(noAll){
 }
 function pickJob(id){U.job=id;if(id!=='all')U.role=firstWork(id);render();}
 function toast(m){var t=document.getElementById('toast');t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){t.hidden=true;},2400);}
-function go(t){closeModal();U.tab=t;U.sub='menu';U.confirm='';U.imp=null;render();window.scrollTo(0,0);}
+function toastAct(m,lab,fn){var t=document.getElementById('toast');t.innerHTML=esc(m)+' <button class="pill" style="margin-left:8px" onclick="'+fn+'">'+lab+'</button>';t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){t.hidden=true;},10000);}
+function go(t){closeModal();U.tab=t;U.sub='menu';U.confirm='';U.imp=null;U.cal.on=false;render();window.scrollTo(0,0);}
 function sub(s){U.sub=s;U.confirm='';U.imp=null;render();window.scrollTo(0,0);}
 function foot(){return '<div class="foot"><div class="fver">Nurri\'s Tracker '+APP_V+'</div><div class="fbuild">'+esc(BUILD)+'</div>Estimates only. Not a payroll record or tax advice; confirm with payroll or a preparer.</div>';}
 function dlt(a,b,f,u){var d=a-b;if(Math.abs(d)<0.005)return 'Same as the 2 weeks before';return (d>0?'+':'')+f(d)+u+' vs the 2 weeks before';}
@@ -882,7 +1238,7 @@ function vv(h,d,cls){var m=A.set.view;if(m==='hours')return n1(h);if(m==='dollar
 function netTxt(T,pay){var M=model();if(!M)return '';var th=pay?thirdSkip(pay):false,l=T.leaveUsd||0,e=M.est(T.usd,th,l),r=M.rng(T.usd,th,l);return '≈ '+usd0(e)+' take-home <span class="sub">('+usd0(r[0])+' to '+usd0(r[1])+')</span>'+(th?' <span class="sub">third payday</span>':'');}
 function nextThird(){var p=periodOf(now());for(var i=0;i<40;i++){if(isThird(p.pay))return p;p=periodShift(p,1);}return null;}
 function chipFor(r){if(r.st==='none')return '<span class="pill">Not checked</span>';if(r.st==='nolog')return '<span class="pill">No hours logged</span>';if(r.st==='ok')return '<span class="pill go">Matches</span>';return '<span class="pill ot">'+(r.st==='short'?'Short ':'Over ')+usd0(Math.abs(r.diff))+'</span>';}
-function backupDue(){if(!A.entries.length&&!A.stubs.length)return 0;var since=A.set.lastExport||A.set.created||Date.now(),d=Math.floor((Date.now()-since)/864e5);return d>=14?d:0;}
+function backupDue(){if(!A.entries.length&&!A.stubs.length)return 0;var since=A.set.lastExport||A.set.created||Date.now(),d=Math.floor((Date.now()-since)/864e5);return d>=7?d:0;}
 
 function vHome(){
   var t=now(),T0=new Date(t.getFullYear(),t.getMonth(),t.getDate()),s14=addD(T0,-13),m=A.set.view,jid=curJob().id,tk=ymd(T0);
@@ -890,8 +1246,9 @@ function vHome(){
   var h='<header class="top"><div style="flex:1"><div class="hrow"><h1>Nurri\'s Tracker</h1><span class="hdate">'+DN[t.getDay()]+', '+fmtD(t)+'</span></div><div class="purpose">A summary of everything: what needs you today, your pay calendar and the last 2 weeks.</div></div></header>';
   h+=jobBar();
   if(!A.entries.length&&!A.stubs.length)h+='<section class="card" style="margin:0 0 14px"><h2>Welcome</h2><div>Start by setting up your job: hourly rate, pay period, overtime rules and days off.</div><div class="note">Have a setup file? Import it in More, Export and backup. Everything you enter stays on this phone.</div><button class="btn solid" onclick="U.tab=\'more\';sub(\'rules\')">Open Pay rules</button><button class="btn" onclick="U.tab=\'more\';sub(\'export\')">Import a setup file</button></section>';
-  var bd=backupDue();if(bd)h+='<div class="alert"'+rb('U.tab=\'more\';sub(\'export\')')+'><b>'+(A.set.lastExport?'Your last backup was '+bd+' days ago.':'You have not saved a backup yet.')+'</b><span>Save a backup file to Files, Mail or iCloud &#8250;</span></div>';
-  var oc=jr(jid).off;if(oc&&oc.next){var dn=dd(t,pd(oc.next));if(dn>=0&&dn<=45)h+='<div class="alert" style="cursor:default"><b>Your days off change on '+fmtDY(pd(oc.next))+'.</b><span>Update the new days in More, Pay rules, Days off.</span></div>';}
+  h+=bkHomeAlert();
+  var bd=backupDue();if(bd)h+='<div class="alert" id="bk-due"'+rb('backupBoth()')+'><b>'+(A.set.lastExport?'Your last backup off this phone was '+bd+' days ago.':'You have not saved a backup off this phone yet.')+'</b><span>Tap to back up now to Files or iCloud &#8250;</span></div>';
+  var oc=jr(jid).off;if(oc&&oc.next){var dn=dd(t,pd(oc.next));if(dn>=0&&dn<=45)h+='<div class="alert" style="cursor:default"><b>Your days off and report time change on '+fmtDY(pd(oc.next))+'.</b><span>Update them in More, Pay rules, Days off.</span></div>';}
   var hj=jr(jid).hol,hasHol=false;if(hj&&hj.on!==false){hj.list.forEach(function(x){if(x.d===tk){hasHol=true;h+='<div class="okbox" style="margin:0 0 10px"><b>Today is '+esc(x.n)+'.</b> '+(isOff(jid,tk)?'It is a day off, so you get '+HOL_H+' hours of straight comp credit.':'It is a work day, so you get '+HOL_H+' hours of credit and anything you work is overtime.')+'</div>';}});}
   var lc=checkOf(lastClosed());
   if(lc.st==='short'||lc.st==='over')h+='<div class="alert"'+rb('openCheck(\''+ymd(lastClosed().s)+'\')')+'><b>Your last paycheck looks '+usd(Math.abs(lc.diff))+' '+(lc.st==='short'?'short':'over')+'.</b><span>Review it and draft an email &#8250;</span></div>';
@@ -899,9 +1256,10 @@ function vHome(){
   if(!hasHol&&!isMarked(tk)&&!A.entries.some(function(e){return e.date===tk;}))h+='<div class="log" id="today-log"><div><b>Nothing logged for today</b><span>'+(isOff(jid,tk)&&jr(jid).offOT!==false?'It is a day off, so any hours are all overtime.':'Start a shift, add the hours you worked, or mark that you did not.')+'</span></div><div class="lgb"><button onclick="startShift()">▶️ Start a shift</button><button onclick="openEdit(null,\''+tk+'\')">Add hours</button><button class="alt" onclick="openNoWork(\''+tk+'\')">Did not work</button></div></div>';
   h+=buildLine();
   h+=nextPayLine();
+  if(A.entries.length||A.stubs.length)h+='<button class="btn" id="bkup" style="margin:0 0 12px" onclick="backupBoth()">💾 Back up <span class="sub">· '+(A.set.lastExport?'last off this phone '+fmtD(new Date(A.set.lastExport)):'not saved off this phone yet')+'</span></button>';
   h+=payCal();
   h+='<section class="card"><div class="hd"><h2 style="margin:0">Last 2 weeks</h2>'+tab3()+'</div><div class="sub">'+fmtD(s14)+' to '+fmtD(T0)+'</div>';
-  var by={};R.forEach(function(r){var x=by[r.e.date]||(by[r.e.date]={w:0,o:0,d:0,od:0,c:0,cd:0,v:0,vd:0});x.w+=r.w;x.o+=r.ot;x.d+=r.usd;x.od+=r.otUsd;if(r.e.hol||r.xtra>0){x.c+=r.w;x.cd+=r.usd;}else if(r.leaveUsd>0){x.v+=r.w;x.vd+=r.usd;}});
+  var by={};R.forEach(function(r){var x=by[r.e.date]||(by[r.e.date]={w:0,o:0,d:0,od:0,c:0,cd:0,v:0,vd:0});x.w+=r.w+r.minH;x.o+=r.ot;x.d+=r.usd;x.od+=r.otUsd;if(r.e.hol||r.xtra>0){x.c+=r.w;x.cd+=r.usd;}else if(r.leaveUsd>0){x.v+=r.w;x.vd+=r.usd;}});
   var mx=m==='dollars'?100:4;Object.keys(by).forEach(function(k){mx=Math.max(mx,m==='dollars'?by[k].d:by[k].w);});
   if(m!=='dollars')mx=Math.max(mx,10);
   var bars='',lab='',labD='',lab2='',H=120;
@@ -927,7 +1285,7 @@ function kpiCards(){
   h+='<div class="kpis">';
   h+='<div class="kpi"><div class="l">Gross pay</div><div class="v">'+usd0(C.usd)+'</div><div class="d">'+dlt(C.usd,Rp.usd,usd0,'')+'</div></div>';
   h+='<div class="kpi"><div class="l">Hours worked</div><div class="v">'+n1(C.worked)+'<small>h</small></div><div class="d">'+dlt(C.worked,Rp.worked,n1,' h')+'</div></div>';
-  h+='<div class="kpi ot"><div class="l">Overtime</div><div class="v">'+n1(C.ot)+'<small>h</small></div><div class="d">Counts as '+n1(C.otPh)+' paid h'+(C.worked>0?' · '+Math.round(C.ot/C.worked*100)+'% of hours':'')+'</div></div>';
+  h+='<div class="kpi ot"><div class="l">Overtime</div><div class="v">'+n1(C.ot)+'<small>h</small></div><div class="d">Counts as '+n1(C.otPh)+' paid h'+(C.worked>0?' · '+Math.round(C.ot/(C.worked+C.xh)*100)+'% of hours':'')+'</div></div>';
   h+='<div class="kpi"><div class="l">Days worked</div><div class="v">'+C.nd+'<small>of 14</small></div><div class="d">'+(C.nd?'Average shift '+n1(C.worked/C.nd)+' h':'No shifts yet')+'</div></div>';
   h+='</div>';
   return h;
@@ -1000,8 +1358,9 @@ function dayTap(k){var f=A.entries.filter(function(e){return e.date===k;}).sort(
 
 /* Round a "just now" time to the Pay rules setting (Exact, 5 or 15 minutes). */
 function rnd(d){var r=A.set.round;if(!r)return d;return new Date(Math.round(d.getTime()/(r*60000))*r*60000);}
-/* Start a shift (replaces the live clock): Add a shift for today with Started set to now and Ended empty. */
-function startShift(){openEdit(null,ymd(now()));E.s=hhmm(rnd(now()));E.e='';E.prefilled=false;render();}
+/* Start a shift (replaces the live clock): Add a shift for today with Report Out empty. Report In is the schedule's
+   report time on a work day that has one and no shift yet, otherwise now. */
+function startShift(){openEdit(null,ymd(now()));var jid=roleJob(E.role),rp=isOff(jid,E.date)||A.entries.some(function(x){return x.date===E.date;})?'':rptOn(jid,E.date);E.s=rp||hhmm(rnd(now()));E.e='';E.prefilled=false;render();}
 
 function setRng(r){U.rng=r;U.off=0;render();}
 function shift(n){U.off+=n;render();}
@@ -1016,35 +1375,71 @@ function periodChip(o,jid,cur){
 }
 function openRows(){
   var L=openDays(U.job==='all'?null:U.job);if(!L.length)return '';
-  return '<section class="card opn" style="margin-top:12px;padding-top:6px">'+L.map(function(e){var d=pd(e.date),r=role(e.role);return '<div class="row"'+rb('openEdit(\''+e.id+'\')')+'><div class="day"><b>'+DN[d.getDay()]+'</b><span>'+fmtD(d)+'</span></div><div class="mid">Started '+t24(e.s)+', not finished<span class="sub">'+esc(r?r.name:'')+'</span>'+runHtml(e)+rowActs(e)+'</div></div>';}).join('')+'</section>';
+  return '<section class="card opn" style="margin-top:12px;padding-top:6px">'+L.map(function(e){var d=pd(e.date),r=role(e.role);return '<div class="row"'+rb('openEdit(\''+e.id+'\')')+'><div class="day"><b>'+DN[d.getDay()]+'</b><span>'+fmtD(d)+'</span></div><div class="mid">Reported in '+t24(e.s)+', not finished<span class="sub">'+esc(r?r.name:'')+'</span>'+runHtml(e)+rowActs(e)+'</div></div>';}).join('')+'</section>';
 }
 /* Edit and Delete on every shift row (and Finish on an open one). Delete always asks first. */
 function rowActs(e){
   if(e.hol)return '';
   return '<div class="acts">'+(e.open?'<button class="act go" onclick="event.stopPropagation();openEdit(\''+e.id+'\')">✅ Finish</button>':'')+'<button class="act" onclick="event.stopPropagation();openEdit(\''+e.id+'\')">✏️ Edit</button><button class="act del" onclick="event.stopPropagation();askDel(\''+e.id+'\')">🗑️ Delete</button></div>';
 }
-function togFind(){U.srch=!U.srch;render();if(U.srch){var q=document.getElementById('bq');if(q)q.focus();}}
+/* V3: search and the calendar on Shifts and Stats. Both are view state only: nothing here is stored or becomes a default. */
+function pickTab(){return U.tab==='stats'?'stats':'hours';}
+/* Two boxes, so a search and a date choice never read as one filter. */
+function findBar(t,inner){
+  var hrs=t==='hours',q=hrs?U.q:U.sq;
+  return '<section class="fbox"><div class="fhd">🔎 Search</div><div class="fbar"><input id="'+(hrs?'bq':'sq')+'" type="search" value="'+esc(q||'')+'" placeholder="'+({duty:'Duty number',route:'Route number',run:'Run, like 1 or 28/1',coach:'Coach number',base:'Base',note:'A word in your notes'}[(U.sf||{})[t]]||'Duty, 28/1, coach, base or note')+'" oninput="'+(hrs?'busFind':'stFind')+'(this.value)" autocomplete="off" aria-label="Search your shifts"></div><div class="chips mini" role="group" aria-label="Search in">'+[['','Everything'],['duty','Duty'],['route','Route'],['run','Run'],['coach','Coach'],['base','Base'],['note','Notes']].map(function(x){var on=((U.sf||{})[t]||'')===x[0];return '<button class="chip'+(on?' on':'')+'" aria-pressed="'+on+'" onclick="setSF(\''+t+'\',\''+x[0]+'\')">'+x[1]+'</button>';}).join('')+'</div>'+(inner||'')+'</section>';
+}
+function dateBar(t,strips){
+  var D=U.dr[t],lab=D?(D.a===D.b?fmtD(pd(D.a)):fmtD(pd(D.a))+' to '+fmtD(pd(D.b))):'';
+  return '<section class="fbox"><div class="fhd">📅 Dates</div><div class="chips mini"><button class="chip'+(U.cal.on?' on':'')+'" aria-label="Pick a day or a range of days" aria-expanded="'+U.cal.on+'" onclick="togCal()">Pick a day or range</button></div>'+strips+(U.cal.on?calPanel():'')+(D?'<div class="dbar" id="dbar"><span>📅 Showing '+lab+'</span><button onclick="clearPick()">Clear</button></div>':'')+'</section>';
+}
+function setSF(t,f){U.sf=U.sf||{};U.sf[t]=f;render();var x=document.getElementById(t==='hours'?'bq':'sq');if(x)x.focus();}
+function togCal(){var D=U.dr[pickTab()],d=D?pd(D.a):now();U.cal={on:!U.cal.on,mode:U.cal.mode,y:d.getFullYear(),m:d.getMonth(),a:''};render();}
+function calMove(n){var d=new Date(U.cal.y,U.cal.m+n,1);U.cal.y=d.getFullYear();U.cal.m=d.getMonth();render();}
+function calMode(v){U.cal.mode=v;U.cal.a='';render();}
+function calTap(k){
+  var C=U.cal,t=pickTab();
+  if(C.mode==='range'&&!C.a){C.a=k;render();return;}
+  var a=C.mode==='range'?C.a:k,b=k;
+  U.dr[t]=a<=b?{a:a,b:b}:{a:b,b:a};
+  if(t==='hours'){U.rng='pick';U.off=0;}else U.srng='pick';
+  C.on=false;C.a='';render();
+}
+function clearPick(){var t=pickTab(),s=(t==='hours'?U.q:U.sq||'').trim()?'all':'pp';U.dr[t]=null;if(t==='hours'){U.rng=s;U.off=0;}else U.srng=s;render();}
+function calPanel(){
+  var C=U.cal,first=new Date(C.y,C.m,1),ws=jr(curJob().id).ws,D=U.dr[pickTab()],tk=ymd(now()),seen={},h='<div class="calp" id="calp">'+seg([['day','One day'],['range','From and to']],C.mode,'calMode');
+  A.entries.forEach(function(e){seen[e.date]=1;});
+  h+='<div class="calh"><button onclick="calMove(-1)" aria-label="Earlier month">&#8249;</button><b>'+MN[C.m]+' '+C.y+'</b><button onclick="calMove(1)" aria-label="Later month">&#8250;</button></div>';
+  if(C.mode==='range')h+='<div class="note" style="margin:0 0 6px">'+(C.a?'From '+fmtD(pd(C.a))+'. Now tap the last day.':'Tap the first day, then the last day.')+'</div>';
+  h+='<div class="cg">';for(var i=0;i<7;i++)h+='<div class="wd">'+DL[(ws+i)%7]+'</div>';
+  for(var n=(first.getDay()-ws+7)%7;n>0;n--)h+='<span></span>';
+  for(var d=first;d.getMonth()===C.m;d=addD(d,1)){
+    var k=ymd(d),sel=k===C.a||(D&&!C.a&&k>=D.a&&k<=D.b);
+    h+='<button class="'+(seen[k]?'lgd ':'')+(k===tk?'td ':'')+(sel?'sel':'')+'" aria-label="'+DN[d.getDay()]+' '+fmtD(d)+(seen[k]?', has shifts':'')+'" onclick="calTap(\''+k+'\')">'+d.getDate()+'</button>';
+  }
+  return h+'</div></div>';
+}
 function vHours(){
   var R=range(),rows=rowsFor(R.s,R.e),T=tot(rows),jid=curJob().id,tk=ymd(now()),cur=periodOf(now(),jid);
   var nSh=rows.filter(function(r){return !r.e.hol;}).length;
   var h='<header class="top"><div><div class="sub">'+rSub(R)+'</div><h1>Shifts</h1><div class="purpose">Every shift you worked. Tap one to change it, or add one.</div></div></header>';
   h+=jobBar();
-  h+='<div class="two"><div><button class="btn solid big2" style="margin:0" onclick="openEdit(null)">+ Add a shift</button></div><div><button class="btn big2" style="margin:0" aria-expanded="'+!!U.srch+'" onclick="togFind()">'+(U.srch?'Close search':'Find a bus')+'</button></div></div>';
-  h+='<button class="btn" onclick="startShift()">▶️ Start a shift</button>';
+  h+='<div class="two"><div><button class="btn solid big2" style="margin:0" onclick="openEdit(null)">+ Add a shift</button></div><div><button class="btn big2" style="margin:0" onclick="startShift()">▶️ Start a shift</button></div></div>';
   h+=openRows();
-  if(U.srch)h+='<div class="srch"><input id="bq" type="search" value="'+esc(U.q||'')+'" placeholder="Coach number, route, run, duty or note" oninput="busFind(this.value)" autocomplete="off" aria-label="Find a bus"><div id="bres">'+busResults(U.q||'')+'</div></div>';
-  h+='<div class="fstrip" role="group" aria-label="How far back">'+[['all','All'],['week','Week'],['month','Month'],['3m','3 months'],['year','Year'],['custom','Custom']].map(function(i){return '<button class="chip'+(U.rng===i[0]?' on':'')+'" aria-pressed="'+(U.rng===i[0])+'" onclick="setRng(\''+i[0]+'\')">'+i[1]+'</button>';}).join('')+'</div>';
-  h+='<div class="fstrip tight" role="group" aria-label="Pay period">'+[0,-1,-2].map(function(o){return periodChip(o,jid,cur);}).join('')+'</div>';
+  h+=findBar('hours','<div id="bres">'+busResults(qText('hours',U.q))+'</div>');
+  var rs='<div class="fstrip" role="group" aria-label="How far back">'+[['all','All'],['week','Week'],['month','Month'],['3m','3 months'],['year','Year'],['custom','Custom']].map(function(i){return '<button class="chip'+(U.rng===i[0]?' on':'')+'" aria-pressed="'+(U.rng===i[0])+'" onclick="setRng(\''+i[0]+'\')">'+i[1]+'</button>';}).join('')+'</div>';
+  rs+='<div class="fstrip tight" role="group" aria-label="Pay period">'+[0,-1,-2].map(function(o){return periodChip(o,jid,cur);}).join('')+'</div>';
+  h+=dateBar('hours',rs);
   var sub=nSh+' shift'+(nSh===1?'':'s')+' · '+n1(T.worked)+' h'+(T.ot>0?' · '+n1(T.ot)+' h overtime':'');
   if(U.rng==='pp'){var pp=periodShift(cur,U.off,jid);sub+='<br>'+(ymd(pp.e)>=tk?'Building now, pays ':ymd(pp.pay)>=tk?'Pays ':'Paid ')+DN[pp.pay.getDay()]+' '+fmtD(pp.pay);}
   if(U.rng==='custom')h+='<div class="two" style="margin-top:10px"><div><label class="f" for="c-s" style="margin-top:0">From</label><input id="c-s" type="date" value="'+U.cs+'" onchange="setCustom()"></div><div><label class="f" for="c-e" style="margin-top:0">To</label><input id="c-e" type="date" value="'+U.ce+'" onchange="setCustom()"></div></div>';
-  if(U.rng==='custom'||U.rng==='all')h+='<div class="nav"><span class="mid2">'+rLabel(R)+'<small>'+sub+'</small></span></div>';
+  if(U.rng==='custom'||U.rng==='all'||U.rng==='pick')h+='<div class="nav"><span class="mid2">'+rLabel(R)+'<small>'+sub+'</small></span></div>';
   else h+='<div class="nav"><button onclick="shift(-1)" aria-label="Earlier">&#8249;</button><div class="mid2">'+rLabel(R)+'<small>'+sub+'</small></div><button onclick="shift(1)" aria-label="Later">&#8250;</button></div>';
   h+='<div style="margin-top:4px">'+seg([['list','List'],['timeline','Timeline']],U.hv,'setHv')+(U.hv==='timeline'&&R.n>62?'<div class="note">Timeline shows up to two months. This range is shown as a list.</div>':'')+'</div>';
   h+='<section class="card" style="margin-top:10px;padding-top:6px">'+(U.hv==='timeline'&&R.n<=62?tlHtml(R,rows):listHtml(rows))+'</section>';
   if(rows.length){
     h+='<section class="card"><h2>Totals for this range</h2>';
-    h+='<div class="dl"><span>Shifts</span><span>'+nSh+'</span></div><div class="dl"><span>Days worked</span><span>'+T.nd+'</span></div><div class="dl"><span>Hours worked</span><span>'+nm(T.worked)+' h</span></div><div class="dl"><span>Regular</span><span>'+nm(T.reg)+' h</span></div><div class="dl"><span>Overtime</span><span>'+nm(T.ot)+' h</span></div>';
+    h+='<div class="dl"><span>Shifts</span><span>'+nSh+'</span></div><div class="dl"><span>Days worked</span><span>'+T.nd+'</span></div><div class="dl"><span>Hours worked</span><span>'+nm(T.worked)+' h</span></div><div class="dl"><span>Regular</span><span>'+nm(T.reg)+' h</span></div><div class="dl"><span>Overtime</span><span>'+nm(T.ot)+' h</span></div>'+(T.minH>0?'<div class="dl"><span>Added by day minimums</span><span>'+nm(T.minH)+' h</span></div>':'')+(T.lfH>0?'<div class="dl"><span>Added by lost and found</span><span>'+nm(T.lfH)+' h</span></div>':'');
     if(U.rng==='pp')h+='<button class="btn" onclick="openCheck(\''+ymd(R.s)+'\')">See what this period pays &#8250;</button>';
     h+='</section>';
   }
@@ -1062,7 +1457,7 @@ function listHtml(rows){
     if(G.length>1)h+=wkHead(g.k,g.rows);
     g.rows.forEach(function(r){
       var e=r.e,d=pd(e.date),ro=role(e.role);
-      h+='<div class="row"'+(e.hol?'':rb('openEdit(\''+e.id+'\')'))+'><div class="day"><b>'+DN[d.getDay()]+'</b><span>'+fmtD(d)+'</span></div><div class="mid">'+(e.hol?'Holiday credit, automatic':t24(e.s)+' to '+t24(e.e))+'<span class="sub">'+esc(ro?ro.name:'No type')+(e.note?' · '+esc(e.note):'')+(+e.adj?' · pay adjustment':'')+'</span>'+runHtml(e)+rowActs(e)+'</div><div class="rt"><b>'+nm(r.w)+'</b>'+(r.e.hol||r.xtra>0?'<span class="pill hol">Holiday credit</span>':r.leaveUsd>0?'<span class="pill lv">Paid leave</span>':'')+(r.ot>0?'<span class="pill ot">'+(r.dayOff?'Day off · ':'')+nm(r.ot)+' OT</span>':'')+'</div></div>';
+      h+='<div class="row"'+(e.hol?'':rb('openEdit(\''+e.id+'\')'))+'><div class="day"><b>'+DN[d.getDay()]+'</b><span>'+fmtD(d)+'</span></div><div class="mid">'+(e.hol?'Holiday credit, automatic':'Report In '+t24(e.s)+' · Report Out '+t24(e.e))+'<span class="sub">'+esc(ro?ro.name:'No type')+(e.note?' · '+esc(e.note):'')+(+e.adj?' · pay adjustment':'')+'</span>'+(r.minH>0?'<span class="sub bl">'+esc(minWords(r))+'</span>':'')+(r.lfH>0?'<span class="sub bl">Lost and found: '+e.lf+' · '+Math.round(r.lfH*60)+' min at overtime</span>':'')+runHtml(e)+rowActs(e)+'</div><div class="rt"><b>'+nm(r.w+r.minH)+'</b>'+(r.e.hol||r.xtra>0?'<span class="pill hol">Holiday credit</span>':r.leaveUsd>0?'<span class="pill lv">Paid leave</span>':'')+(r.ot>0?'<span class="pill ot">'+(r.dayOff?'Day off · ':'')+nm(r.ot)+' OT</span>':'')+'</div></div>';
     });
   });
   return h;
@@ -1076,8 +1471,8 @@ function tlHtml(R,rows){
     if(R.n>7&&wk!==lastK){lastK=wk;h+=wkHead(wk,rows.filter(function(r){return ymd(wkStart(pd(r.e.date)))===wk;}));}
     var L=by[k]||[],hrs=0,bars='';
     L.forEach(function(r){
-      var e=r.e;hrs+=r.w;if(e.hol)return;var s=tmin(e.s),span=(tmin(e.e)-s+1440)%1440||0;
-      var left=s/1440*100,wd=Math.min(span/1440*100,100-left),f=r.w>0?r.ot/r.w:0,c=r.leaveUsd>0?'v':r.xtra>0?'c':'r';
+      var e=r.e;hrs+=r.w+r.minH;if(e.hol)return;var s=tmin(e.s),span=(tmin(e.e)-s+1440)%1440||0;
+      var left=s/1440*100,wd=Math.min(span/1440*100,100-left),f=r.w>0?Math.min(1,r.ot/r.w):0,c=r.leaveUsd>0?'v':r.xtra>0?'c':'r';
       bars+='<div class="sh" style="left:'+left+'%;width:'+wd+'%"><i class="'+c+'" style="width:'+((1-f)*100)+'%"></i><i class="o" style="width:'+(f*100)+'%"></i></div>';
     });
     h+='<div class="tl"'+rb('dayTap(\''+k+'\')')+' aria-label="'+DN[d.getDay()]+' '+fmtD(d)+'"><div class="dn"><b>'+DN[d.getDay()]+'</b>'+fmtD(d)+(k===T0?' · today':'')+(isOff(curJob().id,k)?' · off':'')+'</div><div class="tr">'+bars+'</div><div class="hr'+(hrs?'':' z')+'">'+(hrs?n1(hrs):'–')+'</div></div>';
@@ -1087,15 +1482,15 @@ function tlHtml(R,rows){
 }
 function summaryText(s,e){
   var rows=rowsFor(s,e),T=tot(rows),L=['Hours '+fmtD(s)+' to '+fmtD(e)+', '+e.getFullYear()];
-  rows.forEach(function(r){var d=pd(r.e.date),ro=role(r.e.role);L.push(DN[d.getDay()]+' '+fmtD(d)+'  '+t24(r.e.s)+' to '+t24(r.e.e)+'  '+(ro?ro.name:'')+'  '+nm(r.w)+' h'+(r.ot>0?' ('+nm(r.ot)+' OT)':'')+(runPlain(r.e,true)?'  ['+runPlain(r.e,true)+']':'')+(r.e.note?'  - '+r.e.note:''));});
-  L.push('Worked '+nm(T.worked)+' h, overtime '+nm(T.ot)+' h counts as '+nm(T.otPh)+' paid h');
+  rows.forEach(function(r){var d=pd(r.e.date),ro=role(r.e.role);L.push(DN[d.getDay()]+' '+fmtD(d)+'  '+(r.e.hol?'Holiday credit':'Report In '+t24(r.e.s)+'  Report Out '+t24(r.e.e))+'  '+(ro?ro.name:'')+'  '+nm(r.w)+' h'+(r.ot>0?' ('+nm(r.ot)+' OT)':'')+(r.minH>0?'  '+minWords(r):'')+(r.lfH>0?'  Lost and found '+r.e.lf:'')+(runPlain(r.e,true)?'  ['+runPlain(r.e,true)+']':'')+(r.e.note?'  - '+r.e.note:''));});
+  L.push('Worked '+nm(T.worked)+' h, overtime '+nm(T.ot)+' h counts as '+nm(T.otPh)+' paid h'+(T.minH>0?', day minimums add '+nm(T.minH)+' h':'')+(T.lfH>0?', lost and found adds '+nm(T.lfH)+' h':''));
   L.push('Paid hours '+nm(T.ph)+' h, adjustments '+usd(T.adj)+', gross '+usd(T.usd));
   L.push('Estimates from Nurri\'s Tracker. Not a payroll record.');
   return L.join('\n');
 }
 function csvFor(s,e){
-  var q=function(x){return '"'+String(x).replace(/"/g,'""')+'"';},cj=function(e,k){var C=cardsOf(e);return C.length>1?C.map(function(c){return c[k]||'';}).join(' / '):(C[0][k]||'');},L=['date,day,start,end,break_min,work_type,job,worked_h,overtime_h,paid_h,rate,gross_usd,adjustment_usd,duty,route,run,coach,paid_breaks,note'];
-  rowsFor(s,e).forEach(function(r){var ro=role(r.e.role),jb=ro?jobOf(ro.job):null,d=pd(r.e.date);L.push([r.e.date,DN[d.getDay()],r.e.s,r.e.e,r.e.b,q(ro?ro.name:''),q(jb?jb.name:''),nm(r.w),nm(r.ot),nm(r.ph),r.rate,r.usd.toFixed(2),(+r.e.adj||0),q(cj(r.e,'duty')),q(cj(r.e,'route')),q(cj(r.e,'run')),q(cj(r.e,'coach')),q((r.e.pb||[]).map(function(p){return p.f+'-'+p.t;}).join(' / ')),q(r.e.note)].join(','));});
+  var q=function(x){return '"'+String(x).replace(/"/g,'""')+'"';},val=function(c,k){if(k!=='run')return c[k]||'';var x=runConv(c.route,c.run);return x.route&&x.run?x.route+'/'+x.run:x.run;},cj=function(e,k){var C=cardsOf(e);return C.length>1?C.map(function(c){return val(c,k);}).join(' / '):val(C[0],k);},L=['date,day,report_in,report_out,break_min,work_type,job,worked_h,overtime_h,paid_h,rate,gross_usd,adjustment_usd,duty,route,run,coach,base,lost_found,day_minimum_h,paid_breaks,note'];
+  rowsFor(s,e).forEach(function(r){var ro=role(r.e.role),jb=ro?jobOf(ro.job):null,d=pd(r.e.date);L.push([r.e.date,DN[d.getDay()],r.e.s,r.e.e,r.e.b,q(ro?ro.name:''),q(jb?jb.name:''),nm(r.w),nm(r.ot),nm(r.ph),r.rate,r.usd.toFixed(2),(+r.e.adj||0),q(cj(r.e,'duty')),q(cj(r.e,'route')),q(cj(r.e,'run')),q(cj(r.e,'coach')),q(cj(r.e,'base')),(+r.e.lf||0),nm(r.minH),q((r.e.pb||[]).map(function(p){return p.f+'-'+p.t;}).join(' / ')),q(r.e.note)].join(','));});
   return L.join('\n');
 }
 function copyTxt(txt,id,msg){
@@ -1105,8 +1500,8 @@ function copyTxt(txt,id,msg){
 /* Share sheet with a file where the phone supports it, a download otherwise. */
 function shareFile(name,type,text,done){
   var f=null;try{f=new File([text],name,{type:type});}catch(e){}
-  function dl(){var u=URL.createObjectURL(new Blob([text],{type:type})),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(u);a.remove();},1500);if(done)done();}
-  if(f&&navigator.canShare&&navigator.share){var ok=false;try{ok=navigator.canShare({files:[f]});}catch(e){}if(ok){navigator.share({files:[f],title:name}).then(function(){if(done)done();},function(err){if(err&&err.name==='AbortError')return;dl();});return;}}
+  function dl(sh){var u=URL.createObjectURL(new Blob([text],{type:type})),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(u);a.remove();},1500);if(done&&!sh)done();}
+  if(f&&navigator.canShare&&navigator.share){var ok=false;try{ok=navigator.canShare({files:[f]});}catch(e){}if(ok){navigator.share({files:[f],title:name}).then(function(){if(done)done();},function(err){if(err&&err.name==='AbortError')return;dl(true);});return;}}
   dl();
 }
 
@@ -1117,30 +1512,33 @@ function openEdit(id,date){
   if(U.tab!=='edit')U.from=U.tab;U.tab='edit';U.confirm='';render();window.scrollTo(0,0);
 }
 function edHol(){var jid=roleJob(E.role),hi=holIdx(jid,E.date);E.hol=hi>=0;E.holN=hi>=0?jr(jid).hol.list[hi].n:'Holiday';}
+/* A new shift whose date changes follows that date's schedule, unless Report In was already changed by hand. */
+function edAuto(){if(E.id||E.autoS==null||E.s!==E.autoS)return;var n=newDay(E.date,E.role);E.s=n.s;E.e=n.e;E.autoS=n.s;E.prefilled=n.prefilled;}
 function readEd(){
   var g=function(i){var x=document.getElementById(i);return x?x.value:null;};
   if(g('ed-date')!=null)E.date=g('ed-date');if(g('ed-s')!=null)E.s=tfix(g('ed-s'));if(g('ed-e')!=null)E.e=tfix(g('ed-e'));
   if(g('ed-b')!=null)E.b=parseFloat(g('ed-b'))||0;
-  if(g('bu-duty')!=null){E.duty=g('bu-duty');E.route=g('bu-route');E.run=runRead('bu-run',E.route);E.coach=g('bu-coach');}
-  (E.cards||[]).forEach(function(c,i){if(g('bc-duty-'+i)==null)return;c.duty=g('bc-duty-'+i);c.route=g('bc-route-'+i);c.run=runRead('bc-run-'+i,c.route);c.coach=g('bc-coach-'+i);if(g('bc-f-'+i)!=null){c.f=tfix(g('bc-f-'+i));c.t=tfix(g('bc-t-'+i));}});
+  if(g('bu-base')!=null)E.base=g('bu-base');
+  if(g('bu-duty')!=null){E.duty=g('bu-duty');E.route=g('bu-route');E.run=g('bu-run');E.coach=g('bu-coach');if(g('bu-f')!=null){E.f=tfix(g('bu-f'));E.t=tfix(g('bu-t'));}}
+  (E.cards||[]).forEach(function(c,i){if(g('bc-duty-'+i)==null)return;c.duty=g('bc-duty-'+i);c.route=g('bc-route-'+i);c.run=g('bc-run-'+i);c.coach=g('bc-coach-'+i);if(g('bc-f-'+i)!=null){c.f=tfix(g('bc-f-'+i));c.t=tfix(g('bc-t-'+i));}});
   (E.pb||[]).forEach(function(p,i){var f=g('pb-f'+i),t=g('pb-t'+i);if(f!=null)p.f=tfix(f);if(t!=null)p.t=tfix(t);});
   var hc=document.getElementById('ed-hol');if(hc)E.hol=hc.checked;var hn=document.getElementById('ed-holn');if(hn)E.holN=hn.value;
   if(g('ed-ot')!=null)E.ot=parseFloat(g('ed-ot'))||0;if(g('ed-adj')!=null)E.adj=parseFloat(g('ed-adj'))||0;if(g('ed-note')!=null)E.note=g('ed-note');
 }
 function edPrev(){
   readEd();var p=document.getElementById('edp'),er=document.getElementById('edr');if(!p)return;
-  if(!E.s&&!E.e){er.textContent='';p.innerHTML='Type when you started and ended, in 24-hour time.';return;}
+  if(!E.s&&!E.e){er.textContent='';p.innerHTML='Type Report In and Report Out, in 24-hour time.';return;}
   var m=entryErr(E,true);er.textContent=m;
   var sv=document.getElementById('ed-save');if(sv)sv.textContent=E.e?'Save shift':'Save and finish later';
   if(m){p.innerHTML='';return;}
-  if(!E.e){p.innerHTML='Not finished yet. The shift waits on Home, and nothing is paid until you add the end time.';return;}
+  if(!E.e){p.innerHTML='Not finished yet. The shift waits on Home, and nothing is paid until you add Report Out.';return;}
   var tmp=JSON.parse(JSON.stringify(E));tmp.id='tmp';var ws=wkStart(pd(E.date));
-  var r=holWith(roleJob(E.role),[{d:E.date,hol:!!E.hol,n:E.holN}],function(){return rowsFor(ws,addD(ws,6),E.id,tmp).filter(function(x){return x.e.id==='tmp';})[0];});
-  p.innerHTML=nm(r.w)+' h worked'+(r.ot>0?', '+nm(r.ot)+' h overtime':'')+'<br>'+nm(r.ph)+' paid hours · '+usd(r.usd);
+  var L=holWith(roleJob(E.role),[{d:E.date,hol:!!E.hol,n:E.holN}],function(){return rowsFor(ws,addD(ws,6),E.id,tmp).filter(function(x){return x.e.date===E.date;});}),r=L.filter(function(x){return x.e.id==='tmp';})[0],mr=L.filter(function(x){return x.minH>0;})[0];
+  p.innerHTML=nm(r.w)+' h worked'+(r.ot>0?', '+nm(r.ot)+' h overtime':'')+'<br>'+nm(r.ph)+' paid hours · '+usd(r.usd)+(mr?'<br>'+esc(minWords(mr)):'')+(r.lfH>0?'<br>Lost and found adds '+Math.round(r.lfH*60)+' min at overtime':'');
 }
 function back(){closeModal();U.tab=U.from&&U.from!=='edit'&&U.from!=='check'?U.from:'hours';U.confirm='';render();}
-function edDate(v){readEd();if(v==='p')E.pick=true;else{E.date=ymd(addD(now(),-(+v)));E.pick=false;edHol();}render();}
-function edDateIn(){var x=document.getElementById('ed-date');if(!x||!x.value)return;readEd();edHol();render();}
+function edDate(v){readEd();if(v==='p')E.pick=true;else{E.date=ymd(addD(now(),-(+v)));E.pick=false;edHol();edAuto();}render();}
+function edDateIn(){var x=document.getElementById('ed-date');if(!x||!x.value)return;readEd();edHol();edAuto();render();}
 function setEdRole(id){readEd();E.role=id;render();}
 function togMore(){readEd();E.more=!E.more;render();}
 function setEdMode(v){readEd();E.mode=v;render();}
@@ -1175,12 +1573,13 @@ function vEdit(){
   }
   var oth=A.entries.filter(function(x){return x.date===E.date&&x.id!==E.id;}).sort(function(a,b){return a.s<b.s?-1:1;});
   if(oth.length)h+='<div class="note" style="margin-top:10px">Also on this day: '+oth.map(function(x){return '<a href="#" onclick="openEdit(\''+x.id+'\');return false">'+t24(x.s)+(x.e?' to '+t24(x.e):' (open)')+(x.route?', Rt '+esc(x.route):'')+'</a>';}).join(' · ')+'</div>';
-  h+='<div class="two bt" style="margin-top:14px"><div><label class="f" for="ed-s" style="margin:0 0 4px">Started (24-hour)</label>'+tin('ed-s',E.s,'edPrev()','Start time, 24 hour')+'</div><div><label class="f" for="ed-e" style="margin:0 0 4px">Ended (24-hour)</label>'+tin('ed-e',E.e,'edPrev()','End time, 24 hour')+'</div></div>';
-  h+='<div class="chips mini"><button class="chip" onclick="edNow(\'s\')">Started just now</button><button class="chip" onclick="edNow(\'e\')">Ended just now</button><button class="chip" onclick="edNow(\'x\')">Not finished yet</button></div>';
-  if(isNew&&E.prefilled)h+='<div class="note">Filled in from your last work day. Change either time if this day was different.</div>';
-  if(!E.e)h+='<div class="note">Ended is empty, so this saves as an open shift on Home. Finish it when the end time is known.</div>';
+  if(work)h+=baseRow(E);
+  h+='<div class="two bt" style="margin-top:14px"><div><label class="f" for="ed-s" style="margin:0 0 4px">Report In (24-hour)</label>'+tin('ed-s',E.s,'edPrev()','Report In, 24 hour')+'</div><div><label class="f" for="ed-e" style="margin:0 0 4px">Report Out (24-hour)</label>'+tin('ed-e',E.e,'edPrev()','Report Out, 24 hour')+'</div></div>';
+  h+='<div class="chips mini"><button class="chip" onclick="edNow(\'s\')">Reported in just now</button><button class="chip" onclick="edNow(\'e\')">Reported out just now</button><button class="chip" onclick="edNow(\'x\')">Not finished yet</button></div>';
+  if(isNew&&E.prefilled)h+='<div class="note">'+(E.autoS!=null&&E.s===E.autoS&&!isOff(job,E.date)?'Report In is from your schedule. Report Out is from your last work day. Change either time if this day was different.':'Filled in from your last work day. Change either time if this day was different.')+'</div>';
+  if(!E.e)h+='<div class="note">Report Out is empty, so this saves as an open shift on Home. Finish it when you know Report Out.</div>';
   h+='<label class="f">Type of work</label><div class="chips" role="group" aria-label="Type of work">'+A.roles.filter(function(r){return multi||r.job===job;}).map(function(r){var jb=multi?(jobOf(r.job)||{name:''}).name+': ':'';return '<button class="chip'+(E.role===r.id?' on':'')+'" aria-pressed="'+(E.role===r.id)+'" onclick="setEdRole(\''+r.id+'\')">'+esc(jb+r.name)+'</button>';}).join('')+'</div>';
-  if(work){h+=runCard();h+='<label class="f" for="ed-note">Notes for the day</label><textarea id="ed-note" placeholder="Anything worth remembering about today">'+esc(E.note)+'</textarea>';}
+  if(work){h+=runCard();h+=lfStep();h+='<label class="f" for="ed-note">Notes for the day</label><textarea id="ed-note" placeholder="Anything worth remembering about today">'+esc(E.note)+'</textarea>';}
   h+='<div class="pv" id="edp" aria-live="polite" style="font-size:17px"></div><div class="err" id="edr" role="alert"></div>';
   if(jr(job).mode==='manual'){if(E.ot==null)E.ot=0;h+='<label class="f" for="ed-ot">Overtime hours (this job is set to "I choose each day")</label><input id="ed-ot" type="number" inputmode="decimal" min="0" step="0.25" value="'+E.ot+'" oninput="edPrev()">';}
   else{
@@ -1212,15 +1611,20 @@ function saveEd(){
   save();back();toast(E.e?'Shift saved':'Saved. It waits on Home until you finish it.');
 }
 /* ---- V1.3: the run card, open shifts, several buses a day, search ---- */
-/* The shift as saved: the fixed fields, the run card and paid breaks when filled in, and open while Ended is empty. */
+/* The shift as saved: the fixed fields, the run card and paid breaks when filled in, and open while Report Out is empty. */
+var CK=['duty','route','run','coach','base','f','t'];
 function entryOf(){
   var o={id:E.id,date:E.date,s:E.s,e:E.e,b:E.b,role:E.role,ot:E.ot,adj:E.adj,note:E.note};
   if(!E.e)o.open=true;
-  ['duty','route','run','coach'].forEach(function(k){var v=String(E[k]||'').trim();if(v)o[k]=v;});
-  var cs=(E.cards||[]).map(function(c){var x={};['duty','route','run','coach','f','t'].forEach(function(k){var v=String(c[k]||'').trim();if(v)x[k]=v;});return x;}).filter(function(x){return Object.keys(x).length;});if(cs.length)o.cards=cs;
+  if(+E.lf>0)o.lf=+E.lf;
+  var keep=function(c,to){CK.forEach(function(k){var v=String(c[k]||'').trim();if(v)to[k]=v;});if(to.t)to.end=c.end||'in';return to;};
+  keep(E,o);if(E.was)o.was=E.was;
+  var cs=(E.cards||[]).map(function(c){var x=keep(c,{});if(Object.keys(x).length&&c.was)x.was=c.was;return x;}).filter(function(x){return Object.keys(x).length;});if(cs.length)o.cards=cs;
   var pb=(E.pb||[]).filter(function(p){return p.f&&p.t;});if(pb.length)o.pb=pb;
   return o;
 }
+function setLf(n){readEd();E.lf=Math.max(0,(+E.lf||0)+n);render();}
+function lfStep(){return '<label class="f">Lost and found items</label><div class="stp" role="group" aria-label="Lost and found items"><button aria-label="One less" onclick="setLf(-1)">&#8722;</button><b id="ed-lf">'+(+E.lf||0)+'</b><button aria-label="One more" onclick="setLf(1)">+</button><span class="note">Each adds '+LF_MIN+' minutes at overtime.</span></div>';}
 function edNow(w){readEd();var t=hhmm(rnd(now()));if(w==='s')E.s=t;else if(w==='e')E.e=t;else E.e='';render();}
 function sameAsLast(){
   readEd();var l=null;A.entries.forEach(function(x){if((x.duty||x.route||x.run||x.coach)&&x.id!==E.id&&(!l||x.date>l.date||(x.date===l.date&&x.s>l.s)))l=x;});
@@ -1234,35 +1638,41 @@ function valChips(k,c){var v=recentVals(k);if(!v.length)return '';return '<div c
 function addPb(){readEd();E.pb=E.pb||[];E.pb.push({f:'',t:''});render();}
 function delPb(i){readEd();E.pb.splice(i,1);render();}
 /* V1.4: one box per run card. Card 1 is the shift's own fields (ids bu-*); card i+2 is E.cards[i] (ids bc-*-i). Each card has
-   the 123 | ABC keyboard switch; cards 2 and up have Remove and a collapsed "+ Add times (optional)" (open when times are saved). */
+   the 123 | ABC keyboard switch and a collapsed "+ Add times (optional)" (open when times are saved); cards 2 and up have Remove. */
 function kbdSeg(){var f=!!A.set.kbd;return '<div class="kseg" role="group" aria-label="Keyboard for run cards"><button class="'+(f?'':'on')+'" aria-pressed="'+!f+'" aria-label="Number keypad" onclick="setKbd(false)">123</button><button class="'+(f?'on':'')+'" aria-pressed="'+f+'" aria-label="Full keyboard" onclick="setKbd(true)">ABC</button></div>';}
 /* A run-card text field: the number keypad (inputmode numeric, pattern [0-9]*) unless the full keyboard is on. */
-function nin(id,val,ph,fn){return '<input id="'+id+'" value="'+esc(val||'')+'" placeholder="'+ph+'"'+(A.set.kbd?'':' inputmode="numeric" pattern="[0-9]*"')+' autocomplete="off"'+(fn?' oninput="'+fn+'"':'')+'>';}
-/* The Run field: free text with the full keyboard; in number mode the card's route and "-" are a fixed prefix (hidden while the route is empty) and only the digits are typed, unless the stored run does not fit, which is shown whole. */
-function runIn(id,route,run){
-  if(A.set.kbd)return '<input id="'+id+'" value="'+esc(run||'')+'" placeholder="48-1" autocomplete="off">';
-  var pfx=!run||runFits(route,run);
-  return '<div class="runp"><span id="'+id+'-p" class="pfx" aria-hidden="true"'+(pfx&&route?'':' hidden')+'>'+esc(route||'')+'-</span><input id="'+id+'" value="'+esc(pfx?runNum(route,run):run||'')+'" placeholder="'+(pfx?'1':'48-1')+'" inputmode="numeric" pattern="[0-9]*" data-pfx="'+(pfx?1:0)+'" autocomplete="off"></div>';
+function nin(id,val){return '<input id="'+id+'" value="'+esc(val||'')+'"'+(A.set.kbd?'':' inputmode="numeric" pattern="[0-9]*"')+' autocomplete="off">';}
+/* V3: the Base drop-down, one for the shift, above Report In. The list lives in stored data and starts empty; + adds a base, which stays on it. */
+function baseRow(c,i){
+  var one=i==null,id=one?'bu-base':'bc-base-'+i,L=A.set.bases.slice(),v=c.base||'',a=one?'null':i,open=U.nb!=null&&U.nb===(one?'one':i);
+  if(v&&L.indexOf(v)<0)L.push(v);
+  var h='<label class="f" for="'+id+'">Base</label><div class="rr" style="margin-bottom:0"><select id="'+id+'"><option value="">No base</option>'+L.map(function(b){return '<option value="'+esc(b)+'"'+(b===v?' selected':'')+'>'+esc(b)+'</option>';}).join('')+'</select><button aria-label="Add a base" onclick="newBase('+a+')">+</button></div>';
+  if(open)h+='<div class="rr" style="margin:8px 0 0"><input id="nb-name" value="" autocomplete="off" aria-label="New base name"><button style="width:auto;padding:0 12px" onclick="addBase('+a+')">Add</button></div>';
+  return h;
 }
-function runPfx(el,rid){var r=document.getElementById(rid),p=document.getElementById(rid+'-p');if(!r||!p||r.getAttribute('data-pfx')!=='1')return;p.textContent=el.value+'-';p.hidden=!el.value;}
-function runRead(id,route){var x=document.getElementById(id);return x?runFull(route,x.value,x.getAttribute('data-pfx')==='1'):'';}
+function newBase(i){readEd();U.nb=i==null?'one':(U.nb===i?null:i);render();var x=document.getElementById('nb-name');if(x)x.focus();}
+function addBase(i){
+  readEd();var x=document.getElementById('nb-name'),v=x?x.value.trim():'';U.nb=null;
+  if(v){if(A.set.bases.indexOf(v)<0)A.set.bases.push(v);if(i==null)E.base=v;else if(E.cards&&E.cards[i])E.cards[i].base=v;save();}
+  render();
+}
 function cardHtml(c,i){
   var one=i==null,p=one?'bu-':'bc-',s=one?'':'-'+i,n=one?1:i+2,id=function(k){return p+k+s;};
   var h='<div class="busbox"><div class="hd" style="margin-bottom:0"><h3>Run card '+n+'</h3><div class="bhr">'+kbdSeg()+(one?'':'<button class="lx" aria-label="Remove run card '+n+'" onclick="delCard('+i+')">Remove</button>')+'</div></div>';
   if(one)h+='<div class="chips mini" style="margin-top:8px"><button class="chip" onclick="sameAsLast()">Same as last time</button></div>';
-  h+='<label class="f" for="'+id('duty')+'" style="margin-top:6px">Duty</label>'+nin(id('duty'),c.duty,'111')+valChips('duty',i);
-  h+='<div class="two"><div><label class="f" for="'+id('route')+'">Route</label>'+nin(id('route'),c.route,'48','runPfx(this,\''+id('run')+'\')')+'</div><div><label class="f" for="'+id('run')+'">Run</label>'+runIn(id('run'),c.route,c.run)+'</div></div>'+valChips('route',i);
-  h+='<label class="f" for="'+id('coach')+'">Coach number</label>'+nin(id('coach'),c.coach,'7243')+valChips('coach',i);
-  if(!one){
-    if(c.x||c.f||c.t)h+='<div class="two" style="margin-top:12px"><div><label class="f" for="bc-f-'+i+'" style="margin:0 0 4px">From (optional)</label>'+tin('bc-f-'+i,c.f||'','','Run card '+n+' from, 24 hour')+'</div><div><label class="f" for="bc-t-'+i+'" style="margin:0 0 4px">To (optional)</label>'+tin('bc-t-'+i,c.t||'','','Run card '+n+' to, 24 hour')+'</div></div><div class="note">Only a note. Pay comes from the shift\'s Started and Ended.</div>';
-    else h+='<button class="lx" style="padding:6px 0" onclick="expCard('+i+')">+ Add times (optional)</button>';
-  }
+  h+='<label class="f" for="'+id('duty')+'" style="margin-top:6px">Duty</label>'+nin(id('duty'),c.duty)+valChips('duty',i);
+  h+='<div class="two"><div><label class="f" for="'+id('route')+'">Route</label>'+nin(id('route'),c.route)+'</div><div><label class="f" for="'+id('run')+'">Run</label>'+nin(id('run'),c.run)+'</div></div>'+valChips('route',i);
+  h+='<label class="f" for="'+id('coach')+'">Coach number</label>'+nin(id('coach'),c.coach)+valChips('coach',i);
+  var a=one?'null':i,ef=one?'bu-f':'bc-f-'+i,et=one?'bu-t':'bc-t-'+i,rr=c.end==='rr';
+  if(c.x||c.f||c.t)h+='<div class="two" style="margin-top:12px"><div><label class="f" for="'+ef+'" style="margin:0 0 4px">Pull Out (optional)</label>'+tin(ef,c.f||'','edPrev()','Run card '+n+' Pull Out, 24 hour')+'</div><div><label class="f" for="'+et+'" style="margin:0 0 4px">'+(rr?'Road Relief':'Pull In')+' (optional)</label>'+tin(et,c.t||'','edPrev()','Run card '+n+(rr?' Road Relief':' Pull In')+', 24 hour')+'</div></div><div style="margin-top:8px">'+seg([['in','Pull In'],['rr','Road Relief']],rr?'rr':'in','setEnd.bind(null,'+a+')')+'</div><div class="note">Only a record. Pay comes from the shift\'s Report In and Report Out.</div>';
+  else h+='<button class="lx" style="padding:6px 0" onclick="expCard('+a+')">+ Add times (optional)</button>';
   return h+'</div>';
 }
+function setEnd(i,v){readEd();(i==null?E:E.cards[i]).end=v;render();}
 function runCard(){var h=cardHtml(E,null);(E.cards||[]).forEach(function(c,i){h+=cardHtml(c,i);});return h+'<button class="btn dim" style="margin-top:10px" onclick="addCard()">+ Add another run card</button>';}
-function addCard(){readEd();E.cards=E.cards||[];E.cards.push({duty:'',route:'',run:'',coach:'',f:'',t:''});render();}
+function addCard(){readEd();E.cards=E.cards||[];E.cards.push({duty:'',route:'',run:'',coach:'',f:'',t:'',base:''});render();}
 function delCard(i){readEd();E.cards.splice(i,1);render();}
-function expCard(i){readEd();E.cards[i].x=true;render();}
+function expCard(i){readEd();(i==null?E:E.cards[i]).x=true;render();}
 /* One stored setting behind both keyboard switches (More, and the top of every run card). Re-rendering swaps the keyboard type at once. */
 function setKbd(v){if(U.tab==='edit'&&E)readEd();A.set.kbd=v===true;save();render();}
 /* Paid breaks live in More options next to the unpaid break, in their own box: start and end times, a note only. */
@@ -1279,7 +1689,7 @@ function startNext(prev){
 function saveNext(){
   readEd();var m=entryErr(E,true);if(m){document.getElementById('edr').textContent=m;return;}
   syncHol(roleJob(E.role),E.date,!!E.hol,E.holN);
-  var o=putEntry(entryOf());save();startNext(o);toast('Saved. Now the next bus: it starts at the last end time.');
+  var o=putEntry(entryOf());save();startNext(o);toast('Saved. Now the next bus: it starts at the last Report Out.');
 }
 /* Home: a card for each shift saved without an end time. It turns orange when it is from an earlier day. */
 function openCards(){
@@ -1289,8 +1699,8 @@ function openCards(){
     h+='<section class="card opn'+(late?' late':'')+'" style="margin-top:0;margin-bottom:12px"><div class="hd"><h2 style="margin:0">'+(late?'Still open from '+DN[d.getDay()]+' '+fmtD(d):'A bus is in progress')+'</h2><span class="pill '+(late?'ot':'go')+'">'+(late?'Needs finishing':'Working')+'</span></div>';
     h+=(rl?'<div class="mid" style="margin:6px 0 2px"><b>'+rl+'</b></div>':'<div class="note">No run card yet.</div>');
     h+='<div class="note" style="margin:0 0 8px">Not counted until you finish it.</div>';
-    h+='<div class="two bt"><div><label class="f" for="of-s-'+e.id+'" style="margin:0 0 4px">Started</label>'+tin('of-s-'+e.id,e.s,'','Start time, 24 hour')+'</div><div><label class="f" for="of-e-'+e.id+'" style="margin:0 0 4px">Ended</label>'+tin('of-e-'+e.id,'','','End time, 24 hour')+'</div></div>';
-    h+='<div class="chips mini"><button class="chip" onclick="nowTo(\'of-e-'+e.id+'\')">Ended just now</button></div><div class="err" id="of-r-'+e.id+'" role="alert"></div>';
+    h+='<div class="two bt"><div><label class="f" for="of-s-'+e.id+'" style="margin:0 0 4px">Report In</label>'+tin('of-s-'+e.id,e.s,'','Report In, 24 hour')+'</div><div><label class="f" for="of-e-'+e.id+'" style="margin:0 0 4px">Report Out</label>'+tin('of-e-'+e.id,'','','Report Out, 24 hour')+'</div></div>';
+    h+='<div class="chips mini"><button class="chip" onclick="nowTo(\'of-e-'+e.id+'\')">Reported out just now</button></div><div class="err" id="of-r-'+e.id+'" role="alert"></div>';
     h+='<div class="act3"><button class="btn solid big2" onclick="finishOpen(\''+e.id+'\')">✅ Finish</button><button class="act" onclick="openEdit(\''+e.id+'\')">✏️ Edit</button><button class="act del" onclick="askDel(\''+e.id+'\')">🗑️ Delete</button></div><button class="btn dim" onclick="finishOpen(\''+e.id+'\',true)">⏭️ Finish and start the next bus</button></section>';
   });
   return h;
@@ -1311,14 +1721,23 @@ function runHtml(e){
   var rl=esc(runShort(e)),sh=SHF[e.date],tag=sh&&sh.n>1&&sh.i[e.id]?'Bus '+sh.i[e.id]+' of '+sh.n+(rl?' · ':''):'';
   return (rl||tag)?'<span class="sub bl">'+tag+rl+'</span>':'';
 }
-/* Find a bus: every shift whose run card or note holds the text, newest first. */
-function busFind(v){U.q=v;var r=document.getElementById('bres');if(r)r.innerHTML=busResults(v);}
+/* Search on Shifts: every shift that matches what he logs, newest first, inside the picked day or range when there is one. */
+/* A new search looks through everything; tapping a filter after that narrows it. Clearing the search brings back the view he had. A calendar pick made first stays. */
+function qAuto(t,on){
+  var hrs=t==='hours';
+  if(on){if((hrs?U.rng:U.srng)==='pick')return false;if(hrs){U.qw={r:U.rng,o:U.off};U.rng='all';U.off=0;}else{U.qw2=U.srng||'pp';U.srng='all';}return true;}
+  if(hrs){var w=U.qw;U.qw=null;if(!w||U.rng!=='all')return false;U.rng=w.r;U.off=w.o;}else{var x=U.qw2;U.qw2=null;if(!x||U.srng!=='all')return false;U.srng=x;}
+  return true;
+}
+function reFocus(id){render();var x=document.getElementById(id);if(x){x.focus();try{var n=x.value.length;x.setSelectionRange(n,n);}catch(e){}}}
+function busFind(v){var was=!!(U.q||'').trim(),on=!!(v||'').trim();U.q=v;if(was!==on&&qAuto('hours',on))return reFocus('bq');var r=document.getElementById('bres');if(r)r.innerHTML=busResults(qText('hours',v));}
 function busResults(v){
   v=(v||'').trim().toLowerCase();if(!v)return '';
-  var hits=A.entries.filter(function(e){return (runPlain(e,true)+' '+(e.note||'')).toLowerCase().indexOf(v)>=0;}).sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:(a.s<b.s?1:-1);});
-  if(!hits.length)return '<div class="note">No shifts match "'+esc(v)+'".</div>';
-  return '<div class="note" style="margin:8px 0 2px"><b>'+hits.length+' shift'+(hits.length>1?'s':'')+'</b> match</div>'+hits.slice(0,12).map(function(e){var d=pd(e.date);return '<div class="row"'+rb('openEdit(\''+e.id+'\')')+'><div class="day"><b>'+DN[d.getDay()]+'</b><span>'+fmtD(d)+'</span></div><div class="mid">'+(esc(runShort(e))||'No run card')+'<span class="sub">'+t24(e.s)+(e.e?' to '+t24(e.e):' (open)')+(e.note?' · '+esc(e.note):'')+'</span></div></div>';}).join('');
+  var R=U.rng==='all'?null:range(),lo=R&&ymd(R.s),hi=R&&ymd(R.e),hits=A.entries.filter(function(e){return (!R||(e.date>=lo&&e.date<=hi))&&entryHit(e,v);}).sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:(a.s<b.s?1:-1);}),clr=' <button class="lx" onclick="clearQ()">Clear</button>';
+  if(!hits.length)return '<div class="note">No shifts match "'+esc(v)+'"'+(R?' in those days':'')+'.'+clr+'</div>';
+  return '<div class="note" style="margin:8px 0 2px"><b>'+hits.length+' shift'+(hits.length>1?'s':'')+'</b> match'+clr+'</div>'+hits.slice(0,50).map(function(e){var d=pd(e.date);return '<div class="row"'+rb('openEdit(\''+e.id+'\')')+'><div class="day"><b>'+DN[d.getDay()]+'</b><span>'+fmtD(d)+'</span></div><div class="mid">'+(esc(runShort(e))||'No run card')+'<span class="sub">'+t24(e.s)+(e.e?' to '+t24(e.e):' (open)')+(e.note?' · '+esc(e.note):'')+'</span></div></div>';}).join('');
 }
+function clearQ(){var t=pickTab();if(t==='stats')U.sq='';else U.q='';qAuto(t,false);render();}
 function saveNoWork(){
   readEd();var jid=roleJob(E.role),r=noWorkApply(E.date,jid,E.nw);
   if(!r){toast('This day already has hours logged');return;}
@@ -1357,7 +1776,9 @@ function assumptions(){
   if(R.mode==='auto'){if(R.dOn)ot.push('after '+R.dHrs+' h in a day');if(R.wOn!==false)ot.push('after '+R.thr+' h in a work week');}
   L.push(['Overtime',R.mode==='auto'?(ot.length?'Pays '+R.mult+'x '+ot.join(' and ')+'. Paid leave never counts toward it.':'No automatic rule is on.'):'You choose the overtime hours on each day.']);
   if(od.length&&R.offOT!==false)L.push(['Days off','Work on '+od.map(function(d){return DN[d];}).join(' and ')+' is all overtime at '+R.mult+'x, even a short shift.']);
-  if(R.guar>0)L.push(['Guarantee',R.guar+' regular hours each pay period, paid leave included. A finished period below that is topped up at the straight rate.']);
+  if(R.dayMin>0)L.push(['Day minimums','A scheduled work day under '+R.dayMin+' hours pays '+R.dayMin+', at regular.'+(R.offRound>0&&R.offOT!==false?' On a day off, '+R.offRound+' hours up to '+R.dayMin+' counts as '+R.dayMin+', all at overtime; under '+R.offRound+' pays only the time worked.':'')+' Over '+R.dayMin+' pays to the minute. Open shifts, leave and days with no work get no minimum. Rounding can vary, so the paystub check shows any period it does not match.']);
+  L.push(['Lost and found','Each item adds '+LF_MIN+' minutes at overtime on top of Report In to Report Out. It does not count toward a day minimum.']);
+  if(R.guar>0)L.push(['Guarantee',R.guar+' regular hours each pay period, paid leave included'+(R.dayMin>0?', and any regular hours a day minimum adds':'')+'. A finished period below that is topped up at the straight rate.']);
   if(R.bank&&R.bank.on)L.push(['Comp bank (AC)','Holds at most '+R.bank.cap+' hours. After you use bank hours, the first hours you work refill it (regular first) and are not paid in cash.']);
   if(R.hol&&R.hol.on!==false)L.push(['Holidays','Each holiday gives an '+HOL_H+' hour credit: straight comp on a day off, or the day\'s regular hours on a work day, after which anything you work is overtime.']);
   if(R.third)L.push(['Third paydays (assumed)','A pay date on the 29th or later skips the benefit fee, deferred compensation and insurance, so take-home runs higher. The range is wider until a stub confirms it.']);
@@ -1429,7 +1850,7 @@ function emailFor(q,c,who){
   b+='My time records: '+nm(T.reg)+' regular hours (including leave) and '+nm(T.ot)+' overtime hours. Expected gross pay: '+usd(T.usd)+'.\n';
   b+='My paystub: gross pay '+usd(st.gross)+(num(st.hrs)!=null?', '+nm(st.hrs)+' regular hours':'')+(num(st.othrs)!=null?', '+nm(st.othrs)+' overtime hours':'')+'.\n';
   b+='Difference: '+usd(Math.abs(c.diff))+(c.diff<0?' more than I was paid':' more than I expected')+'.\n\n';
-  b+='Daily hours:\n'+c.rows.map(function(r){var d=pd(r.e.date);return DN[d.getDay()]+' '+fmtD(d)+': '+t24(r.e.s)+' to '+t24(r.e.e)+', '+nm(r.w)+' h'+(r.ot>0?' ('+nm(r.ot)+' OT)':'')+(runPlain(r.e,true)?', '+runPlain(r.e,true):'');}).join('\n');
+  b+='Daily hours:\n'+c.rows.map(function(r){var d=pd(r.e.date);return DN[d.getDay()]+' '+fmtD(d)+': '+t24(r.e.s)+' to '+t24(r.e.e)+', '+nm(r.w)+' h'+(r.ot>0?' ('+nm(r.ot)+' OT)':'')+(r.minH>0?', '+minWords(r):'')+(r.lfH>0?', lost and found '+r.e.lf:'')+(runPlain(r.e,true)?', '+runPlain(r.e,true):'');}).join('\n');
   b+='\n\nCould you review this and tell me what changed? I can send my full time records.\n\nThank you,\n'+(C.me||'[your name]');
   return {to:to,sub:sb,body:b};
 }
@@ -1482,12 +1903,12 @@ function copyMail(){var b=document.getElementById('m-body');copyTxt('Subject: '+
 /* More */
 function vMore(){
   var h='<header class="top"><div><div class="sub">Settings and tools</div><h1>More</h1><div class="purpose">Pay rules, the tax helper, export and backup.</div></div></header>';
-  var items=[['rules','Pay rules','Jobs, work types, pay period, overtime, contacts, reminders'],['tax','Tax helper','Year to date, overtime deduction check, W-2 check'],['export','Export and backup','Copy or share hours, save a backup, import a backup or setup file']];
+  var items=[['rules','Pay rules','Jobs, work types, pay period, overtime, contacts, reminders'],['tax','Tax helper','Year to date, overtime deduction check, W-2 check'],['backups','Backups on this phone','A copy every day, restore one, save one to Files'],['export','Export and backup','Copy or share hours, save a backup, import a backup or setup file']];
   h+='<section class="card" style="margin-top:0">'+cb('kbd',!!A.set.kbd,'setKbd(this.checked)','Full keyboard for run cards')+'<div class="note">Off: a number keypad for Duty, Route, Run and Coach number on run cards. Turn it on when a route or run needs letters. The same switch sits on each run card. Temporary, until we know what is needed.</div></section>';
   h+='<section class="card" style="padding:4px 16px">'+items.map(function(i){return '<div class="row"'+rb('sub(\''+i[0]+'\')')+'><div class="mid"><b style="font:600 20px var(--fd)">'+i[1]+'</b><span class="sub" style="white-space:normal">'+i[2]+'</span></div><div class="rt sub" style="font-size:22px">&#8250;</div></div>';}).join('')+'</section>';
   h+='<section class="card"><h2>Your data</h2><div class="dl"><span>Stored in</span><span>'+(DB?'This phone':'This browser only')+'</span></div><div class="dl"><span>Kept when space runs low</span><span>'+(PERSIST?'Yes':'Not promised')+'</span></div><div class="dl"><span>Shifts logged</span><span>'+A.entries.length+'</span></div><div class="dl"><span>Paystubs</span><span>'+A.stubs.length+'</span></div><div class="dl"><span>Last backup</span><span>'+(A.set.lastExport?fmtDY(new Date(A.set.lastExport)):'Never')+'</span></div>';
   h+='<div class="note">Nothing leaves this phone unless you share it. Save a backup now and then in Export and backup.</div>';
-  h+='<button class="btn warn" onclick="eraseAll()">'+(U.confirm==='erase'?'Tap again to erase everything on this phone':'Erase all data')+'</button>'+(U.confirm==='erase'?'<div class="note">This removes every day, paystub and rule. It cannot be undone. Save a backup first.</div>':'')+'</section>';
+  h+='<button class="btn warn" onclick="eraseAll()">'+(U.confirm==='erase'?'Tap again to erase everything on this phone':'Erase all data')+'</button>'+(U.confirm==='erase'?'<div class="note">This removes every day, paystub and rule. Copies in Backups on this phone stay. Save a backup first.</div>':'')+'</section>';
   return h+foot();
 }
 function eraseAll(){if(U.confirm!=='erase'){U.confirm='erase';render();return;}var c=A.set.created;useState(fresh());A.set.created=c;U.job='all';U.cust={};U.role=firstWork();U.confirm='';save();render();toast('All data erased');}
@@ -1535,7 +1956,7 @@ function jobRules(j){
   h+='<label class="f" for="p-lag-'+id+'">Paid how many days after the period ends</label><input id="p-lag-'+id+'" type="number" inputmode="numeric" min="0" value="'+P.lag+'" oninput="setLag(\''+id+'\',this.value)"><div class="note" id="pp-d-'+id+'">'+ppDesc(id)+'</div><div class="note">Match these to the period dates and pay date on your stub.</div>';
   if(P.type==='biweekly')h+=cb('',R.third,'setThird(\''+id+'\',this.checked)','A third payday in a month skips the benefit fee, deferred compensation and insurance');
   h+='</section>';
-  h+=rulesCard(j);
+  h+=rulesCard(j)+minCard(j);
   if(!U.adv[id])return h+'<button class="btn dim" onclick="togAdv(\''+id+'\')">Advanced: change how overtime is counted</button>'+daysOffCard(j)+holidaysCard(j);
   h+='<section class="card"><h2>Overtime'+t+'</h2><label class="f" style="margin-top:0">Who decides the overtime hours</label>'+seg([['auto','Automatic'],['manual','I choose each day']],R.mode,f('setMode'));
   h+='<label class="f" for="p-ws-'+id+'">Work week starts on</label><select id="p-ws-'+id+'" onchange="setWS(\''+id+'\',this.value)">'+['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'].map(function(n,i){return '<option value="'+i+'"'+(R.ws===i?' selected':'')+'>'+n+'</option>';}).join('')+'</select>';
@@ -1560,16 +1981,20 @@ function jobRules(j){
 }
 function togAdv(id){U.adv[id]=!U.adv[id];render();}
 function rulesCard(j){return '<section class="card" id="rules-sum"><h2>How your pay is worked out'+(A.jobs.length>1?' · '+esc(j.name):'')+'</h2>'+rulesSummary(j.id).map(function(x){return '<div class="why">'+esc(x)+'</div>';}).join('')+'<div class="note">Change these only if your contract changes. The detailed overtime settings are under Advanced.</div></section>';}
+function minCard(j){
+  var R=j.rules,id=j.id;
+  return '<section class="card"><h2>Day minimums'+(A.jobs.length>1?' · '+esc(j.name):'')+'</h2><div class="two"><div><label class="f" for="p-dm-'+id+'" style="margin-top:0">Work-day minimum (hours)</label><input id="p-dm-'+id+'" type="number" inputmode="decimal" min="0" value="'+(R.dayMin||0)+'" oninput="setNJ(\''+id+'\',\'dayMin\',this.value)"></div><div><label class="f" for="p-or-'+id+'" style="margin-top:0">Day-off round-up point (hours)</label><input id="p-or-'+id+'" type="number" inputmode="decimal" min="0" value="'+(R.offRound||0)+'" oninput="setNJ(\''+id+'\',\'offRound\',this.value)"></div></div><div class="note">A scheduled work day under the minimum pays the minimum, at regular. A day off from the round-up point up to the minimum counts as the minimum, all at overtime. By day, not by shift. 0 turns a rule off.</div></section>';
+}
 function daysOffCard(j){
   var R=j.rules,O=R.off,id=j.id,multi=A.jobs.length>1;
-  var h='<section class="card"><h2>Days off'+(multi?' · '+esc(j.name):'')+'</h2>';
+  var h='<section class="card"><h2>Days off and report time'+(multi?' · '+esc(j.name):'')+'</h2>';
   O.sched.forEach(function(x,i){
-    h+='<div class="job" style="margin-bottom:10px">'+(i===0?'<div class="sub" style="margin-bottom:8px">Current schedule</div>':'<label class="f" for="o-f-'+id+'-'+i+'" style="margin-top:0">Changes on</label><input id="o-f-'+id+'-'+i+'" type="date" value="'+x.from+'" onchange="setOffFrom(\''+id+'\','+i+',this.value)" style="margin-bottom:8px">')+'<div class="dchips" role="group" aria-label="Days off">'+DN.map(function(n,d){var on=x.days.indexOf(d)>=0;return '<button class="'+(on?'on':'')+'" aria-pressed="'+on+'" onclick="toggleOff(\''+id+'\','+i+','+d+')">'+n+'</button>';}).join('')+'</div>'+(i>0?'<button class="btn warn" onclick="delOff(\''+id+'\','+i+')">Remove this change</button>':'')+'</div>';
+    h+='<div class="job" style="margin-bottom:10px">'+(i===0?'<div class="sub" style="margin-bottom:8px">Current schedule</div>':'<label class="f" for="o-f-'+id+'-'+i+'" style="margin-top:0">Changes on</label><input id="o-f-'+id+'-'+i+'" type="date" value="'+x.from+'" onchange="setOffFrom(\''+id+'\','+i+',this.value)" style="margin-bottom:8px">')+'<div class="dchips" role="group" aria-label="Days off">'+DN.map(function(n,d){var on=x.days.indexOf(d)>=0;return '<button class="'+(on?'on':'')+'" aria-pressed="'+on+'" onclick="toggleOff(\''+id+'\','+i+','+d+')">'+n+'</button>';}).join('')+'</div><label class="f" for="o-r-'+id+'-'+i+'">Report time (optional)</label>'+tin('o-r-'+id+'-'+i,x.rpt||'','setOffRpt(\''+id+'\','+i+',this)','Report time, 24 hour')+(i>0?'<button class="btn warn" onclick="delOff(\''+id+'\','+i+')">Remove this change</button>':'')+'</div>';
   });
   h+='<button class="btn" style="margin-top:0" onclick="addOff(\''+id+'\')">Add a schedule change</button>';
   h+=cb('',R.offOT!==false,'setOffOT(\''+id+'\',this.checked)','Work on a day off is all overtime, even a short shift');
   h+='<label class="f" for="o-n-'+id+'">Next schedule change (reminder)</label><input id="o-n-'+id+'" type="date" value="'+(O.next||'')+'" onchange="setOffNext(\''+id+'\',this.value)">';
-  h+='<div class="note">When your days off change, add a change with the new days and the date it starts.</div></section>';
+  h+='<div class="note">Days off and report time change on the same date. When they do, add a change with the new days, the report time and the date it starts. A new shift on a work day fills Report In from this.</div></section>';
   return h;
 }
 function holidaysCard(j){
@@ -1591,8 +2016,9 @@ function setHolDate(id,i,v){if(v){jr(id).hol.list[i].d=v;save();}}
 function addHol(id){jr(id).hol.list.push({d:ymd(now()),n:'New holiday'});save();render();}
 function delHol(id,i){jr(id).hol.list.splice(i,1);save();render();}
 function toggleOff(id,i,d){var x=jr(id).off.sched[i],k=x.days.indexOf(d);if(k>=0)x.days.splice(k,1);else{x.days.push(d);x.days.sort();}save();render();}
-function addOff(id){var O=jr(id).off,last=O.sched[O.sched.length-1];O.sched.push({from:O.next||ymd(now()),days:last.days.slice()});save();render();}
+function addOff(id){var O=jr(id).off,last=O.sched[O.sched.length-1];var x={from:O.next||ymd(now()),days:last.days.slice()};if(last.rpt)x.rpt=last.rpt;O.sched.push(x);save();render();}
 function delOff(id,i){jr(id).off.sched.splice(i,1);save();render();}
+function setOffRpt(id,i,el){var v=tfix(el.value),x=jr(id).off.sched[i];if(!v)delete x.rpt;else if(tvalid(v))x.rpt=v;else return;save();}
 function setOffFrom(id,i,v){if(v){jr(id).off.sched[i].from=v;save();}}
 function setOffNext(id,v){jr(id).off.next=v;save();render();}
 function setOffOT(id,v){jr(id).offOT=v;save();render();}
@@ -1660,9 +2086,14 @@ function impRead(input){
   r.readAsText(f);
 }
 function impSummary(s){var hol=0;(s.jobs||[]).forEach(function(j){hol+=j.rules&&j.rules.hol&&Array.isArray(j.rules.hol.list)?j.rules.hol.list.length:0;});return (s.jobs||[]).length+' job'+((s.jobs||[]).length===1?'':'s')+', '+(s.roles||[]).length+' work types, '+hol+' holidays, '+(s.stubs||[]).length+' paystubs, '+(s.entries||[]).length+' logged days';}
+/* Import saves a copy first, as Restore does; if the copy fails, nothing changes. */
 function impApply(){
+  var I=U.imp;if(!I)return Promise.resolve();
+  return bkMake('restore','Before importing '+I.name).then(impDo,function(){toast('A safety copy could not be saved, so nothing was imported');});
+}
+function impDo(){
   var I=U.imp;if(!I)return;var st=norm(I.state);
-  if(I.kind==='setup'){mergeSetup(st,A);st.sess=null;st.set.created=A.set.created;st.set.lastExport=A.set.lastExport;}
+  if(I.kind==='setup'){mergeSetup(st,A);st.sess=null;st.set.created=A.set.created;st.set.lastExport=A.set.lastExport;A.set.bases.forEach(function(b){if(st.set.bases.indexOf(b)<0)st.set.bases.push(b);});}
   useState(st);U.job='all';U.cust={};U.role=firstWork();U.imp=null;save();render();toast(I.kind==='setup'?'Setup imported':'Backup restored');
 }
 function impCancel(){U.imp=null;render();}
@@ -1712,7 +2143,7 @@ function shDraft(){
   readSh();var Z=U.sh,list=[],err='';
   Z.rows.forEach(function(r,i){
     if(!r.s&&!r.e)return;var d=pd(r.date),lab=DN[d.getDay()]+' '+fmtD(d);
-    if(!(r.s&&r.e)){err=err||lab+': enter both a start and an end time.';return;}
+    if(!(r.s&&r.e)){err=err||lab+': enter both Report In and Report Out.';return;}
     if(!tvalid(r.s)||!tvalid(r.e)){err=err||lab+': use 24-hour time, like 14:00.';return;}
     var o=r.o,e=Object.assign(o?JSON.parse(JSON.stringify(o)):{ot:null,adj:0,note:''},{id:r.id||('sh'+i),date:r.date,s:r.s,e:r.e,b:(r.b===''||r.b==null)?A.set.brk:(parseFloat(r.b)||0),role:r.role||Z.role});delete e.open;
     if(wmin(e)<=0){err=err||lab+': those times leave no paid time. Check the break.';return;}
@@ -1736,10 +2167,10 @@ function shTotals(){
   if(op!=null)h+='<div class="note">Overtime hours: stub '+nm(op)+' h, app '+nm(otc)+' h ('+(op-otc>=0?'+':'')+nm(op-otc)+' h).</div>';
   h+='<div class="note" style="margin-top:12px"><b style="color:var(--ink)">The math, day by day</b></div>';
   x.rows.forEach(function(r){
-    var d=pd(r.e.date),line=nm(r.w-r.ot)+' h × '+usd(r.rate);
+    var d=pd(r.e.date),line=nm(r.w+r.xh-r.ot)+' h × '+usd(r.rate);
     if(r.ot>0)line+=' + '+nm(r.ot)+' h × '+r.mult+' × '+usd(r.rate);
     if(+r.e.adj)line+=' + '+usd(+r.e.adj);
-    h+='<div class="why"><b>'+DN[d.getDay()]+' '+fmtD(d)+'</b> · '+nm(r.w)+' h'+(r.e.hol?' (holiday credit)':'')+'<br><span class="sub">'+line+' = <b style="color:var(--ink)">'+usd(r.usd)+'</b></span></div>';
+    h+='<div class="why"><b>'+DN[d.getDay()]+' '+fmtD(d)+'</b> · '+nm(r.w)+' h'+(r.e.hol?' (holiday credit)':'')+(r.minH>0?' · '+esc(minWords(r)):'')+'<br><span class="sub">'+line+' = <b style="color:var(--ink)">'+usd(r.usd)+'</b></span></div>';
   });
   el.innerHTML=h;
 }
@@ -1762,14 +2193,14 @@ function shSave(){
 function vSheet(){
   var Z=U.sh,j=jobOf(Z.job)||A.jobs[0],h='<button class="btn dim bk" onclick="shBack()">&#8249; Back</button>';
   h+='<header class="top"><div><div class="sub">'+fmtD(pd(Z.s))+' to '+fmtD(pd(Z.e))+(A.jobs.length>1?' · '+esc(j.name):'')+'</div><h1>Timesheet</h1></div></header>';
-  h+='<div class="note" style="margin:-6px 0 10px">Type the real start and end times for each day in 24-hour time. The totals and the math update as you type. Leave a day blank for no work.</div>';
+  h+='<div class="note" style="margin:-6px 0 10px">Type Report In and Report Out for each day in 24-hour time. The totals and the math update as you type. Leave a day blank for no work.</div>';
   h+='<section class="card" style="margin-top:0" id="shT" aria-live="polite"></section>';
   h+='<section class="card"><h2>Compare with the paystub</h2><div class="two"><div><label class="f" for="sh-gross" style="margin-top:0">Gross pay on stub</label><input id="sh-gross" type="number" inputmode="decimal" step="0.01" value="'+esc(Z.gross)+'" oninput="shUp()"></div><div><label class="f" for="sh-hrs" style="margin-top:0">Regular hours on stub</label><input id="sh-hrs" type="number" inputmode="decimal" step="0.01" value="'+esc(Z.hrs)+'" oninput="shUp()"></div></div><div class="two"><div><label class="f" for="sh-ot">Overtime hours on stub</label><input id="sh-ot" type="number" inputmode="decimal" step="0.01" value="'+esc(Z.ot||'')+'" oninput="shUp()"></div><div></div></div></section>';
   h+='<section class="card"><h2>Days</h2><label class="f" for="sh-role" style="margin-top:0">Work type for new days</label><select id="sh-role" onchange="shUp()">'+A.roles.filter(function(r){return r.job===Z.job;}).map(function(r){return '<option value="'+r.id+'"'+(r.id===Z.role?' selected':'')+'>'+esc(r.name)+'</option>';}).join('')+'</select>';
-  h+='<div class="sg hdr" style="margin-top:14px"><span></span><span>Start</span><span>End</span><span>Break</span><span>Hol.</span></div>';
+  h+='<div class="sg hdr" style="margin-top:14px"><span></span><span>Report In</span><span>Report Out</span><span>Break</span><span>Hol.</span></div>';
   Z.rows.forEach(function(r,i){
     var d=pd(r.date),lab=DN[d.getDay()]+' '+fmtD(d);
-    h+='<div class="sg"><div class="sd"><b>'+DN[d.getDay()]+'</b>'+fmtD(d)+'</div>'+tin('sh-s-'+i,r.s,'shUp()','Start time, 24 hour, '+lab)+tin('sh-e-'+i,r.e,'shUp()','End time, 24 hour, '+lab)+'<input id="sh-b-'+i+'" type="number" inputmode="numeric" min="0" placeholder="'+A.set.brk+'" value="'+(r.b===''||r.b==null?'':r.b)+'" oninput="shUp()" aria-label="Break minutes, '+lab+'"><label class="ck"><input id="sh-h-'+i+'" type="checkbox"'+(r.hol?' checked':'')+' onchange="shUp()" aria-label="Holiday, '+lab+'"></label></div>';
+    h+='<div class="sg"><div class="sd"><b>'+DN[d.getDay()]+'</b>'+fmtD(d)+'</div>'+tin('sh-s-'+i,r.s,'shUp()','Report In, 24 hour, '+lab)+tin('sh-e-'+i,r.e,'shUp()','Report Out, 24 hour, '+lab)+'<input id="sh-b-'+i+'" type="number" inputmode="numeric" min="0" placeholder="'+A.set.brk+'" value="'+(r.b===''||r.b==null?'':r.b)+'" oninput="shUp()" aria-label="Break minutes, '+lab+'"><label class="ck"><input id="sh-h-'+i+'" type="checkbox"'+(r.hol?' checked':'')+' onchange="shUp()" aria-label="Holiday, '+lab+'"></label></div>';
     if(r.more)h+='<div class="note" style="margin:-2px 0 8px">'+r.more+' more shift'+(r.more>1?'s':'')+' this day stay as they are. Edit them from Shifts.</div>';
   });
   h+='<button class="btn" onclick="shFill()">Fill empty weekdays like the first day</button></section>';
@@ -1779,14 +2210,27 @@ function vSheet(){
 /* ---- V2: Stats (buses, run cards, routes, duties, when you work, what is missing). The numbers come from the model's
    statData and patterns; this only draws them. Single-hue bars and tables; a bar for zero draws nothing. ---- */
 function setSrng(v){U.srng=v;render();}
+/* V3 Stats tables: every row is shown, a Total row adds up to the whole range, a blank field has its own row, a heading sorts, and a row filters all of Stats.
+   T: {id,f,cols:[[key,label,num?,format?]],rows,gap,total}. */
+function stTable(T){
+  var S=(U.ss||{})[T.id],R=T.rows.slice();
+  if(S)R.sort(function(a,b){var x=a[S.k],y=b[S.k],c=x<y?-1:x>y?1:0;return S.d*c;});
+  var cell=function(C,r){var v=r[C[0]];return v==null||v===''?'':(C[3]?C[3](v):esc(String(v)));},rowOf=function(r,cl,extra){return '<tr'+cl+extra+'>'+T.cols.map(function(C,i){return '<td>'+(i===0?'<b>'+cell(C,r)+'</b>':cell(C,r))+'</td>';}).join('')+'</tr>';};
+  var h='<table class="stt"><thead><tr>'+T.cols.map(function(C){var on=S&&S.k===C[0];return '<th><button class="sth'+(on?' on':'')+'" onclick="stSort(\''+T.id+'\',\''+C[0]+'\')">'+C[1]+(on?(S.d>0?' ▲':' ▼'):'')+'</button></th>';}).join('')+'</tr></thead><tbody>';
+  h+=R.map(function(r){return rowOf(r,' class="tap"',' role="button" tabindex="0" data-v="'+esc(String(r[T.cols[0][0]]))+'" onclick="stPick(\''+T.f+'\',this.dataset.v)"');}).join('');
+  if(T.gap)h+=rowOf(T.gap,' class="gap"','');
+  return h+rowOf(T.total,' class="tot"','')+'</tbody></table>';
+}
+function stSort(id,k){U.ss=U.ss||{};var S=U.ss[id];U.ss[id]={k:k,d:S&&S.k===k?-S.d:(k==='k'?1:-1)};render();}
+function stPick(f,v){U.sf=U.sf||{};U.sf.stats=f;var was=!!(U.sq||'').trim();U.sq=v;if(!was)qAuto('stats',true);render();window.scrollTo(0,0);}
 function hbars(items,fmt){
   var max=Math.max.apply(null,items.map(function(i){return i.v;}).concat([1]));
-  return '<div class="hb">'+items.map(function(i){return '<div class="hbr" title="'+esc(i.k+': '+fmt(i.v)+(i.t?' · '+i.t:''))+'"><span class="hbk">'+esc(i.k)+'</span><span class="hbt"><i style="width:'+(i.v>0?Math.max(2,i.v/max*100):0)+'%"></i></span><span class="hbv">'+fmt(i.v)+'</span></div>';}).join('')+'</div>';
+  return '<div class="hb">'+items.map(function(i){return '<div class="hbr'+(i.f?' tap':'')+'"'+(i.f?' role="button" tabindex="0" data-v="'+esc(i.v0)+'" onclick="stPick(\''+i.f+'\',this.dataset.v)"':'')+' title="'+esc(i.k+': '+fmt(i.v)+(i.t?' · '+i.t:''))+'"><span class="hbk">'+esc(i.k)+'</span><span class="hbt"><i style="width:'+(i.v>0?Math.max(2,i.v/max*100):0)+'%"></i></span><span class="hbv">'+fmt(i.v)+'</span></div>';}).join('')+'</div>';
 }
-function patternsHtml(jid){
-  var P=patternData(jid),F=patterns(P);
+function patternsHtml(jid,F0){
+  var P=patternData(jid,F0),F=patterns(P);
   if(!F)return '<section class="card"><h2>Patterns</h2><div class="note">Log a few more weeks and patterns show up here.</div></section>';
-  var h='<section class="card" id="patterns"><h2>Patterns</h2><div class="note" style="margin:-4px 0 6px">Found in everything logged since '+fmtD(P.from)+'. They get sharper with more weeks.</div>';
+  var h='<section class="card" id="patterns"><h2>Patterns</h2><div class="note" style="margin:-4px 0 6px">'+(F0?'Found in these shifts only.':'Found in everything logged since '+fmtD(P.from)+'. They get sharper with more weeks.')+'</div>';
   h+=F.length?F.map(function(x){var f=x.f;return '<div class="why"><b>'+f[0]+' '+esc(f[1])+'</b><br><span class="sub" style="display:inline">'+esc(f[2])+'</span></div>';}).join(''):'<div class="note">No clear patterns yet.</div>';
   h+='</section>';
   /* day by route: darker = more run cards on that day of the week */
@@ -1797,52 +2241,68 @@ function patternsHtml(jid){
   [0,1,2,3,4,5,6].forEach(function(i){var w=P.byWd[i];h+='<tr><th>'+DN[i]+'</th>'+RK.map(function(k){var v=w.route[k]||0;return '<td title="'+DN[i]+', Rt '+esc(k)+': '+v+' run card'+(v===1?'':'s')+'"><span style="background:rgba(14,124,95,'+(v?0.15+0.85*v/mx:0)+');color:'+(v/mx>0.55?'#fff':'var(--ink)')+'">'+(v||'')+'</span></td>';}).join('')+'</tr>';});
   return h+'</tbody></table></section>';
 }
+function statRng(jid){var D=U.srng==='pick'?U.dr.stats:null;return D?{s:pd(D.a),e:pd(D.b),l:'Picked on the calendar'}:statRange(U.srng||'pp',jid);}
 function vStats(){
-  var jid=curJob().id,R=statRange(U.srng||'pp',jid),D=statData(R.s,R.e,jid),rows=D.rows;
+  var jid=curJob().id,R=statRng(jid);
   var h='<header class="top"><div><div class="sub">'+esc(R.l)+' · '+fmtD(R.s)+' to '+fmtD(R.e)+'</div><h1>Stats</h1><div class="purpose">Your buses, routes and run cards, and what is missing from your records.</div></div></header>';
-  h+='<div class="fstrip" role="group" aria-label="Range">'+[['pp','This pay period'],['30','Last 30 days'],['all','All']].map(function(i){var on=(U.srng||'pp')===i[0];return '<button class="chip'+(on?' on':'')+'" aria-pressed="'+on+'" onclick="setSrng(\''+i[0]+'\')">'+i[1]+'</button>';}).join('')+'</div>';
-  if(!rows.length)return h+'<section class="card"><div class="empty">No shifts in this range yet.</div></section>'+foot();
+  var rs='<div class="fstrip" role="group" aria-label="Range">'+[['pp','This pay period'],['30','Last 30 days'],['all','All']].map(function(i){var on=(U.srng||'pp')===i[0];return '<button class="chip'+(on?' on':'')+'" aria-pressed="'+on+'" onclick="setSrng(\''+i[0]+'\')">'+i[1]+'</button>';}).join('')+'</div>';
+  h+=findBar('stats')+dateBar('stats',rs);
+  return h+'<div id="stbody">'+statsBody(jid,R)+'</div>'+foot();
+}
+function stFind(v){var was=!!(U.sq||'').trim(),on=!!(v||'').trim();U.sq=v;if(was!==on&&qAuto('stats',on))return reFocus('sq');var b=document.getElementById('stbody'),jid=curJob().id;if(b)b.innerHTML=statsBody(jid,statRng(jid));}
+/* Everything below the search bar; typing redraws only this, so the box keeps its focus. */
+function statsBody(jid,R){
+  var NF='Not filled in';
+  var q=qText('stats',U.sq),pk=U.srng==='pick',D=statData(R.s,R.e,jid,q),rows=D.rows,h=q?'<div class="dbar"><span>🔎 Showing shifts that match "'+esc(q)+'"</span><button onclick="clearQ()">Clear</button></div>':'';
+  if(!rows.length)return h+'<section class="card"><div class="empty">'+(q?'No shifts match "'+esc(q)+'" in this range.':'No shifts in this range yet.')+'</div></section>';
   var coach=D.coach,route=D.route,duty=D.duty,CK=D.CK,RK=D.RK,DK=D.DK;
   h+='<div class="kpis">';
   h+='<div class="kpi"><div class="l">Shifts</div><div class="v">'+rows.length+'</div><div class="d">'+Object.keys(D.days).length+' days · avg '+n1(D.hrs/rows.length)+' h</div></div>';
   h+='<div class="kpi"><div class="l">Buses driven</div><div class="v">'+CK.length+'</div><div class="d">'+(CK.length?'Most: coach '+esc(CK[0])+' ('+coach[CK[0]].n+'×)':'No coach numbers yet')+'</div></div>';
   h+='<div class="kpi"><div class="l">Routes</div><div class="v">'+RK.length+'</div><div class="d">'+(RK.length?'Most hours: Rt '+esc(RK[0]):'No routes yet')+'</div></div>';
-  h+='<div class="kpi ot"><div class="l">Overtime</div><div class="v">'+n1(D.ot)+'<small>h</small></div><div class="d">'+Math.round(D.hrs?D.ot/D.hrs*100:0)+'% of '+n1(D.hrs)+' h worked</div></div>';
+  h+='<div class="kpi ot"><div class="l">Overtime</div><div class="v">'+n1(D.ot)+'<small>h</small></div><div class="d">'+Math.round(D.hrs?D.ot/(D.hrs+D.xh)*100:0)+'% of '+n1(D.hrs+D.xh)+' paid h</div></div>';
   h+='</div>';
-  h+=patternsHtml(jid);
-  h+='<section class="card"><h2>Hours by route</h2>'+(RK.length?hbars(RK.slice(0,8).map(function(k){return {k:'Rt '+k,v:route[k].h,t:route[k].n+' run card'+(route[k].n>1?'s':'')};}),function(v){return n1(v)+' h';}):'<div class="note">No routes recorded in this range.</div>')+'<div class="note">A shift with several run cards splits its hours evenly between them.</div></section>';
+  h+=offBusHtml(D);
+  h+=patternsHtml(jid,pk||q?{s:pk?R.s:null,e:pk?R.e:null,q:q}:null);
+  h+='<section class="card"><h2>Hours by route</h2>'+hbars(RK.map(function(k){return {k:'Rt '+k,v:route[k].h,t:route[k].n+' run card'+(route[k].n>1?'s':''),f:'route',v0:k};}).concat(D.gap.route.n?[{k:NF,v:D.gap.route.h,t:D.gap.route.n+' run card'+(D.gap.route.n>1?'s':'')}]:[]).concat(D.noCard?[{k:'No run card',v:D.noCardH}]:[]),function(v){return n1(v)+' h';})+'<div class="dl" style="margin-top:8px"><span><b>Total</b></span><span><b>'+n1(D.hrs)+' h</b></span></div><div class="note">Tap a route to see only those shifts. '+rows.length+' shift'+(rows.length>1?'s':'')+' had '+D.cards+' run card'+(D.cards===1?'':'s')+'. A shift with several run cards counts once for each bus and splits its hours evenly between them.</div></section>';
   h+='<section class="card"><h2>Buses (coach numbers)</h2>';
-  if(CK.length){h+='<table class="stt"><thead><tr><th>Coach</th><th>Times</th><th>Routes</th><th>Last</th><th>Notes</th></tr></thead><tbody>'+CK.slice(0,10).map(function(k){var o=coach[k];return '<tr><td><b>'+esc(k)+'</b></td><td>'+o.n+'</td><td>'+esc(Object.keys(o.routes).join(', ')||'–')+'</td><td>'+fmtD(pd(o.last))+'</td><td>'+(o.iss?'<span class="pill">'+o.iss+' note'+(o.iss>1?'s':'')+'</span>':'–')+'</td></tr>';}).join('')+'</tbody></table>';
-    if(CK.length>10)h+='<div class="note">'+(CK.length-10)+' more buses not shown.</div>';}
-  else h+='<div class="note">No coach numbers recorded in this range.</div>';
-  h+='</section>';
-  h+='<section class="card"><h2>Duties</h2>'+(DK.length?'<table class="stt"><thead><tr><th>Duty</th><th>Run cards</th><th>Hours</th><th>Overtime</th></tr></thead><tbody>'+DK.slice(0,8).map(function(k){var u=duty[k];return '<tr><td><b>'+esc(k)+'</b></td><td>'+u.n+'</td><td>'+n1(u.h)+' h</td><td>'+n1(u.ot)+' h</td></tr>';}).join('')+'</tbody></table>':'<div class="note">No duties recorded in this range.</div>')+'</section>';
+  var num=function(v){return n1(v)+' h';},hint='<div class="note">Tap a heading to sort. Tap a row to see only those shifts.</div>';
+  h+=stTable({id:'coach',f:'coach',cols:[['k','Coach'],['n','Times'],['rt','Routes'],['last','Last',0,function(v){return fmtD(pd(v));}],['iss','Notes',1,function(v){return v?'<span class="pill">'+v+'</span>':'–';}]],rows:CK.map(function(k){var o=coach[k];return {k:k,n:o.n,rt:Object.keys(o.routes).join(', ')||'–',last:o.last,iss:o.iss};}),gap:D.gap.coach.n?{k:NF,n:D.gap.coach.n}:null,total:{k:'Total',n:D.cards}})+hint+'</section>';
+  h+='<section class="card"><h2>Runs</h2>'+stTable({id:'run',f:'run',cols:[['k','Run'],['n','Run cards'],['h','Hours',1,num]],rows:D.UK.map(function(k){var u=D.run[k];return {k:k,n:u.n,h:u.h};}),gap:D.gap.run.n?{k:NF,n:D.gap.run.n,h:D.gap.run.h}:null,total:{k:'Total',n:D.cards,h:D.hrs-D.noCardH}})+'</section>';
+  h+='<section class="card"><h2>Duties</h2>'+stTable({id:'duty',f:'duty',cols:[['k','Duty'],['n','Run cards'],['h','Hours',1,num],['ot','Overtime',1,num]],rows:DK.map(function(k){var u=duty[k];return {k:k,n:u.n,h:u.h,ot:u.ot};}),gap:D.gap.duty.n?{k:NF,n:D.gap.duty.n,h:D.gap.duty.h,ot:D.gap.duty.ot}:null,total:{k:'Total',n:D.cards,h:D.hrs-D.noCardH,ot:D.ot-D.noCardOt}})+'</section>';
   var SH=Object.keys(D.st).map(Number).sort(function(a,b){return a-b;});
   h+='<section class="card"><h2>When you work</h2><div class="sub" style="margin-bottom:6px">Hours by day of the week</div>'+hbars([0,1,2,3,4,5,6].map(function(i){return {k:DN[i],v:D.wd[i]};}),function(v){return v?n1(v)+' h':'–';});
-  h+='<div class="sub" style="margin:12px 0 6px">Start times</div>'+hbars(SH.map(function(k){return {k:pad(k)+':00',v:D.st[k]};}),function(v){return v+' shift'+(v>1?'s':'');})+'</section>';
+  h+='<div class="sub" style="margin:12px 0 6px">Report In times</div>'+hbars(SH.map(function(k){return {k:pad(k)+':00',v:D.st[k]};}),function(v){return v+' shift'+(v>1?'s':'');})+'</section>';
   h+='<section class="card"><h2>Run cards and breaks</h2>';
   h+='<div class="dl"><span>Shifts with 1 run card</span><span>'+D.ncards[1]+'</span></div><div class="dl"><span>Shifts with 2 run cards</span><span>'+D.ncards[2]+'</span></div><div class="dl"><span>Shifts with 3 or more</span><span>'+D.ncards[3]+'</span></div><div class="dl"><span>Days with more than one shift</span><span>'+D.multiDays+'</span></div>';
   h+='<div class="dl"><span>Paid breaks (a note only)</span><span>'+Math.round(D.pbMin)+' min</span></div><div class="dl"><span>Unpaid breaks (taken off pay)</span><span>'+Math.round(D.ubMin)+' min</span></div></section>';
-  if(D.notes.length)h+='<section class="card"><h2>Notes log</h2>'+D.notes.slice(0,6).map(function(n){var d=pd(n.d);return '<div class="why"><b>'+DN[d.getDay()]+' '+fmtD(d)+'</b>'+(n.rl?' · <span class="sub" style="display:inline">'+esc(n.rl)+'</span>':'')+'<br>'+esc(n.n)+'</div>';}).join('')+'</section>';
+  if(D.notes.length)h+='<section class="card"><h2>Notes log</h2>'+D.notes.map(function(n){var d=pd(n.d);return '<div class="why"><b>'+DN[d.getDay()]+' '+fmtD(d)+'</b>'+(n.rl?' · <span class="sub" style="display:inline">'+esc(n.rl)+'</span>':'')+'<br>'+esc(n.n)+'</div>';}).join('')+'</section>';
   h+='<section class="card"><h2>What is missing</h2>';
-  h+='<div class="dl"><span>Past work days not logged ("?")</span><span>'+D.miss+'</span></div><div class="dl"><span>Shifts with no run card</span><span>'+D.noCard+'</span></div><div class="dl"><span>Run cards with no coach number</span><span>'+D.noCoach+'</span></div><div class="dl"><span>Shifts still open (no end time)</span><span>'+D.opens+'</span></div>';
+  h+='<div class="dl"><span>Past work days not logged ("?")</span><span>'+D.miss+'</span></div><div class="dl"><span>Shifts with no run card</span><span>'+D.noCard+'</span></div><div class="dl"><span>Run cards with no coach number</span><span>'+D.noCoach+'</span></div><div class="dl"><span>Shifts still open (no Report Out)</span><span>'+D.opens+'</span></div>';
   h+='<div class="note">Fill these in and the pay check and the stats both get more accurate.</div></section>';
   h+='<section class="card"><h2>Worth tracking next</h2><div class="note" style="margin-top:-4px">Ideas, not built yet.</div>'+[
-    ['Pull-out and pull-in base','which base or garage the shift starts and ends at'],
     ['Bus problems','a yes/no "reported a defect" per bus, so each coach gets a history'],
     ['Relief points','where you picked up or handed off a bus on a split run card'],
     ['Late or early','minutes behind schedule, to spot routes that run late'],
     ['Incidents','a quick log for passenger or road incidents, with the run card attached'],
     ['Spread time','the hours from first start to last end on split days, for spread pay rules']
   ].map(function(x){return '<div class="why"><b>'+x[0]+'</b><br><span class="sub" style="display:inline">'+x[1]+'</span></div>';}).join('')+'</section>';
-  return h+foot();
+  return h;
+}
+/* V3: paid time off the bus. Only shifts with their bus times count, and the card says how many, so an empty start never reads as zero. */
+function offBusHtml(D){
+  var O=D.off,N=D.rows.length,h='<section class="card" id="offbus"><h2>Paid time off the bus</h2>';
+  if(!O.n)return h+'<div class="note" style="margin-top:0">Not enough times logged yet. Add Pull Out and Pull In or Road Relief to the run cards on a shift and it counts here. 0 of '+N+' shift'+(N===1?'':'s')+' so far.</div></section>';
+  h+='<div class="kpis" style="margin:0"><div class="kpi"><div class="l">Hours</div><div class="v">'+nm(O.m/60)+'<small>h</small></div></div><div class="kpi"><div class="l">Pay for that time</div><div class="v">'+usd0(O.usd)+'</div></div></div>';
+  h+='<div class="dl" style="margin-top:8px"><span>Report In to first Pull Out</span><span>'+nm(O.pre/60)+' h</span></div><div class="dl"><span>Gaps between buses</span><span>'+nm(O.gap/60)+' h</span></div><div class="dl"><span>Last bus to Report Out</span><span>'+nm(O.post/60)+' h</span></div>';
+  return h+'<div class="note">From '+O.n+' of '+N+' shift'+(N===1?'':'s')+': only shifts with every bus time logged count. The dollars use each shift\'s average hourly pay. These times never change pay.</div></section>';
 }
 function render(){
   if(!A)return;
   var m=document.getElementById('main'),t=U.tab,h;
   if(t==='home')h=vHome();else if(t==='hours')h=vHours();else if(t==='edit')h=vEdit();else if(t==='pay')h=vPaychecks();else if(t==='stats')h=vStats();else if(t==='check')h=vCheck();else if(t==='sheet')h=vSheet();
-  else h=U.sub==='rules'?vRules():U.sub==='tax'?vTax():U.sub==='export'?vExport():vMore();
-  m.innerHTML=h;
+  else h=U.sub==='backups'?vBackups():U.sub==='rules'?vRules():U.sub==='tax'?vTax():U.sub==='export'?vExport():vMore();
+  m.innerHTML=bkBanner()+h;
   var act=t==='edit'?(U.from||'hours'):t==='check'?'pay':t==='sheet'?(U.from==='check'?'pay':(U.from||'hours')):t;
   ['home','hours','pay','stats','more'].forEach(function(k){var b=document.getElementById('tb-'+k);b.className=act===k?'on':'';if(act===k)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
   if(t==='edit')edPrev();

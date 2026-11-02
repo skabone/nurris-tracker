@@ -5,7 +5,7 @@
 // Only page loads and the shell files are answered here; every other request goes straight to the network.
 // A request this worker is still answering holds back the next version's takeover (Chromium and WebKit both
 // wait for it), so the worker never keeps one open (V2.1).
-const BUILD='2026-10-20-V2.1';
+const BUILD='2026-11-01-V3';
 const CACHE='nurris-tracker-'+BUILD;
 const SHELL=['./','manifest.webmanifest','icon-180.png','icon-192.png','icon-512.png','icon-maskable-512.png'];
 const SHELL_URLS=new Set(SHELL.map(u=>new URL(u,location).href));
