@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="app-build-id" content="2026-11-01-V3">
+<meta name="app-build-id" content="2026-11-07-V3.1">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <title>Nurri's Tracker</title>
 <meta name="description" content="Log your hours in 24-hour time, see your pay the way your stubs work it out, and check every paycheck.">
@@ -315,7 +315,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 <script id="model">
 /* Pay model: pure functions over the state object A. No DOM here; test.js runs this block in Node. */
-const BUILD='2026-11-01-V3';
+const BUILD='2026-11-07-V3.1';
 var APP_V=(/-(V\d+(?:\.\d+)*)$/.exec(BUILD)||[0,'V1'])[1];
 var DN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],DL=['S','M','T','W','T','F','S'],MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var A=null,U={job:'all'},NOW=null,REV=0,MC={k:null,v:null},FLSA=40,HOL_H=8,LF_MIN=5,SCHEMA=4;
@@ -651,13 +651,16 @@ function openDays(jid){return A.entries.filter(function(e){return e.open&&(!jid|
    field optional. V3: every card, card 1 too, also takes base and the bus times f (Pull Out) and t, with end saying
    whether t is Pull In ('in') or Road Relief ('rr'). was holds a run as it stood before V3. Cards never change pay;
    the shift's Report In and Report Out do. ---- */
-function cardsOf(e){var L=[{duty:e.duty||'',route:e.route||'',run:e.run||'',coach:e.coach||'',f:e.f||'',t:e.t||'',end:e.end||'',base:e.base||''}];(Array.isArray(e.cards)?e.cards:[]).forEach(function(c){if(c&&typeof c==='object')L.push(c);});return L;}
+function cardsOf(e){var L=[{duty:e.duty||'',route:e.route||'',run:e.run||'',coach:e.coach||'',f:e.f||'',t:e.t||'',end:e.end||'',base:e.base||'',beg:e.beg||'',fa:e.fa||'',ta:e.ta||''}];(Array.isArray(e.cards)?e.cards:[]).forEach(function(c){if(c&&typeof c==='object')L.push(c);});return L;}
 function moreCards(e){return Array.isArray(e.cards)?e.cards.length:0;}
 /* Route and run together read 28/1. Old forms read the same, so 28-02 counts as 28/2 even before it is converted. */
 function runId(c){var x=runConv(c.route,c.run);return x.route&&x.run?x.route+'/'+x.run:x.route?'Rt '+x.route:x.run?'Run '+x.run:'';}
 function endWord(c){return c.end==='rr'?'Road Relief ':c.end==='in'?'Pull In ':'to ';}
+/* V3.1: a bus can start with a Road Relief too (he takes it over out on the road), and each Road Relief can carry where it was. */
+function begWord(c){return c.beg==='rr'?'Road Relief ':'Pull Out ';}
+function atWhere(x){return x?' at '+x:'';}
 /* One run card as one line: duty, then route/run and coach number, then the base and its bus times if any. */
-function cardPlain(c){var p=[],q=[];if(c.duty)p.push('Duty '+c.duty);if(runId(c))q.push(runId(c));if(c.coach)q.push('Coach '+c.coach);if(q.length)p.push(q.join(' '));if(c.base)p.push(c.base);if(c.f)p.push('Pull Out '+c.f);if(c.t)p.push(endWord(c)+c.t);return p.join(' · ');}
+function cardPlain(c){var p=[],q=[];if(c.duty)p.push('Duty '+c.duty);if(runId(c))q.push(runId(c));if(c.coach)q.push('Coach '+c.coach);if(q.length)p.push(q.join(' '));if(c.base)p.push(c.base);if(c.f||c.fa)p.push(begWord(c)+(c.f||'')+atWhere(c.beg==='rr'&&c.fa));if(c.t||c.ta)p.push(endWord(c)+(c.t||'')+atWhere(c.end==='rr'&&c.ta));return p.join(' · ').replace(/  +/g,' ');}
 /* The run card on a shift as one line: card 1 only, or with all=true every card joined by " / " (exports, the email, search). */
 function runPlain(e,all){var L=cardsOf(e);return all?L.map(cardPlain).filter(Boolean).join(' / '):cardPlain(L[0]);}
 function runLine(e){return esc(runPlain(e));}
@@ -675,7 +678,7 @@ function entryHit(e,v){
     return L.some(function(c){return f==='run'?(eq(c.run)||runId(c).toLowerCase()===w):eq(c[f]);});
   }
   if(/^[^\s/]+\/[^\s/]+$/.test(v))return L.some(function(c){return runId(c).toLowerCase()===v;});
-  return (L.map(function(c){return [c.duty,runId(c),c.coach,c.base].join(' ');}).join(' ')+' '+(e.note||'')).toLowerCase().indexOf(v)>=0;
+  return (L.map(function(c){return [c.duty,runId(c),c.coach,c.base,c.fa,c.ta].join(' ');}).join(' ')+' '+(e.note||'')).toLowerCase().indexOf(v)>=0;
 }
 /* What a tab searches for: its box, with the chosen field in front. */
 function qText(t,v){var f=(U.sf||{})[t],s=(v||'').trim().toLowerCase();return s&&f?f+' '+s:s;}
@@ -733,12 +736,13 @@ function noWorkApply(k,jid,why){
 }
 /* A new day starts from the last finished work day logged for the same job (its start, end and type of work). The break is
    the saved setting. A job set to "I choose each day" starts at 0 overtime hours. V3: when the job's schedule has report
-   times, Report In comes from the row in force on that date, and a day off leaves both times blank. */
+   times, Report In comes from the row in force on that date, and a day off leaves both times blank. V3.1: Report Out starts
+   blank on those jobs, because pay rests on it and a filled-in guess would save without a word. */
 function newDay(k,rid){
   var jid=roleJob(rid),last=null;
   A.entries.forEach(function(x){var r=role(x.role);if(r&&r.kind==='work'&&r.job===jid&&!x.open&&(!last||x.date>last.date||(x.date===last.date&&x.s>last.s)))last=x;});
   var o={id:null,date:k,s:last?last.s:'',e:last?last.e:'',b:A.set.brk,role:last?last.role:rid,ot:jr(jid).mode==='manual'?0:null,adj:0,note:'',prefilled:!!last,base:lastBase()};
-  if(hasRpt(jid)){var off=isOff(jid,k),rp=rptOn(jid,k);if(off){o.s='';o.e='';o.prefilled=false;}else if(rp)o.s=rp;o.autoS=o.s;}
+  if(hasRpt(jid)){var off=isOff(jid,k),rp=rptOn(jid,k);o.e='';if(off){o.s='';o.prefilled=false;}else if(rp)o.s=rp;o.autoS=o.s;}
   return o;
 }
 /* The base on the newest shift that has one, its last card first. */
@@ -1188,7 +1192,7 @@ function applyUpd(how){var w=WAITING;if(!w)return;PEND.then(function(){if(w.stat
 
 function tmask(el){var d=el.value.replace(/[^0-9]/g,'').slice(0,4);el.value=d.length>=3?d.slice(0,2)+':'+d.slice(2):d;}
 function tnorm(el){el.value=tfix(el.value);}
-function tin(id,val,fn,aria){return '<input id="'+id+'" type="text" inputmode="numeric" maxlength="5" autocomplete="off" placeholder="14:00" value="'+esc(val)+'" oninput="tmask(this);'+fn+'" onblur="tnorm(this);'+fn+'" aria-label="'+aria+'">';}
+function tin(id,val,fn,aria,bare){return '<input id="'+id+'" type="text" inputmode="numeric" maxlength="5" autocomplete="off"'+(bare?'':' placeholder="14:00"')+' value="'+esc(val)+'" oninput="tmask(this);'+fn+'" onblur="tnorm(this);'+fn+'" aria-label="'+aria+'">';}
 function rb(fn){return ' role="button" tabindex="0" onclick="'+fn+'"';}
 /* The Shifts range. All runs from the earliest logged shift (the last 2 weeks when nothing is logged) to the later of
    today and the last logged shift. 3 months is this month and the two before. */
@@ -1513,14 +1517,14 @@ function openEdit(id,date){
 }
 function edHol(){var jid=roleJob(E.role),hi=holIdx(jid,E.date);E.hol=hi>=0;E.holN=hi>=0?jr(jid).hol.list[hi].n:'Holiday';}
 /* A new shift whose date changes follows that date's schedule, unless Report In was already changed by hand. */
-function edAuto(){if(E.id||E.autoS==null||E.s!==E.autoS)return;var n=newDay(E.date,E.role);E.s=n.s;E.e=n.e;E.autoS=n.s;E.prefilled=n.prefilled;}
+function edAuto(){if(E.id||E.autoS==null||E.s!==E.autoS)return;var n=newDay(E.date,E.role);E.s=n.s;E.autoS=n.s;E.prefilled=n.prefilled;}
 function readEd(){
   var g=function(i){var x=document.getElementById(i);return x?x.value:null;};
   if(g('ed-date')!=null)E.date=g('ed-date');if(g('ed-s')!=null)E.s=tfix(g('ed-s'));if(g('ed-e')!=null)E.e=tfix(g('ed-e'));
   if(g('ed-b')!=null)E.b=parseFloat(g('ed-b'))||0;
   if(g('bu-base')!=null)E.base=g('bu-base');
-  if(g('bu-duty')!=null){E.duty=g('bu-duty');E.route=g('bu-route');E.run=g('bu-run');E.coach=g('bu-coach');if(g('bu-f')!=null){E.f=tfix(g('bu-f'));E.t=tfix(g('bu-t'));}}
-  (E.cards||[]).forEach(function(c,i){if(g('bc-duty-'+i)==null)return;c.duty=g('bc-duty-'+i);c.route=g('bc-route-'+i);c.run=g('bc-run-'+i);c.coach=g('bc-coach-'+i);if(g('bc-f-'+i)!=null){c.f=tfix(g('bc-f-'+i));c.t=tfix(g('bc-t-'+i));}});
+  if(g('bu-duty')!=null){E.duty=g('bu-duty');E.route=g('bu-route');E.run=g('bu-run');E.coach=g('bu-coach');if(g('bu-f')!=null){E.f=tfix(g('bu-f'));E.t=tfix(g('bu-t'));}if(g('bu-fa')!=null)E.fa=g('bu-fa');if(g('bu-ta')!=null)E.ta=g('bu-ta');}
+  (E.cards||[]).forEach(function(c,i){if(g('bc-duty-'+i)==null)return;c.duty=g('bc-duty-'+i);c.route=g('bc-route-'+i);c.run=g('bc-run-'+i);c.coach=g('bc-coach-'+i);if(g('bc-f-'+i)!=null){c.f=tfix(g('bc-f-'+i));c.t=tfix(g('bc-t-'+i));}if(g('bc-fa-'+i)!=null)c.fa=g('bc-fa-'+i);if(g('bc-ta-'+i)!=null)c.ta=g('bc-ta-'+i);});
   (E.pb||[]).forEach(function(p,i){var f=g('pb-f'+i),t=g('pb-t'+i);if(f!=null)p.f=tfix(f);if(t!=null)p.t=tfix(t);});
   var hc=document.getElementById('ed-hol');if(hc)E.hol=hc.checked;var hn=document.getElementById('ed-holn');if(hn)E.holN=hn.value;
   if(g('ed-ot')!=null)E.ot=parseFloat(g('ed-ot'))||0;if(g('ed-adj')!=null)E.adj=parseFloat(g('ed-adj'))||0;if(g('ed-note')!=null)E.note=g('ed-note');
@@ -1574,9 +1578,9 @@ function vEdit(){
   var oth=A.entries.filter(function(x){return x.date===E.date&&x.id!==E.id;}).sort(function(a,b){return a.s<b.s?-1:1;});
   if(oth.length)h+='<div class="note" style="margin-top:10px">Also on this day: '+oth.map(function(x){return '<a href="#" onclick="openEdit(\''+x.id+'\');return false">'+t24(x.s)+(x.e?' to '+t24(x.e):' (open)')+(x.route?', Rt '+esc(x.route):'')+'</a>';}).join(' · ')+'</div>';
   if(work)h+=baseRow(E);
-  h+='<div class="two bt" style="margin-top:14px"><div><label class="f" for="ed-s" style="margin:0 0 4px">Report In (24-hour)</label>'+tin('ed-s',E.s,'edPrev()','Report In, 24 hour')+'</div><div><label class="f" for="ed-e" style="margin:0 0 4px">Report Out (24-hour)</label>'+tin('ed-e',E.e,'edPrev()','Report Out, 24 hour')+'</div></div>';
+  h+='<div class="two bt" style="margin-top:14px"><div><label class="f" for="ed-s" style="margin:0 0 4px">Report In (24-hour)</label>'+tin('ed-s',E.s,'edPrev()','Report In, 24 hour',1)+'</div><div><label class="f" for="ed-e" style="margin:0 0 4px">Report Out (24-hour)</label>'+tin('ed-e',E.e,'edPrev()','Report Out, 24 hour',1)+'</div></div>';
   h+='<div class="chips mini"><button class="chip" onclick="edNow(\'s\')">Reported in just now</button><button class="chip" onclick="edNow(\'e\')">Reported out just now</button><button class="chip" onclick="edNow(\'x\')">Not finished yet</button></div>';
-  if(isNew&&E.prefilled)h+='<div class="note">'+(E.autoS!=null&&E.s===E.autoS&&!isOff(job,E.date)?'Report In is from your schedule. Report Out is from your last work day. Change either time if this day was different.':'Filled in from your last work day. Change either time if this day was different.')+'</div>';
+  if(isNew&&E.prefilled)h+='<div class="note">'+(E.autoS!=null&&E.s===E.autoS&&!isOff(job,E.date)?(E.s===rptOn(job,E.date)?'Report In is from your schedule.':'Report In is from your last work day.')+' Change it if this day was different.':'Filled in from your last work day. Change either time if this day was different.')+'</div>';
   if(!E.e)h+='<div class="note">Report Out is empty, so this saves as an open shift on Home. Finish it when you know Report Out.</div>';
   h+='<label class="f">Type of work</label><div class="chips" role="group" aria-label="Type of work">'+A.roles.filter(function(r){return multi||r.job===job;}).map(function(r){var jb=multi?(jobOf(r.job)||{name:''}).name+': ':'';return '<button class="chip'+(E.role===r.id?' on':'')+'" aria-pressed="'+(E.role===r.id)+'" onclick="setEdRole(\''+r.id+'\')">'+esc(jb+r.name)+'</button>';}).join('')+'</div>';
   if(work){h+=runCard();h+=lfStep();h+='<label class="f" for="ed-note">Notes for the day</label><textarea id="ed-note" placeholder="Anything worth remembering about today">'+esc(E.note)+'</textarea>';}
@@ -1612,12 +1616,12 @@ function saveEd(){
 }
 /* ---- V1.3: the run card, open shifts, several buses a day, search ---- */
 /* The shift as saved: the fixed fields, the run card and paid breaks when filled in, and open while Report Out is empty. */
-var CK=['duty','route','run','coach','base','f','t'];
+var CK=['duty','route','run','coach','base','f','t','fa','ta'];
 function entryOf(){
   var o={id:E.id,date:E.date,s:E.s,e:E.e,b:E.b,role:E.role,ot:E.ot,adj:E.adj,note:E.note};
   if(!E.e)o.open=true;
   if(+E.lf>0)o.lf=+E.lf;
-  var keep=function(c,to){CK.forEach(function(k){var v=String(c[k]||'').trim();if(v)to[k]=v;});if(to.t)to.end=c.end||'in';return to;};
+  var keep=function(c,to){CK.forEach(function(k){var v=String(c[k]||'').trim();if(v)to[k]=v;});if(c.beg==='rr'&&(to.f||to.fa))to.beg='rr';else delete to.fa;if(to.t||to.ta)to.end=c.end||'in';if(to.end!=='rr')delete to.ta;return to;};
   keep(E,o);if(E.was)o.was=E.was;
   var cs=(E.cards||[]).map(function(c){var x=keep(c,{});if(Object.keys(x).length&&c.was)x.was=c.was;return x;}).filter(function(x){return Object.keys(x).length;});if(cs.length)o.cards=cs;
   var pb=(E.pb||[]).filter(function(p){return p.f&&p.t;});if(pb.length)o.pb=pb;
@@ -1663,13 +1667,21 @@ function cardHtml(c,i){
   h+='<label class="f" for="'+id('duty')+'" style="margin-top:6px">Duty</label>'+nin(id('duty'),c.duty)+valChips('duty',i);
   h+='<div class="two"><div><label class="f" for="'+id('route')+'">Route</label>'+nin(id('route'),c.route)+'</div><div><label class="f" for="'+id('run')+'">Run</label>'+nin(id('run'),c.run)+'</div></div>'+valChips('route',i);
   h+='<label class="f" for="'+id('coach')+'">Coach number</label>'+nin(id('coach'),c.coach)+valChips('coach',i);
-  var a=one?'null':i,ef=one?'bu-f':'bc-f-'+i,et=one?'bu-t':'bc-t-'+i,rr=c.end==='rr';
-  if(c.x||c.f||c.t)h+='<div class="two" style="margin-top:12px"><div><label class="f" for="'+ef+'" style="margin:0 0 4px">Pull Out (optional)</label>'+tin(ef,c.f||'','edPrev()','Run card '+n+' Pull Out, 24 hour')+'</div><div><label class="f" for="'+et+'" style="margin:0 0 4px">'+(rr?'Road Relief':'Pull In')+' (optional)</label>'+tin(et,c.t||'','edPrev()','Run card '+n+(rr?' Road Relief':' Pull In')+', 24 hour')+'</div></div><div style="margin-top:8px">'+seg([['in','Pull In'],['rr','Road Relief']],rr?'rr':'in','setEnd.bind(null,'+a+')')+'</div><div class="note">Only a record. Pay comes from the shift\'s Report In and Report Out.</div>';
+  var a=one?'null':i,ef=one?'bu-f':'bc-f-'+i,et=one?'bu-t':'bc-t-'+i,rb=c.beg==='rr',rr=c.end==='rr',fw=rb?'Road Relief':'Pull Out',tw=rr?'Road Relief':'Pull In';
+  if(c.x||c.f||c.t||c.fa||c.ta)h+='<label class="f" style="margin-top:12px">Start of this bus</label>'+seg([['po','Pull Out'],['rr','Road Relief']],rb?'rr':'po','setBeg.bind(null,'+a+')')
+    +'<div class="two"><div><label class="f" for="'+ef+'">'+fw+' time (optional)</label>'+tin(ef,c.f||'','edPrev()','Run card '+n+' '+fw+', 24 hour',1)+'</div></div>'+(rb?addrIn(one?'bu-fa':'bc-fa-'+i,c.fa,'Run card '+n+' Road Relief at the start, where'):'')
+    +'<label class="f" style="margin-top:12px">End of this bus</label>'+seg([['in','Pull In'],['rr','Road Relief']],rr?'rr':'in','setEnd.bind(null,'+a+')')
+    +'<div class="two"><div><label class="f" for="'+et+'">'+tw+' time (optional)</label>'+tin(et,c.t||'','edPrev()','Run card '+n+' '+tw+', 24 hour',1)+'</div></div>'+(rr?addrIn(one?'bu-ta':'bc-ta-'+i,c.ta,'Run card '+n+' Road Relief at the end, where'):'')
+    +'<div class="note">Only a record. Pay comes from the shift\'s Report In and Report Out.</div>';
   else h+='<button class="lx" style="padding:6px 0" onclick="expCard('+a+')">+ Add times (optional)</button>';
   return h+'</div>';
 }
 function setEnd(i,v){readEd();(i==null?E:E.cards[i]).end=v;render();}
-function runCard(){var h=cardHtml(E,null);(E.cards||[]).forEach(function(c,i){h+=cardHtml(c,i);});return h+'<button class="btn dim" style="margin-top:10px" onclick="addCard()">+ Add another run card</button>';}
+function setBeg(i,v){readEd();(i==null?E:E.cards[i]).beg=v==='rr'?'rr':'';render();}
+/* A Road Relief's address or stop, offering the ones he has typed before (newest first). */
+function reliefPlaces(){var seen={},out=[];A.entries.slice().sort(function(a,b){return a.date<b.date?1:-1;}).forEach(function(x){cardsOf(x).forEach(function(c){[c.fa,c.ta].forEach(function(v){if(v&&!seen[v]){seen[v]=1;out.push(v);}});});});return out;}
+function addrIn(id,val,aria){return '<label class="f" for="'+id+'">Where (address or stop, optional)</label><input id="'+id+'" type="text" list="dl-rr" autocomplete="off" value="'+esc(val||'')+'" aria-label="'+aria+'">';}
+function runCard(){var h='<datalist id="dl-rr">'+reliefPlaces().map(function(v){return '<option value="'+esc(v)+'">';}).join('')+'</datalist>'+cardHtml(E,null);(E.cards||[]).forEach(function(c,i){h+=cardHtml(c,i);});return h+'<button class="btn dim" style="margin-top:10px" onclick="addCard()">+ Add another run card</button>';}
 function addCard(){readEd();E.cards=E.cards||[];E.cards.push({duty:'',route:'',run:'',coach:'',f:'',t:'',base:''});render();}
 function delCard(i){readEd();E.cards.splice(i,1);render();}
 function expCard(i){readEd();(i==null?E:E.cards[i]).x=true;render();}
@@ -2292,7 +2304,7 @@ function statsBody(jid,R){
 /* V3: paid time off the bus. Only shifts with their bus times count, and the card says how many, so an empty start never reads as zero. */
 function offBusHtml(D){
   var O=D.off,N=D.rows.length,h='<section class="card" id="offbus"><h2>Paid time off the bus</h2>';
-  if(!O.n)return h+'<div class="note" style="margin-top:0">Not enough times logged yet. Add Pull Out and Pull In or Road Relief to the run cards on a shift and it counts here. 0 of '+N+' shift'+(N===1?'':'s')+' so far.</div></section>';
+  if(!O.n)return h+'<div class="note" style="margin-top:0">Not enough times logged yet. Add the start and end times to the run cards on a shift and it counts here. 0 of '+N+' shift'+(N===1?'':'s')+' so far.</div></section>';
   h+='<div class="kpis" style="margin:0"><div class="kpi"><div class="l">Hours</div><div class="v">'+nm(O.m/60)+'<small>h</small></div></div><div class="kpi"><div class="l">Pay for that time</div><div class="v">'+usd0(O.usd)+'</div></div></div>';
   h+='<div class="dl" style="margin-top:8px"><span>Report In to first Pull Out</span><span>'+nm(O.pre/60)+' h</span></div><div class="dl"><span>Gaps between buses</span><span>'+nm(O.gap/60)+' h</span></div><div class="dl"><span>Last bus to Report Out</span><span>'+nm(O.post/60)+' h</span></div>';
   return h+'<div class="note">From '+O.n+' of '+N+' shift'+(N===1?'':'s')+': only shifts with every bus time logged count. The dollars use each shift\'s average hourly pay. These times never change pay.</div></section>';
